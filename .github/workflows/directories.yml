@@ -1,0 +1,24 @@
+name: Import official national directories
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/import-directories.py
+      - .github/workflows/directories.yml
+permissions:
+  contents: read
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/import-directories.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-national-directories
+          path: src-tauri/resources/*.json
+          if-no-files-found: error

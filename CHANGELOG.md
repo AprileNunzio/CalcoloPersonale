@@ -21,6 +21,13 @@
 - Configurazione updater derivata dalla chiave pubblica di repository; nessuna chiave privata incorporata.
 - Controllo della presenza di installer, firma e manifest prima della pubblicazione.
 
+### Integrazioni in verifica
+
+- Assistente Gemini con credenziale Windows, elenco modelli restituito dal provider e invio autorizzato del solo testo della richiesta.
+- Bozza cifrata dell’ultima richiesta e risposta; nessuna trasmissione automatica dei fascicoli.
+- Importatore ISTAT XLSX e quattro categorie MIM per l’anno scolastico 2026/27, con hash e provenienza dei download.
+- Workflow di importazione con soli permessi di lettura della repository e produzione di artefatti; non esegue commit o push.
+
 ### Verifiche eseguite
 
 - Il primo workflow ha individuato l’assenza dei lockfile; aggiunta generazione iniziale sui branch di sviluppo.

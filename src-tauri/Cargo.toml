@@ -20,9 +20,12 @@ argon2 = "0.5"
 rand = "0.8"
 zeroize = { version = "1", features = ["derive"] }
 thiserror = "2"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+tokio = { version = "1", features = ["sync"] }
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.59", features = ["Win32_Storage_FileSystem"] }
+keyring = { version = "3", features = ["windows-native"] }
 
 [profile.release]
 panic = "abort"

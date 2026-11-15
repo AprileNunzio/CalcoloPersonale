@@ -86,6 +86,19 @@ impl Vault {
                     *person = candidate;
                 }
             }
+        } else if key == "assistant" {
+            if !value.is_null() {
+                let object = value.as_object().ok_or(Error::Invalid)?;
+                if object.len() != 3
+                    || !["model", "prompt", "answer"].iter().all(|field| {
+                        object.get(*field).is_some_and(|value| {
+                            value.as_str().is_some_and(|text| text.len() <= 100000)
+                        })
+                    })
+                {
+                    return Err(Error::Invalid);
+                }
+            }
         } else {
             return Err(Error::Invalid);
         }

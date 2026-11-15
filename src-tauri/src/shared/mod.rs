@@ -16,10 +16,19 @@ pub enum Error {
     Conflict,
     #[error("directoryUnavailable")]
     DirectoryUnavailable,
+    #[error("credentialError")]
+    Credential,
+    #[error("remoteError")]
+    Remote,
+    #[error("requestBusy")]
+    Busy,
 }
 
 impl Serialize for Error {
-    fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+    fn serialize<S: serde::Serializer>(
+        &self,
+        serializer: S,
+    ) -> std::result::Result<S::Ok, S::Error> {
         serializer.serialize_str(&self.to_string())
     }
 }

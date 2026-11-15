@@ -17,6 +17,8 @@ pub struct DirectoryEntry {
     pub website: String,
     pub school_year: String,
     pub category: String,
+    #[serde(default)]
+    pub details: std::collections::BTreeMap<String, String>,
 }
 
 #[derive(Deserialize)]

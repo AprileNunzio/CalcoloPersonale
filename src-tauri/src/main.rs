@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod analysis;
 mod directory;
+mod gemini;
 mod people;
 mod shared;
 mod vault;
@@ -93,6 +94,9 @@ fn main() {
                 path,
                 session: std::sync::Mutex::new(None),
             });
+            app.manage(gemini::GeminiState(std::sync::Arc::new(
+                tokio::sync::Semaphore::new(1),
+            )));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -104,7 +108,11 @@ fn main() {
             delete_record,
             analyze,
             save_draft,
-            directory::search_directory
+            directory::search_directory,
+            gemini::configure_gemini,
+            gemini::remove_gemini_key,
+            gemini::gemini_models,
+            gemini::ask_gemini
         ])
         .run(tauri::generate_context!())
         .expect("Application initialization failed");

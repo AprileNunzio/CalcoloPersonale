@@ -40,7 +40,7 @@ La schermata iniziale presenta i fascicoli mediante schede con cognome, nome, pr
 | Aggiornamenti GitHub | Controllo all’avvio, download, installazione e riavvio presenti nel sorgente | Configurazione di release predisposta; chiavi e collaudo ancora mancanti |
 | Installer Windows | Target NSIS e pipeline GitHub Actions predisposti | Installer non generato; icona, lockfile e collaudo da completare |
 | API esterne e MCP | Programmati | Nessun server o client implementato |
-| Agente Gemini | Programmato | Nessuna integrazione API o gestione chiavi implementata |
+| Agente Gemini | Implementazione iniziale backend e UI | Chiamate reali da collaudare con una chiave dell’utente |
 
 ## Funzionalità presenti nel codice
 
@@ -173,7 +173,7 @@ L’agente Gemini, da integrare mediante API key, è previsto per richieste in l
 - controllo delle azioni proposte dall’agente;
 - separazione fra risposta generativa e calcolo normativo deterministico.
 
-Attualmente il software non invia richieste a Gemini e non contiene strumenti autonomi per modificare i fascicoli tramite un modello linguistico.
+È stata aggiunta un’implementazione iniziale dell’assistente: chiave in Windows Credential Manager, caricamento dei modelli disponibili, invio dal backend al solo endpoint Google previsto, consenso per ogni richiesta e risposta testuale. Le richieste e le risposte sono conservate come bozza cifrata; chiave e consenso non confluiscono nella bozza. Nessun fascicolo viene allegato automaticamente. Non sono presenti strumenti autonomi che modifichino i fascicoli e non è ancora stato eseguito il collaudo con una chiave API reale.
 
 ### Distribuzione Windows
 
