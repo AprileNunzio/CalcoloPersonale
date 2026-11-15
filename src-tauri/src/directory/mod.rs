@@ -34,10 +34,10 @@ pub fn search_directory(kind: String, query: String) -> Result<Vec<DirectoryEntr
     }
     let source = match kind.as_str() {
         "school" => SCHOOLS.get_or_init(|| {
-            serde_json::from_str(include_str!("../../../resources/schools.json")).ok()
+            serde_json::from_str(include_str!("../../resources/schools.json")).ok()
         }),
         "municipality" => MUNICIPALITIES.get_or_init(|| {
-            serde_json::from_str(include_str!("../../../resources/municipalities.json")).ok()
+            serde_json::from_str(include_str!("../../resources/municipalities.json")).ok()
         }),
         _ => return Err(Error::Invalid),
     };
