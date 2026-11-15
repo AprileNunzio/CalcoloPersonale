@@ -1,0 +1,1 @@
+.autosave{display:flex;align-items:center;gap:8px;color:#638073;font-size:11px;margin:8px 0}.status-dot{width:7px;height:7px;background:#5c9a7c;border-radius:50%}.autosave.saving .status-dot{background:#d0a65d}.autosave.saveFailed{color:#a5453b}.autosave.saveFailed .status-dot{background:#a5453b}.autosave button{padding:5px 10px;font-size:11px}

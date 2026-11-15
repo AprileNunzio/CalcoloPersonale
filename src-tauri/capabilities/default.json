@@ -1,0 +1,13 @@
+{
+  "identifier": "main",
+  "description": "Main application capability",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "updater:default",
+    "process:allow-restart",
+    "core:window:allow-destroy"
+  ]
+}
