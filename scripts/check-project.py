@@ -17,16 +17,16 @@ for directory in ("src", "src-tauri/src", "scripts", ".github"):
 for path in (root / "src-tauri").glob("*.json"):
     json.loads(path.read_text(encoding="utf-8"))
 if arguments.release:
-    version = json.loads((root / "package.json").read_text())["version"]
-    tauri = json.loads((root / "src-tauri/tauri.conf.json").read_text())
-    cargo = tomllib.loads((root / "src-tauri/Cargo.toml").read_text())
+    version = json.loads((root / "package.json").read_text(encoding="utf-8"))["version"]
+    tauri = json.loads((root / "src-tauri/tauri.conf.json").read_text(encoding="utf-8"))
+    cargo = tomllib.loads((root / "src-tauri/Cargo.toml").read_text(encoding="utf-8"))
     if os.environ.get("GITHUB_REF_NAME") != f"v{version}" or tauri["version"] != version or cargo["package"]["version"] != version:
         failures.append("Release tag and application versions must match")
     for name in ("package-lock.json", "src-tauri/Cargo.lock", "src-tauri/icons/icon.ico"):
         if not (root / name).exists():
             failures.append(f"Required release file missing: {name}")
     for name in ("schools", "municipalities"):
-        data = json.loads((root / f"src-tauri/resources/{name}.json").read_text())
+        data = json.loads((root / f"src-tauri/resources/{name}.json").read_text(encoding="utf-8"))
         if not data.get("entries") or not data.get("sources"):
             failures.append(f"National directory incomplete: {name}")
 if failures:
