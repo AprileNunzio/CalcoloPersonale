@@ -26,6 +26,15 @@ jobs:
           components: rustfmt, clippy
       - run: python scripts/check-project.py
       - run: python -m unittest discover -s scripts/tests -v
+      - name: Bootstrap missing dependency locks on development branches
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && (hashFiles('package-lock.json') == '' || hashFiles('src-tauri/Cargo.lock') == '') }}
+        run: python scripts/bootstrap-dependencies.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dependency-lockfiles
+          path: |
+            package-lock.json
+            src-tauri/Cargo.lock
       - run: npm ci
       - run: npm run build
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
