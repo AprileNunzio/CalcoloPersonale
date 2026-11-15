@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, FolderHeart, LayoutDashboard, LockKeyhole, Plus, Search, ShieldCheck, Users, UserRound, Venus, Mars, Languages, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, FolderHeart, LayoutDashboard, LockKeyhole, Plus, Search, ShieldCheck, Users, UserRound, Languages, RefreshCw } from 'lucide-react';
+import { Venus, Mars } from '../people/GenderIcons';
 import { Archive, Analysis, Person } from '../../shared/types';
 import { Locale, LocaleContext, useT } from '../../shared/i18n';
 import { AutoSaveContext, AutoSaveStatus } from '../autosave/AutoSave';
