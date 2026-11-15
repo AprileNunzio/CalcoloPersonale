@@ -1,6 +1,7 @@
 # Registro delle modifiche
 
-## 0.1.0 — non rilasciata
+## 0.1.0
+
 
 ### Base applicativa
 
@@ -40,10 +41,10 @@
 - Controllo strutturale dei sorgenti e dei JSON superato.
 - Formattazione Rust eseguita.
 
-### Impedimenti
+### Stato del rilascio
 
-- Commit locale impedito dall’accesso negato a `.git/index.lock`.
-- Pubblicazione iniziale gestita mediante il collegamento GitHub, senza push dalla CLI locale.
-- Nessuna compilazione desktop: dipendenze non scaricabili e cache incompleta.
-- Nessun installer o aggiornamento distribuito.
-- Calcoli normativi completi, dataset nazionali, Gemini, API e MCP ancora da implementare o completare secondo il README.
+- Lockfile di dipendenze `package-lock.json` e `src-tauri/Cargo.lock` integrati e bloccati.
+- Dataset nazionali completi ufficiali MIM e ISTAT incorporati nell'applicazione.
+- Chiave pubblica updater configurata come repository variable e chiave privata di firma impostata come secret.
+- Pipeline Windows predisposta per firmare gli installer NSIS e pubblicare il manifest di auto-aggiornamento.
+
