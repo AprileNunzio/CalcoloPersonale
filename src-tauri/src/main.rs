@@ -36,6 +36,27 @@ fn delete_person(id: uuid::Uuid, revision: u64, state: State<'_, Vault>) -> Resu
 }
 
 #[tauri::command]
+fn save_record(
+    person_id: uuid::Uuid,
+    entry: people::Record,
+    revision: u64,
+    state: State<'_, Vault>,
+) -> Result<Archive> {
+    let id = entry.id;
+    state.update_record(person_id, Some(entry), id, revision)
+}
+
+#[tauri::command]
+fn delete_record(
+    person_id: uuid::Uuid,
+    entry_id: uuid::Uuid,
+    revision: u64,
+    state: State<'_, Vault>,
+) -> Result<Archive> {
+    state.update_record(person_id, None, entry_id, revision)
+}
+
+#[tauri::command]
 fn analyze(
     id: uuid::Uuid,
     year: Option<i32>,
@@ -79,6 +100,8 @@ fn main() {
             lock,
             save_person,
             delete_person,
+            save_record,
+            delete_record,
             analyze,
             save_draft,
             directory::search_directory

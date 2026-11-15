@@ -62,6 +62,10 @@ impl Vault {
                 }
             }
         } else if let Some(id) = key.strip_prefix("entry:") {
+            let (id, section) = id.split_once(':').ok_or(Error::Invalid)?;
+            if !["service", "qualification", "child", "absences"].contains(&section) {
+                return Err(Error::Invalid);
+            }
             let id = uuid::Uuid::parse_str(id).map_err(|_| Error::Invalid)?;
             let person = next
                 .people
@@ -69,6 +73,12 @@ impl Vault {
                 .find(|p| p.id == id)
                 .ok_or(Error::Invalid)?;
             if let Ok(entry) = serde_json::from_value::<crate::people::Record>(value.clone()) {
+                if (section == "absences"
+                    && ["service", "qualification", "child"].contains(&entry.kind.as_str()))
+                    || (section != "absences" && entry.kind != section)
+                {
+                    return Err(Error::Invalid);
+                }
                 let mut candidate = person.clone();
                 candidate.records.retain(|r| r.id != entry.id);
                 candidate.records.push(entry);
@@ -174,22 +184,66 @@ impl Vault {
             return Err(Error::Conflict);
         }
         let mut next = session.archive.clone();
+        let existing = next.people.iter().find(|p| p.id == id).cloned();
         next.people.retain(|p| p.id != id);
         next.drafts.remove(&format!("person:{id}"));
-        next.drafts.remove(&format!("entry:{id}"));
-        if let Some(person) = person {
+        if let Some(mut person) = person {
+            if let Some(existing) = existing {
+                person.records = existing.records;
+            }
             person.validate()?;
             if next.people.len() >= 10000 {
                 return Err(Error::Invalid);
             }
             next.people.push(person);
+        } else {
+            let prefix = format!("entry:{id}");
+            next.drafts
+                .retain(|key, _| key != &prefix && !key.starts_with(&format!("{prefix}:")));
         }
         next.revision += 1;
         self.persist(session, &next)?;
         session.archive = next.clone();
         Ok(next)
     }
+
+    pub fn update_record(
+        &self,
+        person_id: uuid::Uuid,
+        entry: Option<crate::people::Record>,
+        entry_id: uuid::Uuid,
+        revision: u64,
+    ) -> Result<Archive> {
+        let mut guard = self.session.lock().map_err(|_| Error::Locked)?;
+        let session = guard.as_mut().ok_or(Error::Locked)?;
+        if session.archive.revision != revision {
+            return Err(Error::Conflict);
+        }
+        let mut next = session.archive.clone();
+        let person = next
+            .people
+            .iter_mut()
+            .find(|p| p.id == person_id)
+            .ok_or(Error::Invalid)?;
+        person.records.retain(|record| record.id != entry_id);
+        if let Some(record) = entry {
+            person.records.push(record);
+        }
+        person.validate()?;
+        let prefix = format!("entry:{person_id}:");
+        next.drafts.retain(|key, value| {
+            !key.starts_with(&prefix)
+                || value.get("id").and_then(|v| v.as_str()) != Some(entry_id.to_string().as_str())
+        });
+        next.revision += 1;
+        self.persist(session, &next)?;
+        session.archive = next.clone();
+        Ok(next)
+    }
 }
+
+#[cfg(test)]
+mod tests;
 
 #[cfg(windows)]
 fn replace(from: &std::path::Path, to: &std::path::Path) -> std::io::Result<()> {

@@ -23,6 +23,12 @@
 
 ### Verifiche eseguite
 
+- Il primo workflow ha individuato l’assenza dei lockfile; aggiunta generazione iniziale sui branch di sviluppo.
+- Il successivo controllo TypeScript ha rilevato due icone non esportate da Lucide; sostituite con componenti SVG locali.
+- La compilazione frontend del commit `2c143f6` è riuscita su Windows; verifica Rust in prosecuzione.
+- Aggiunti test Rust per cifratura, password errata, alterazione dei dati, bozze incomplete e conflitti di revisione; esito da verificare nella pipeline.
+- Separate le bozze per sezione e le modifiche delle registrazioni da quelle anagrafiche, evitando la sostituzione integrale dei servizi durante una modifica dell’identità.
+
 - Due test Python della configurazione di firma superati.
 - Controllo strutturale dei sorgenti e dei JSON superato.
 - Formattazione Rust eseguita.
