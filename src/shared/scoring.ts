@@ -16,6 +16,16 @@ export interface SchoolYearServiceBreakdown {
   cappedScore: number;
 }
 
+export interface ScoreValidationDecreeItem {
+  id: string;
+  decreeProtocol: string;
+  decreeDate: string;
+  validatingSchool: string;
+  validatedScore: number;
+  schoolYearOrTriennium: string;
+  notes?: string;
+}
+
 export interface ScoreValidationData {
   profileCode: string;
   isConvalidated: boolean;
@@ -24,6 +34,10 @@ export interface ScoreValidationData {
   decreeProtocol: string;
   decreeDate: string;
   validatingSchool: string;
+  // Incremental mode fields:
+  isIncrementalBase?: boolean;
+  consolidationDate?: string;
+  decreeHistory?: ScoreValidationDecreeItem[];
   notes?: string;
   lastUpdated?: string;
 }
@@ -35,7 +49,7 @@ export interface ProfileScore {
   specificServiceScore: number;
   otherServiceScore: number;
   culturalScore: number;
-  totalScore: number; // calculated according to the selected decree
+  totalScore: number;
   serviceDays: number;
   specificDays: number;
   decree: MinisterialDecree;
@@ -43,10 +57,16 @@ export interface ProfileScore {
   isConvalidated: boolean;
   useValidatedScore: boolean;
   validatedScore?: number;
-  effectiveScore: number; // official score used across the app
+  effectiveScore: number;
   validationDecree?: string;
   validatingSchool?: string;
   validationDate?: string;
+  // Incremental breakdown:
+  isIncrementalBase?: boolean;
+  consolidationDate?: string;
+  baseConsolidatedScore?: number;
+  subsequentScore?: number;
+  subsequentDays?: number;
   schoolYearBreakdown: SchoolYearServiceBreakdown[];
 }
 
@@ -153,12 +173,20 @@ function computeCulturalScore(
   records: Entry[],
   profileCode: string,
   decree: MinisterialDecree,
-  accessQualId?: string
+  accessQualId?: string,
+  minDateStr?: string
 ): number {
   let score = 0;
-  const quals = (records || []).filter(r => r.kind === 'qualification' && r.id !== accessQualId);
+  const cutoff = minDateStr ? new Date(minDateStr) : null;
+  const quals = (records || []).filter(r => {
+    if (r.kind !== 'qualification' || r.id === accessQualId) return false;
+    if (cutoff && r.start) {
+      const d = new Date(r.start);
+      if (!isNaN(d.getTime()) && d <= cutoff) return false;
+    }
+    return true;
+  });
 
-  // Digital Literacy / CIAD
   const hasDigital = quals.some(q => {
     const t = (q.title + ' ' + (q.notes || '')).toLowerCase();
     return (
@@ -172,30 +200,19 @@ function computeCulturalScore(
   });
 
   if (hasDigital) {
-    // Under D.M. 89/2024 CIAD is an access requirement for AA/AT/OS (and deroga 1 yr for CS).
-    // As cultural points under ministerial tables, max 1 digital title evaluates:
     score += profileCode === 'CS' ? 0.30 : 0.60;
   }
 
   if (profileCode === 'AA') {
-    if (quals.some(q => q.title.toLowerCase().includes('dattilografia'))) {
-      score += 1.0;
-    }
-    if (quals.some(q => q.title.toLowerCase().includes('laurea'))) {
-      score += 2.0;
-    }
+    if (quals.some(q => q.title.toLowerCase().includes('dattilografia'))) score += 1.0;
+    if (quals.some(q => q.title.toLowerCase().includes('laurea'))) score += 2.0;
   } else if (profileCode === 'AT') {
-    if (quals.some(q => q.title.toLowerCase().includes('laurea'))) {
-      score += 2.0;
-    }
+    if (quals.some(q => q.title.toLowerCase().includes('laurea'))) score += 2.0;
   } else if (profileCode === 'OS') {
-    // OSS or OSA gives 1.0 point under DM 89/2024 Table A/5
     if (decree === 'DM_89_2024' && quals.some(q => {
       const t = q.title.toLowerCase();
       return t.includes('oss') || t.includes('osa') || t.includes('socio');
-    })) {
-      score += 1.0;
-    }
+    })) score += 1.0;
   }
 
   return Math.round(score * 100) / 100;
@@ -222,7 +239,7 @@ export function extractScoreValidations(person: Person): Record<string, ScoreVal
           }
         }
       } catch {
-        // ignore malformed notes
+        // ignore
       }
     }
   }
@@ -230,33 +247,37 @@ export function extractScoreValidations(person: Person): Record<string, ScoreVal
   return map;
 }
 
-/**
- * Splits a date range across Italian school years (1 September to 31 August).
- */
-function splitServiceBySchoolYears(startStr: string, endStr: string | null) {
+function splitServiceBySchoolYears(startStr: string, endStr: string | null, cutoffDate?: Date | null) {
   const results: { schoolYear: string; startYear: number; endYear: number; days: number }[] = [];
-  const start = new Date(startStr);
+  let start = new Date(startStr);
   const end = endStr ? new Date(endStr) : new Date(startStr);
+
   if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
     const yr = start.getFullYear() || 2024;
     return [{ schoolYear: `${yr}/${yr + 1}`, startYear: yr, endYear: yr + 1, days: 1 }];
   }
 
+  if (cutoffDate) {
+    if (end <= cutoffDate) return [];
+    if (start <= cutoffDate) {
+      start = new Date(cutoffDate.getTime() + 86400000);
+    }
+  }
+
   let curr = new Date(start);
   while (curr <= end) {
     const yr = curr.getFullYear();
-    const m = curr.getMonth(); // 0-indexed: 8 is September
+    const m = curr.getMonth();
     const syStartYear = m >= 8 ? yr : yr - 1;
     const syEndYear = syStartYear + 1;
-    const syEnd = new Date(syEndYear, 7, 31, 23, 59, 59); // 31 August
+    const syEnd = new Date(syEndYear, 7, 31, 23, 59, 59);
 
     const segmentEnd = end < syEnd ? end : syEnd;
     const diff = Math.ceil(Math.abs(segmentEnd.getTime() - curr.getTime()) / (1000 * 60 * 60 * 24)) + 1;
     const syLabel = `${syStartYear}/${syEndYear}`;
 
     results.push({ schoolYear: syLabel, startYear: syStartYear, endYear: syEndYear, days: Math.max(1, diff) });
-
-    curr = new Date(syEndYear, 8, 1); // 1 September
+    curr = new Date(syEndYear, 8, 1);
   }
 
   return results;
@@ -308,6 +329,12 @@ export function calculateProfileScores(
   const services = (person.records || []).filter(r => r.kind === 'service');
 
   return profilesToEvaluate.map(prof => {
+    const validation = validationsMap[prof.code];
+    const isConvalidated = Boolean(validation?.isConvalidated);
+    const useValidatedScore = Boolean(validation?.useValidatedScore && isConvalidated);
+    const isIncremental = Boolean(validation?.isIncrementalBase && useValidatedScore && validation?.consolidationDate);
+    const cutoffDate = isIncremental && validation?.consolidationDate ? new Date(validation.consolidationDate) : null;
+
     const syMap = new Map<string, { days: number; specificScore: number; otherScore: number; startYear: number; endYear: number }>();
     let totalSpecificDays = 0;
     let totalOtherDays = 0;
@@ -319,7 +346,7 @@ export function calculateProfileScores(
       const mult = isParitaria ? 0.5 : 1.0;
       const isSpecific = !isDocente && s.profile === prof.code;
 
-      const segments = splitServiceBySchoolYears(s.start, s.end);
+      const segments = splitServiceBySchoolYears(s.start, s.end, cutoffDate);
       for (const seg of segments) {
         if (!syMap.has(seg.schoolYear)) {
           syMap.set(seg.schoolYear, {
@@ -336,18 +363,15 @@ export function calculateProfileScores(
         if (isSpecific) {
           totalSpecificDays += seg.days;
           const rate = (prof.code === 'CS' || prof.code === 'OS' ? 0.50 : 0.60) * mult;
-          const months = calculateMonths(seg.days);
-          item.specificScore += months * rate;
+          item.specificScore += calculateMonths(seg.days) * rate;
         } else {
           totalOtherDays += seg.days;
           const rate = (prof.code === 'CS' || prof.code === 'OS' ? 0.15 : 0.10) * mult;
-          const months = calculateMonths(seg.days);
-          item.otherScore += months * rate;
+          item.otherScore += calculateMonths(seg.days) * rate;
         }
       }
     }
 
-    // Process school year breakdowns and apply the statutory 6.00 points annual ceiling
     const schoolYearBreakdown: SchoolYearServiceBreakdown[] = [];
     let aggregatedSpecific = 0;
     let aggregatedOther = 0;
@@ -386,20 +410,32 @@ export function calculateProfileScores(
     }
 
     const accessQual = extractAccessQualification(person.records || [], prof.code);
-    const baseAccessScore = computeAccessScore(person.records || [], prof.code);
-    const culturalScore = computeCulturalScore(person.records || [], prof.code, decree, accessQual?.id);
+    const baseAccessScore = isIncremental ? 0.0 : computeAccessScore(person.records || [], prof.code);
+    const culturalScore = computeCulturalScore(
+      person.records || [],
+      prof.code,
+      decree,
+      accessQual?.id,
+      isIncremental ? validation?.consolidationDate : undefined
+    );
+
     const calculatedTotalScore = Math.round(
       (baseAccessScore + aggregatedSpecific + aggregatedOther + culturalScore) * 100
     ) / 100;
 
-    // Check school validation decree
-    const validation = validationsMap[prof.code];
-    const isConvalidated = Boolean(validation?.isConvalidated);
-    const useValidatedScore = Boolean(validation?.useValidatedScore && isConvalidated);
-    const validatedScore = validation?.validatedScore;
-    const effectiveScore = useValidatedScore && typeof validatedScore === 'number'
-      ? validatedScore
-      : calculatedTotalScore;
+    let effectiveScore = calculatedTotalScore;
+    let baseConsolidatedScore: number | undefined;
+    let subsequentScore: number | undefined;
+
+    if (useValidatedScore && typeof validation?.validatedScore === 'number') {
+      if (isIncremental) {
+        baseConsolidatedScore = validation.validatedScore;
+        subsequentScore = calculatedTotalScore; // newly matured score after consolidation
+        effectiveScore = Math.round((baseConsolidatedScore + subsequentScore) * 100) / 100;
+      } else {
+        effectiveScore = validation.validatedScore;
+      }
+    }
 
     return {
       code: prof.code,
@@ -414,11 +450,16 @@ export function calculateProfileScores(
       decree,
       isConvalidated,
       useValidatedScore,
-      validatedScore,
+      validatedScore: validation?.validatedScore,
       effectiveScore: Math.round(effectiveScore * 100) / 100,
       validationDecree: validation?.decreeProtocol,
       validatingSchool: validation?.validatingSchool,
       validationDate: validation?.decreeDate,
+      isIncrementalBase: isIncremental,
+      consolidationDate: validation?.consolidationDate,
+      baseConsolidatedScore,
+      subsequentScore,
+      subsequentDays: totalSpecificDays + totalOtherDays,
       schoolYearBreakdown,
     };
   });

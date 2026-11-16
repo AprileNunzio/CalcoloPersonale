@@ -3,14 +3,14 @@ import {
   ShieldCheck,
   Award,
   CheckCircle2,
-  Calendar,
-  Building,
   FileSignature,
   Save,
   AlertTriangle,
-  Info,
   ChevronDown,
   ChevronUp,
+  Layers,
+  Calculator,
+  CalendarClock,
 } from 'lucide-react';
 import { Person, Archive, Entry } from '../../shared/types';
 import { AutoSaveContext } from '../autosave/AutoSave';
@@ -21,9 +21,13 @@ import {
   MinisterialDecree,
   ProfileScore,
   ScoreValidationData,
+  ScoreValidationDecreeItem,
   extractScoreValidations,
 } from '../../shared/scoring';
 import { ProfileBadge3d } from '../../shared/icons3d';
+import { SchoolYearBreakdownTable } from './SchoolYearBreakdownTable';
+import { DecreeHistorySection } from './DecreeHistorySection';
+import { ValidationHeader } from './ValidationHeader';
 import './scoreValidation.css';
 
 export function ScoreValidationPane({
@@ -54,6 +58,9 @@ export function ScoreValidationPane({
         decreeProtocol: existing?.decreeProtocol ?? '',
         decreeDate: existing?.decreeDate ?? '',
         validatingSchool: existing?.validatingSchool ?? '',
+        isIncrementalBase: existing?.isIncrementalBase ?? false,
+        consolidationDate: existing?.consolidationDate ?? '2021-08-31',
+        decreeHistory: existing?.decreeHistory ?? [],
         notes: existing?.notes ?? '',
       };
     }
@@ -63,13 +70,30 @@ export function ScoreValidationPane({
   const handleFieldChange = (
     profileCode: string,
     field: keyof ScoreValidationData,
-    value: string | number | boolean
+    value: unknown
   ) => {
     setFormState(prev => ({
       ...prev,
       [profileCode]: {
         ...prev[profileCode],
         [field]: value,
+      },
+    }));
+  };
+
+  const handleApplyDecreeAsBase = (profileCode: string, dec: ScoreValidationDecreeItem) => {
+    setFormState(prev => ({
+      ...prev,
+      [profileCode]: {
+        ...prev[profileCode],
+        isConvalidated: true,
+        useValidatedScore: true,
+        isIncrementalBase: true,
+        validatedScore: dec.validatedScore,
+        consolidationDate: dec.decreeDate || '2021-08-31',
+        validatingSchool: dec.validatingSchool || prev[profileCode]?.validatingSchool,
+        decreeProtocol: dec.decreeProtocol || prev[profileCode]?.decreeProtocol,
+        decreeDate: dec.decreeDate || prev[profileCode]?.decreeDate,
       },
     }));
   };
@@ -89,16 +113,18 @@ export function ScoreValidationPane({
         decreeProtocol: current.decreeProtocol?.trim() || '',
         decreeDate: current.decreeDate || '',
         validatingSchool: current.validatingSchool?.trim() || '',
+        isIncrementalBase: Boolean(current.isIncrementalBase),
+        consolidationDate: current.consolidationDate || '2021-08-31',
+        decreeHistory: current.decreeHistory || [],
         notes: current.notes?.trim() || '',
         lastUpdated: new Date().toISOString(),
       };
 
-      // Merge into validation entry
       const existingValRecord = (person.records || []).find(
         r => r.kind === 'validation' || (r.kind === 'application' && r.notes?.includes('validations'))
       );
 
-      let validationsObj: Record<string, ScoreValidationData> = { ...validationsMap };
+      const validationsObj: Record<string, ScoreValidationData> = { ...validationsMap };
       validationsObj[profileCode] = updatedValidation;
 
       const recordId = existingValRecord ? existingValRecord.id : `validation-${profileCode.toLowerCase()}`;
@@ -139,56 +165,7 @@ export function ScoreValidationPane({
   return (
     <div className="score-validation-container">
       {/* Header with Decree selection */}
-      <div className="validation-header-pane">
-        <h2>Convalida Punteggi & Calcolo Normativo ATA</h2>
-        <p>
-          In conformità con l’art. 6 comma 11 del D.M. 89/2024 e D.M. 50/2021, la scuola di primo servizio verifica e convalida i titoli e servizi dichiarati emettendo apposito Decreto Dirigenziale di Convalida/Rettifica. Seleziona il triennio di riferimento e attiva il flag <strong>"Attieniti al punteggio convalidato"</strong> per congelare e utilizzare ufficialmente il punteggio certificato dalla scuola.
-        </p>
-
-        <div className="decree-selector-strip">
-          <span style={{ fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
-            Normativa Applicata:
-          </span>
-          <button
-            type="button"
-            className={`decree-btn ${decree === 'DM_89_2024' ? 'active' : ''}`}
-            onClick={() => setDecree('DM_89_2024')}
-          >
-            D.M. 89/2024 (Triennio 2024-2027 • Vigente)
-          </button>
-          <button
-            type="button"
-            className={`decree-btn ${decree === 'DM_50_2021' ? 'active' : ''}`}
-            onClick={() => setDecree('DM_50_2021')}
-          >
-            D.M. 50/2021 (Triennio 2021-2023)
-          </button>
-          <button
-            type="button"
-            className={`decree-btn ${decree === 'DM_640_2017' ? 'active' : ''}`}
-            onClick={() => setDecree('DM_640_2017')}
-          >
-            D.M. 640/2017 (Triennio 2017-2020)
-          </button>
-        </div>
-
-        <div className="decree-callout">
-          <Info size={15} />
-          {decree === 'DM_89_2024' ? (
-            <span>
-              <strong>D.M. 89/2024:</strong> Certificazione CIAD obbligatoria per tutti (deroga 1 anno per CS), introduzione del profilo Operatore Scolastico (OS), tetto massimo di 6.00 punti per ciascun anno scolastico (1 sett - 31 ago).
-            </span>
-          ) : decree === 'DM_50_2021' ? (
-            <span>
-              <strong>D.M. 50/2021:</strong> Certificazione informatica valutabile come titolo culturale aggiuntivo (0.60 pt AA/AT, 0.30 pt CS), tetto annuale 6.00 pt, profilo OS non previsto nel triennio.
-            </span>
-          ) : (
-            <span>
-              <strong>D.M. 640/2017:</strong> Tabella di valutazione previgente con attestati informatici e tetto annuale di servizio.
-            </span>
-          )}
-        </div>
-      </div>
+      <ValidationHeader decree={decree} onDecreeChange={setDecree} />
 
       {feedback && (
         <div style={{ padding: '10px 16px', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 10, color: '#047857', fontWeight: 600, fontSize: 13 }}>
@@ -213,16 +190,22 @@ export function ScoreValidationPane({
                   <div>
                     <h3>{prof.label} ({prof.code})</h3>
                     <div style={{ fontSize: 12, color: '#64748b' }}>
-                      {prof.serviceDays} giorni di servizio complessivi registrati
+                      {prof.isIncrementalBase ? (
+                        <span>
+                          Base convalidata + {prof.subsequentDays ?? 0} gg maturati successivamente
+                        </span>
+                      ) : (
+                        <span>{prof.serviceDays} giorni di servizio complessivi registrati</span>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 <div className="val-card-scores-row">
                   {prof.useValidatedScore ? (
-                    <div className="val-score-badge official" title="Punteggio Ufficiale Convalidato da Decreto Scuola">
+                    <div className="val-score-badge official" title="Punteggio Ufficiale Convalidato">
                       <ShieldCheck size={16} />
-                      <span>{prof.effectiveScore.toFixed(2)} pt Ufficiale</span>
+                      <span>{prof.effectiveScore.toFixed(2)} pt {prof.isIncrementalBase ? 'Aggiornato' : 'Ufficiale'}</span>
                     </div>
                   ) : (
                     <div className="val-score-badge calculated" title="Punteggio Teorico Calcolato dal Software">
@@ -235,25 +218,50 @@ export function ScoreValidationPane({
 
               {/* Status Banner */}
               {prof.useValidatedScore ? (
-                <div className="val-convalidation-seal">
-                  <CheckCircle2 size={16} />
-                  <span>
-                    <strong>Punteggio Convalidato con Decreto Ufficiale:</strong> {prof.effectiveScore.toFixed(2)} pt
-                    {prof.validationDecree ? ` • ${prof.validationDecree}` : ''}
-                    {prof.validatingSchool ? ` • Scuola: ${prof.validatingSchool}` : ''}
-                    {prof.validationDate ? ` (${prof.validationDate})` : ''}
-                  </span>
-                </div>
+                prof.isIncrementalBase ? (
+                  <div className="val-incremental-banner">
+                    <div className="val-incremental-title">
+                      <Calculator size={16} />
+                      <span>Calcolo Incrementale Attivo (Base Consolidata + Servizi Nuovi)</span>
+                    </div>
+                    <div className="val-math-breakdown">
+                      <div className="val-math-pill base">
+                        <span className="pill-label">Base al {prof.consolidationDate || 'data'}</span>
+                        <span className="pill-value">{(prof.baseConsolidatedScore ?? 0).toFixed(2)} pt</span>
+                      </div>
+                      <span className="math-operator">+</span>
+                      <div className="val-math-pill added">
+                        <span className="pill-label">Nuovi Servizi ({prof.subsequentDays ?? 0} gg)</span>
+                        <span className="pill-value">+{(prof.subsequentScore ?? 0).toFixed(2)} pt</span>
+                      </div>
+                      <span className="math-operator">=</span>
+                      <div className="val-math-pill total">
+                        <span className="pill-label">Punteggio Aggiornato</span>
+                        <span className="pill-value">{prof.effectiveScore.toFixed(2)} pt</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="val-convalidation-seal">
+                    <CheckCircle2 size={16} />
+                    <span>
+                      <strong>Punteggio Convalidato Fisso:</strong> {prof.effectiveScore.toFixed(2)} pt
+                      {prof.validationDecree ? ` • ${prof.validationDecree}` : ''}
+                      {prof.validatingSchool ? ` • Scuola: ${prof.validatingSchool}` : ''}
+                      {prof.validationDate ? ` (${prof.validationDate})` : ''}
+                    </span>
+                  </div>
+                )
               ) : (
                 <div className="val-convalidation-pending">
                   <AlertTriangle size={15} />
                   <span>
-                    <strong>Punteggio teorico non ancora convalidato da decreto:</strong> Il punteggio attivo nel sistema ({prof.totalScore.toFixed(2)} pt) è stimato in base alle tue dichiarazioni. Inserisci i dati del decreto di convalida non appena emesso dalla scuola.
+                    <strong>Punteggio teorico non convalidato:</strong> Il punteggio attivo ({prof.totalScore.toFixed(2)} pt) è stimato. Se hai una convalida di anni precedenti o recente, registrala sotto per congelarla.
                   </span>
                 </div>
               )}
 
-              {/* Details & Annual Breakdown Toggle */}
+              {/* Annual Breakdown Toggle */}
               <div>
                 <button
                   type="button"
@@ -261,71 +269,37 @@ export function ScoreValidationPane({
                   onClick={() => setOpenBreakdown(prev => ({ ...prev, [prof.code]: !isBreakdownOpen }))}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
                 >
-                  <span>Dettaglio Calcolo per Anno Scolastico (Tetto 6 pt)</span>
+                  <span>
+                    {prof.isIncrementalBase ? 'Dettaglio Nuovi Servizi Maturati' : 'Dettaglio Calcolo per Anno Scolastico (Tetto 6 pt)'}
+                  </span>
                   {isBreakdownOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </button>
 
                 {isBreakdownOpen && (
-                  <div style={{ marginTop: 12 }}>
-                    <div style={{ fontSize: 12, color: '#475569', marginBottom: 6 }}>
-                      • Titolo d’Accesso in decimi: <strong>{prof.baseAccessScore.toFixed(2)} pt</strong>
-                      <br />
-                      • Titoli Culturali e Certificazioni: <strong>{prof.culturalScore.toFixed(2)} pt</strong>
-                      <br />
-                      • Servizio Specifico Netto: <strong>{prof.specificServiceScore.toFixed(2)} pt</strong>
-                      <br />
-                      • Altro Servizio/Docente Netto: <strong>{prof.otherServiceScore.toFixed(2)} pt</strong>
-                    </div>
-
-                    {prof.schoolYearBreakdown.length > 0 ? (
-                      <div className="val-sy-table-wrap">
-                        <table className="val-sy-table">
-                          <thead>
-                            <tr>
-                              <th>Anno Scolastico</th>
-                              <th>Giorni</th>
-                              <th>Mesi Utili</th>
-                              <th>Punti Specifici</th>
-                              <th>Altri Punti</th>
-                              <th>Punti Anno</th>
-                              <th>Stato Tetto Max 6 pt</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {prof.schoolYearBreakdown.map(sy => (
-                              <tr key={sy.schoolYear}>
-                                <td><strong>{sy.schoolYear}</strong></td>
-                                <td>{sy.days} gg</td>
-                                <td>{sy.months} mesi</td>
-                                <td>{sy.specificScore.toFixed(2)}</td>
-                                <td>{sy.otherScore.toFixed(2)}</td>
-                                <td><strong>{sy.cappedScore.toFixed(2)} pt</strong></td>
-                                <td>
-                                  {sy.isCapped ? (
-                                    <span className="capped-tag">Applicato tetto 6.00 pt (lordi: {sy.totalAnnualScore.toFixed(2)})</span>
-                                  ) : (
-                                    <span style={{ color: '#059669', fontWeight: 600 }}>Entro il limite</span>
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : (
-                      <div style={{ fontSize: 12, color: '#94a3b8', fontStyle: 'italic', marginTop: 4 }}>
-                        Nessun servizio scolastico registrato per questo profilo.
-                      </div>
-                    )}
-                  </div>
+                  <SchoolYearBreakdownTable
+                    breakdowns={prof.schoolYearBreakdown}
+                    baseAccessScore={prof.baseAccessScore}
+                    culturalScore={prof.culturalScore}
+                    specificServiceScore={prof.specificServiceScore}
+                    otherServiceScore={prof.otherServiceScore}
+                    isIncremental={prof.isIncrementalBase}
+                  />
                 )}
               </div>
+
+              {/* Historical Decrees List */}
+              <DecreeHistorySection
+                history={form.decreeHistory || []}
+                activeCutoffDate={form.isIncrementalBase ? form.consolidationDate : undefined}
+                onChange={items => handleFieldChange(prof.code, 'decreeHistory', items)}
+                onApplyAsBase={dec => handleApplyDecreeAsBase(prof.code, dec)}
+              />
 
               {/* Convalidation Form */}
               <div className="val-form-box">
                 <div className="val-form-title">
                   <FileSignature size={16} />
-                  <span>Registra Decreto di Convalida Scuola (Art. 6 D.M. 89/2024)</span>
+                  <span>Configurazione Decreto Ufficiale (Art. 6 D.M. 89/2024)</span>
                 </div>
 
                 <label className="val-checkbox-row">
@@ -334,22 +308,61 @@ export function ScoreValidationPane({
                     checked={Boolean(form.isConvalidated)}
                     onChange={e => handleFieldChange(prof.code, 'isConvalidated', e.target.checked)}
                   />
-                  <span>Punteggio convalidato ufficialmente con Decreto Dirigenziale</span>
+                  <span>Attiva convalida ufficiale per questo profilo</span>
                 </label>
 
                 {form.isConvalidated && (
                   <>
+                    {/* Mode Selector */}
+                    <div className="val-mode-selector">
+                      <div
+                        className={`val-mode-card ${!form.isIncrementalBase ? 'active' : ''}`}
+                        onClick={() => handleFieldChange(prof.code, 'isIncrementalBase', false)}
+                      >
+                        <div className="val-mode-title">
+                          <ShieldCheck size={16} color={!form.isIncrementalBase ? '#116b62' : '#64748b'} />
+                          <span>Punteggio Totale Fisso</span>
+                        </div>
+                        <p>Il decreto determina l'intero punteggio finale senza ulteriori aggiunte automatiche.</p>
+                      </div>
+
+                      <div
+                        className={`val-mode-card ${form.isIncrementalBase ? 'active' : ''}`}
+                        onClick={() => handleFieldChange(prof.code, 'isIncrementalBase', true)}
+                      >
+                        <div className="val-mode-title">
+                          <Layers size={16} color={form.isIncrementalBase ? '#116b62' : '#64748b'} />
+                          <span>Base Consolidata + Calcolo Incrementale</span>
+                        </div>
+                        <p>Il decreto fissa la base fino alla data indicata; il software calcola in automatico solo i contratti e i titoli maturati dopo.</p>
+                      </div>
+                    </div>
+
                     <div className="val-form-fields-grid">
                       <div className="val-field-group">
-                        <label>Punteggio Convalidato Ufficiale</label>
+                        <label>{form.isIncrementalBase ? 'Punteggio Base Convalidato' : 'Punteggio Convalidato Ufficiale'}</label>
                         <input
                           type="number"
                           step="0.01"
                           value={form.validatedScore ?? ''}
                           onChange={e => handleFieldChange(prof.code, 'validatedScore', parseFloat(e.target.value) || 0)}
-                          placeholder="es. 16.50"
+                          placeholder="es. 15.50"
                         />
                       </div>
+
+                      {form.isIncrementalBase && (
+                        <div className="val-field-group highlight-border">
+                          <label style={{ color: '#047857', fontWeight: 700 }}>
+                            <CalendarClock size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                            Data di Consolidamento (fino al)
+                          </label>
+                          <input
+                            type="date"
+                            value={form.consolidationDate || '2021-08-31'}
+                            onChange={e => handleFieldChange(prof.code, 'consolidationDate', e.target.value)}
+                          />
+                        </div>
+                      )}
 
                       <div className="val-field-group">
                         <label>Scuola Convalidante</label>
@@ -388,7 +401,7 @@ export function ScoreValidationPane({
                         onChange={e => handleFieldChange(prof.code, 'useValidatedScore', e.target.checked)}
                       />
                       <span>
-                        <strong>Attieniti a questo punteggio convalidato:</strong> Congela e adotta ufficialmente questo punteggio in tutte le graduatorie, dashboard e schede sindacati.
+                        <strong>Attieniti a questa convalida:</strong> Adotta questo punteggio {form.isIncrementalBase ? '(Base + Servizi Nuovi)' : 'ufficiale'} in graduatorie, dashboard e schede sindacato.
                       </span>
                     </label>
 
@@ -398,7 +411,7 @@ export function ScoreValidationPane({
                         rows={2}
                         value={form.notes ?? ''}
                         onChange={e => handleFieldChange(prof.code, 'notes', e.target.value)}
-                        placeholder="es. Riconosciuti tutti i servizi statali, rettificato titolo di studio a 8.50 decimi..."
+                        placeholder="es. Riconosciuti tutti i servizi statali, consolidata graduatoria triennio precedente..."
                       />
                     </div>
                   </>

@@ -1,0 +1,160 @@
+/* Decree History Section Styles */
+.decree-history-container {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fafafa;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.decree-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.decree-add-toggle-btn {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #116b62;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.decree-add-toggle-btn:hover {
+  background: #f1f5f9;
+}
+
+.decree-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.decree-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  gap: 10px;
+}
+
+.decree-history-item.is-active-base {
+  border-color: #10b981;
+  background: #f0fdf9;
+}
+
+.decree-item-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.decree-item-triennium {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.decree-item-score {
+  font-size: 12px;
+  font-weight: 800;
+  color: #116b62;
+  background: #e6f4f2;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.decree-item-details {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.decree-item-notes {
+  font-size: 11px;
+  color: #475569;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.decree-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.decree-apply-btn {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.decree-apply-btn.applied {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #a7f3d0;
+}
+
+.decree-delete-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.decree-delete-btn:hover {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
+.decree-history-form {
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.decree-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.decree-form-grid label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.decree-form-grid input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
