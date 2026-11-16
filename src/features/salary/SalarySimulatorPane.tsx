@@ -1,33 +1,81 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Banknote,
   Coins,
   TrendingUp,
   AlertTriangle,
-  Clock,
   Briefcase,
-  Users,
-  Info,
   Calendar,
   Sparkles,
+  RefreshCw,
+  CheckCircle2,
+  Sliders,
+  ShieldCheck,
+  HeartHandshake,
 } from 'lucide-react';
 import { Person } from '../../shared/types';
-import { PROFILE_LABELS, ATA_PROFILES } from '../../shared/personUtils';
-import { calculateSalaryBreakdown, SalarySimulationParams } from './salaryCalculations';
+import { ATA_PROFILES } from '../../shared/personUtils';
+import {
+  calculateSalaryBreakdown,
+  calculateCareerSeniority,
+  calculateTfrHistory,
+  SalarySimulationParams,
+  SalaryFascia,
+} from './salaryCalculations';
+import { detectCurrentContract, extractAbsenceStats } from './salaryRecordSync';
+import { SeniorityProgressionCard } from './SeniorityProgressionCard';
+import { TfrHistoryCard } from './TfrHistoryCard';
 import './SalarySimulator.css';
 
 export function SalarySimulatorPane({ person }: { person: Person }) {
-  const initialProfile = person.profile || 'CS';
+  // 1. Detect data automatically from person's records
+  const detectedContract = useMemo(
+    () => detectCurrentContract(person.records, person.profile),
+    [person.records, person.profile]
+  );
+  const detectedAbsences = useMemo(
+    () => extractAbsenceStats(person.records),
+    [person.records]
+  );
 
-  const [profile, setProfile] = useState<string>(initialProfile);
-  const [weeklyHours, setWeeklyHours] = useState<number>(36);
-  const [contractType, setContractType] = useState<'annual' | 'term' | 'short'>('term');
-  const [monthsWorkedInYear, setMonthsWorkedInYear] = useState<number>(10);
-  const [dependentChildrenCount, setDependentChildrenCount] = useState<number>(() => {
-    return (person.records || []).filter(r => r.kind === 'child').length;
-  });
-  const [sicknessDaysInMonth, setSicknessDaysInMonth] = useState<number>(0);
-  const [strikeDaysInMonth, setStrikeDaysInMonth] = useState<number>(0);
+  // 2. Interactive state initialized with automatic detected values
+  const [profile, setProfile] = useState<string>(detectedContract.profile);
+  const [weeklyHours, setWeeklyHours] = useState<number>(detectedContract.weeklyHours);
+  const [contractType, setContractType] = useState<'annual' | 'term' | 'short'>(detectedContract.contractType);
+  const [monthsWorkedInYear, setMonthsWorkedInYear] = useState<number>(detectedContract.monthsWorkedInYear);
+  const [dependentChildrenCount, setDependentChildrenCount] = useState<number>(detectedAbsences.childrenCount);
+  const [sicknessDaysInMonth, setSicknessDaysInMonth] = useState<number>(detectedAbsences.sicknessDaysInMonth);
+  const [strikeDaysInMonth, setStrikeDaysInMonth] = useState<number>(detectedAbsences.strikeDaysInMonth);
+  const [isManualOverride, setIsManualOverride] = useState<boolean>(false);
+
+  // 3. Career Seniority calculation
+  const seniority = useMemo(
+    () => calculateCareerSeniority(person.records, profile),
+    [person.records, profile]
+  );
+  const [selectedFascia, setSelectedFascia] = useState<SalaryFascia>(seniority.currentFascia);
+
+  // Keep fascia in sync if profile changes and user hasn't chosen custom fascia
+  const effectiveFascia = selectedFascia || seniority.currentFascia;
+
+  // 4. Cumulative TFR history across all past years
+  const tfrData = useMemo(
+    () => calculateTfrHistory(person.records, profile),
+    [person.records, profile]
+  );
+
+  // Reset to auto-detected values
+  const handleResetToAuto = () => {
+    setProfile(detectedContract.profile);
+    setWeeklyHours(detectedContract.weeklyHours);
+    setContractType(detectedContract.contractType);
+    setMonthsWorkedInYear(detectedContract.monthsWorkedInYear);
+    setDependentChildrenCount(detectedAbsences.childrenCount);
+    setSicknessDaysInMonth(detectedAbsences.sicknessDaysInMonth);
+    setStrikeDaysInMonth(detectedAbsences.strikeDaysInMonth);
+    setSelectedFascia(seniority.currentFascia);
+    setIsManualOverride(false);
+  };
 
   const simulationParams: SalarySimulationParams = {
     profile,
@@ -39,9 +87,11 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
     strikeDaysInMonth,
     regionalTaxRatePercent: 1.73,
     municipalTaxRatePercent: 0.8,
+    overrideFascia: effectiveFascia,
   };
 
   const result = calculateSalaryBreakdown(simulationParams);
+  const profileLabel = profile === 'DOCENTE' ? 'Docente' : (ATA_PROFILES.find(p => p.code === profile)?.label || profile);
 
   return (
     <div className="salary-simulator-root">
@@ -53,7 +103,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
             Simulatore Busta Paga NoiPA & Trattamento di Fine Rapporto (TFR)
           </h3>
           <p>
-            Stima dettagliata del netto mensile, ritenute previdenziali, detrazioni fiscali e TFR in base al CCNL Scuola 2024.
+            Calcolo automatico basato sui contratti, l'anzianità di carriera maturata e le assenze registrate nel tuo fascicolo (CCNL 2024).
           </p>
         </div>
 
@@ -68,6 +118,62 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
         </div>
       </div>
 
+      {/* AUTO-SYNC STATUS BANNER */}
+      <div className="salary-sync-banner">
+        <div className="salary-sync-info">
+          <Sparkles size={20} color="#059669" />
+          <div className="salary-sync-text">
+            <h5>
+              {isManualOverride ? 'Modalità Simulazione Personalizzata' : 'Sincronizzazione Automatica con Fascicolo Personale Attiva'}
+            </h5>
+            <p>
+              I dati contrattuali, l'anzianità per scatti CCNL e le assenze sono letti automaticamente dal tuo archivio.
+            </p>
+          </div>
+        </div>
+
+        <div className="salary-sync-badges-row">
+          <span className="salary-sync-pill" title="Anzianità rilevata dai contratti">
+            <CheckCircle2 size={13} />
+            {seniority.recognizedYears}a {seniority.recognizedMonths}m anzianità (Fascia {seniority.currentFascia})
+          </span>
+          {detectedAbsences.sicknessDaysTotalYear > 0 && (
+            <span className="salary-sync-pill" title="Giorni di malattia rilevati">
+              <HeartHandshake size={13} />
+              {detectedAbsences.sicknessDaysTotalYear} gg malattia registrati
+            </span>
+          )}
+          {tfrData.contractsCount > 0 && (
+            <span className="salary-sync-pill" title="Contratti inclusi nel TFR">
+              <ShieldCheck size={13} />
+              {tfrData.contractsCount} contratti nel TFR
+            </span>
+          )}
+          {isManualOverride && (
+            <button
+              type="button"
+              className="decree-btn"
+              style={{ padding: '4px 8px', fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }}
+              onClick={handleResetToAuto}
+            >
+              <RefreshCw size={12} />
+              <span>Ripristina Automatico</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* CAREER SENIORITY & STEP PROGRESSION CARD */}
+      <SeniorityProgressionCard
+        seniority={seniority}
+        selectedFascia={effectiveFascia}
+        onSelectFascia={fascia => {
+          setSelectedFascia(fascia);
+          setIsManualOverride(true);
+        }}
+        profileLabel={profileLabel}
+      />
+
       {/* CONTROLS */}
       <div className="salary-controls-grid">
         <div className="salary-control-card">
@@ -81,7 +187,10 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
             </label>
             <select
               value={profile}
-              onChange={e => setProfile(e.target.value)}
+              onChange={e => {
+                setProfile(e.target.value);
+                setIsManualOverride(true);
+              }}
               style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1' }}
             >
               {ATA_PROFILES.map(p => (
@@ -104,12 +213,15 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
               max={profile === 'DOCENTE' ? 18 : 36}
               step={1}
               value={weeklyHours}
-              onChange={e => setWeeklyHours(parseInt(e.target.value, 10))}
+              onChange={e => {
+                setWeeklyHours(parseInt(e.target.value, 10));
+                setIsManualOverride(true);
+              }}
               style={{ width: '100%' }}
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#94a3b8' }}>
               <span>Spezzone (6h)</span>
-              <span>Metà tempo (18h)</span>
+              <span>Metà tempo ({profile === 'DOCENTE' ? '9h' : '18h'})</span>
               <span>Tempo Pieno ({profile === 'DOCENTE' ? '18h' : '36h'})</span>
             </div>
           </div>
@@ -129,6 +241,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
               onChange={e => {
                 const ct = e.target.value as 'annual' | 'term' | 'short';
                 setContractType(ct);
+                setIsManualOverride(true);
                 if (ct === 'annual') setMonthsWorkedInYear(12);
                 if (ct === 'term') setMonthsWorkedInYear(10);
                 if (ct === 'short') setMonthsWorkedInYear(4);
@@ -151,7 +264,10 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
               min={1}
               max={12}
               value={monthsWorkedInYear}
-              onChange={e => setMonthsWorkedInYear(parseInt(e.target.value, 10))}
+              onChange={e => {
+                setMonthsWorkedInYear(parseInt(e.target.value, 10));
+                setIsManualOverride(true);
+              }}
               style={{ width: '100%' }}
             />
           </div>
@@ -159,7 +275,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
 
         <div className="salary-control-card">
           <h4>
-            <AlertTriangle size={16} /> Assenze & Famiglia nel Mese
+            <AlertTriangle size={16} /> Assenze & Famiglia (Auto-Rilevate)
           </h4>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
@@ -172,7 +288,10 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
                 min={0}
                 max={30}
                 value={sicknessDaysInMonth}
-                onChange={e => setSicknessDaysInMonth(parseInt(e.target.value, 10) || 0)}
+                onChange={e => {
+                  setSicknessDaysInMonth(parseInt(e.target.value, 10) || 0);
+                  setIsManualOverride(true);
+                }}
                 style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}
               />
             </div>
@@ -185,7 +304,10 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
                 min={0}
                 max={30}
                 value={strikeDaysInMonth}
-                onChange={e => setStrikeDaysInMonth(parseInt(e.target.value, 10) || 0)}
+                onChange={e => {
+                  setStrikeDaysInMonth(parseInt(e.target.value, 10) || 0);
+                  setIsManualOverride(true);
+                }}
                 style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}
               />
             </div>
@@ -200,7 +322,10 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
               min={0}
               max={6}
               value={dependentChildrenCount}
-              onChange={e => setDependentChildrenCount(parseInt(e.target.value, 10) || 0)}
+              onChange={e => {
+                setDependentChildrenCount(parseInt(e.target.value, 10) || 0);
+                setIsManualOverride(true);
+              }}
               style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}
             />
           </div>
@@ -212,19 +337,19 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
         <div className="salary-kpi-card highlight">
           <h5>Netto Mensile Base</h5>
           <div className="salary-kpi-amount">€ {result.monthlyNetSalary.toFixed(2)}</div>
-          <small className="muted">Compenso netto ordinario spettante</small>
+          <small className="muted">Fascia CCNL: {result.fascia} anni</small>
         </div>
 
         <div className="salary-kpi-card accent">
-          <h5>TFR Maturato Stimato</h5>
+          <h5>TFR Maturato Anno Corrente</h5>
           <div className="salary-kpi-amount">€ {result.tfrYearlyEstimated.toFixed(2)}</div>
-          <small className="muted">Liquidazione spettante per {monthsWorkedInYear} mesi</small>
+          <small className="muted">Stima liquidazione per {monthsWorkedInYear} mesi</small>
         </div>
 
         <div className="salary-kpi-card">
           <h5>Lordo Mensile Totale</h5>
           <div className="salary-kpi-amount">€ {result.monthlyGross.toFixed(2)}</div>
-          <small className="muted">Stipendio + CIA + IVC</small>
+          <small className="muted">Stipendio + CIA/RPD + IVC</small>
         </div>
 
         <div className="salary-kpi-card amber">
@@ -237,7 +362,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
       {/* DETTAGLIO VOCI CEDOLINO */}
       <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, padding: 18 }}>
         <h4 style={{ margin: '0 0 14px 0', fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Coins size={18} color="#059669" /> Voci del Cedolino NoiPA & Ritenute di Legge
+          <Coins size={18} color="#059669" /> Voci del Cedolino NoiPA & Ritenute di Legge (Fascia {result.fascia})
         </h4>
 
         <table className="salary-breakdown-table">
@@ -250,8 +375,8 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
           </thead>
           <tbody>
             <tr>
-              <td><strong>Stipendio Tabellare</strong></td>
-              <td className="muted">Retribuzione base prevista dal CCNL Istruzione e Ricerca</td>
+              <td><strong>Stipendio Tabellare (Fascia {result.fascia} anni)</strong></td>
+              <td className="muted">Retribuzione base CCNL 2024 per anzianità maturata</td>
               <td style={{ textAlign: 'right' }}>+ € {result.baseSalary.toFixed(2)}</td>
             </tr>
             <tr>
@@ -268,7 +393,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
             {result.sicknessDeductions > 0 && (
               <tr>
                 <td style={{ color: '#ef4444' }}><strong>Trattenute per Malattia</strong></td>
-                <td className="muted">Decurtazione Brunetta (primi 10 gg) o riduzione retribuzione al 50%/0%</td>
+                <td className="muted">Decurtazione Brunetta (primi 10 gg) o riduzione retribuzione 50%/0% ({sicknessDaysInMonth} gg)</td>
                 <td style={{ textAlign: 'right' }} className="salary-deduction-badge">- € {result.sicknessDeductions.toFixed(2)}</td>
               </tr>
             )}
@@ -316,12 +441,8 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
         </table>
       </div>
 
-      <div style={{ background: '#f8fafc', padding: 14, borderRadius: 10, border: '1px solid #cbd5e1', fontSize: 12, color: '#64748b', display: 'flex', gap: 10 }}>
-        <Info size={18} style={{ flexShrink: 0, color: '#0284c7' }} />
-        <div>
-          <strong>Nota Metodologica & CCNL:</strong> Gli importi simulati sono basati sulle tabelle ufficiali del CCNL Comparto Istruzione e Ricerca 2019-2021 (firmato il 18/01/2024). L'importo reale del cedolino NoiPA può subire leggere variazioni legate all'applicazione del conguaglio fiscale di fine anno, alle esatte aliquote comunali deliberate dal proprio comune di residenza, e all'eventuale adesione al Fondo di previdenza complementare Espero.
-        </div>
-      </div>
+      {/* CUMULATIVE TFR HISTORY CARD */}
+      <TfrHistoryCard tfrData={tfrData} />
     </div>
   );
 }

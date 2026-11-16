@@ -1,0 +1,321 @@
+/* Seniority Progression Card */
+.seniority-progression-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.seniority-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.seniority-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.seniority-card-title h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.seniority-subtitle {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.seniority-active-badge {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.seniority-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.seniority-stat-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.seniority-stat-box.highlight {
+  background: #f0fdf9;
+  border-color: #a7f3d0;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.seniority-progress-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progress-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #475569;
+}
+
+.seniority-progress-track {
+  background: #e2e8f0;
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.seniority-progress-fill {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.fascia-selector-container {
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 10px;
+}
+
+.fascia-pills-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.fascia-pill-btn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.16s ease;
+}
+
+.fascia-pill-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.fascia-pill-btn.selected {
+  background: #116b62;
+  color: #ffffff;
+  border-color: #116b62;
+}
+
+.fascia-pill-btn.calculated {
+  border-color: #059669;
+}
+
+.fascia-auto-tag {
+  background: #047857;
+  color: #ffffff;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.fascia-pill-btn.selected .fascia-auto-tag {
+  background: #ffffff;
+  color: #116b62;
+}
+
+/* TFR History Card */
+.tfr-history-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tfr-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tfr-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tfr-card-title h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.tfr-subtitle {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.tfr-contracts-badge {
+  background: #ccfbf1;
+  border: 1px solid #99f6e4;
+  color: #0f766e;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tfr-metrics-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.tfr-metric-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tfr-metric-box.primary {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+  border-color: #99f6e4;
+}
+
+.tfr-metric-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.tfr-metric-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.tfr-metric-box.primary .tfr-metric-value {
+  color: #0f766e;
+}
+
+.tfr-metric-sub {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.tfr-toggle-table-btn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f766e;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tfr-toggle-table-btn:hover {
+  background: #f1f5f9;
+}
+
+.tfr-table-wrap {
+  margin-top: 10px;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.tfr-breakdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.tfr-breakdown-table th,
+.tfr-breakdown-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: left;
+}
+
+.tfr-breakdown-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+}
+
+.tfr-breakdown-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tfr-info-footer {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.5;
+  background: #f8fafc;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}

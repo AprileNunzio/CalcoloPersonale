@@ -168,3 +168,56 @@
   color: #10b981;
   font-weight: 600;
 }
+
+/* Auto-sync banner */
+.salary-sync-banner {
+  background: linear-gradient(135deg, #f0fdf9 0%, #ecfdf5 100%);
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.salary-sync-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.salary-sync-text h5 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #065f46;
+}
+
+.salary-sync-text p {
+  margin: 2px 0 0 0;
+  font-size: 11px;
+  color: #047857;
+}
+
+.salary-sync-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.salary-sync-pill {
+  background: #ffffff;
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #065f46;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
