@@ -17,6 +17,7 @@ import { Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
 import { FamilyMemberData, FamilyRelation } from './types';
 import { calculateAge } from './familyUtils';
+import './familyCard.css';
 
 function getRelationIcon(rel: FamilyRelation) {
   switch (rel) {
@@ -80,71 +81,127 @@ export function FamilyMemberCard({
 
   return (
     <article className="family-member-card">
-      <div className="family-card-main">
-        <div className="family-card-header">
-          <div className="family-title-row">
-            <span className={getRelationBadgeClass(member.relation)}>
-              {getRelationIcon(member.relation)}
-              <span>{t(relationLabelKey)}</span>
-            </span>
-
-            <h3>{member.fullName}</h3>
-
-            {age !== null && (
-              <span className="age-pill">
-                {age.years > 0
-                  ? t('familyAgeYears').replace('{years}', String(age.years))
-                  : t('familyAgeMonths').replace('{months}', String(age.months))}
+      <div className="family-card-top-bar">
+        <div className="family-identity-group">
+          <div className={`family-avatar-wrap ${member.relation}`}>
+            {getRelationIcon(member.relation)}
+          </div>
+          <div className="family-identity-text">
+            <div className="family-identity-tags">
+              <span className={getRelationBadgeClass(member.relation)}>
+                {t(relationLabelKey)}
               </span>
+              {age !== null && (
+                <span className="age-pill">
+                  {age.years > 0
+                    ? t('familyAgeYears').replace('{years}', String(age.years))
+                    : t('familyAgeMonths').replace('{months}', String(age.months))}
+                </span>
+              )}
+            </div>
+            <h3 className="family-member-name">{member.fullName}</h3>
+          </div>
+        </div>
+
+        <div className="family-card-actions">
+          <button
+            type="button"
+            className="card-action-btn"
+            title={t('edit')}
+            disabled={busy}
+            onClick={() => onEdit(member)}
+          >
+            <Pencil size={15} />
+          </button>
+          <button
+            type="button"
+            className="card-action-btn danger"
+            title={t('remove')}
+            disabled={busy}
+            onClick={() => onDelete(member)}
+          >
+            <Trash2 size={15} />
+          </button>
+        </div>
+      </div>
+
+      <div className="family-card-tiles-grid">
+        <div className="family-info-tile">
+          <div className="tile-label">
+            <Calendar size={12} />
+            <span>Nascita & Anagrafica</span>
+          </div>
+          <div className="tile-value">
+            {member.birthDate ? (
+              <span>{t('familyBornOn').replace('{date}', member.birthDate)}</span>
+            ) : (
+              <span className="tile-muted">Data non indicata</span>
             )}
           </div>
+          <div className="tile-sub">
+            {member.fiscalCode ? (
+              <span className="code-text"><CreditCard size={11} style={{ verticalAlign: 'middle', marginRight: 4 }} />{member.fiscalCode}</span>
+            ) : (
+              <span className="tile-muted">CF non registrato</span>
+            )}
+          </div>
+        </div>
 
-          <div className="family-badges-strip">
+        <div className="family-info-tile">
+          <div className="tile-label">
+            <Percent size={12} />
+            <span>Fiscale & Carichi Famiglia</span>
+          </div>
+          <div className="tile-value">
             {member.dependentPercentage > 0 ? (
               <span className="info-chip dependent">
-                <Percent size={12} />
+                <Percent size={11} />
                 {member.dependentPercentage === 100 ? t('dependent100') : t('dependent50')}
               </span>
             ) : (
               <span className="info-chip non-dependent">{t('notDependent')}</span>
             )}
-
-            {member.isDisability104 && (
+          </div>
+          <div className="tile-sub">
+            {member.isDisability104 ? (
               <span className="info-chip disability-104">
-                <ShieldAlert size={12} />
+                <ShieldAlert size={11} />
                 {t('law104AssistBadge')}
               </span>
-            )}
-
-            {linkedPerson && (
-              <span className="info-chip linked">
-                <Link2 size={12} />
-                {t('linkedVaultProfile')}: {linkedPerson.lastName} {linkedPerson.firstName}
-              </span>
+            ) : (
+              <span className="tile-muted">Nessuna legge 104 applicata</span>
             )}
           </div>
         </div>
 
-        <div className="family-meta-grid">
-          {member.birthDate && (
-            <div className="meta-item">
-              <Calendar size={13} />
-              <span>{t('familyBornOn').replace('{date}', member.birthDate)}</span>
-            </div>
-          )}
-
-          {member.fiscalCode && (
-            <div className="meta-item">
-              <CreditCard size={13} />
-              <span className="code-text">{member.fiscalCode}</span>
-            </div>
-          )}
+        <div className="family-info-tile">
+          <div className="tile-label">
+            <Link2 size={12} />
+            <span>Fascicolo & Precedenze</span>
+          </div>
+          <div className="tile-value">
+            {linkedPerson ? (
+              <span className="info-chip linked">
+                <Link2 size={11} />
+                {t('linkedVaultProfile')}: {linkedPerson.lastName} {linkedPerson.firstName}
+              </span>
+            ) : (
+              <span className="tile-muted">Profilo autonomo</span>
+            )}
+          </div>
+          <div className="tile-sub">
+            {member.relation === 'child' && age && age.years < 12 ? (
+              <span className="benefit-pill highlight">
+                <Award size={11} /> Diritto Congedi Attivo
+              </span>
+            ) : (
+              <span className="tile-muted">Nessun vincolo congedo</span>
+            )}
+          </div>
         </div>
+      </div>
 
-        {member.notesText && (
-          <p className="family-notes-text">{member.notesText}</p>
-        )}
-
+      {(member.isDisability104 || (member.relation === 'child' && (age?.years ?? 99) < 12)) && (
         <div className="family-benefits-row">
           {member.relation === 'child' && age && age.years < 3 && (
             <span className="benefit-pill">
@@ -174,28 +231,13 @@ export function FamilyMemberCard({
             </span>
           )}
         </div>
-      </div>
+      )}
 
-      <div className="family-card-actions">
-        <button
-          type="button"
-          className="icon secondary"
-          title={t('edit')}
-          disabled={busy}
-          onClick={() => onEdit(member)}
-        >
-          <Pencil size={16} />
-        </button>
-        <button
-          type="button"
-          className="icon secondary danger"
-          title={t('remove')}
-          disabled={busy}
-          onClick={() => onDelete(member)}
-        >
-          <Trash2 size={16} />
-        </button>
-      </div>
+      {member.notesText && (
+        <div className="family-notes-box">
+          <strong>Note:</strong> {member.notesText}
+        </div>
+      )}
     </article>
   );
 }
