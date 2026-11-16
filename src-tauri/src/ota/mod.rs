@@ -40,6 +40,7 @@ impl OtaManager {
         let base_dir = root_dir.join("ota");
         let client = Client::builder()
             .timeout(std::time::Duration::from_secs(30))
+            .user_agent("CalcoloPersonale/0.1.3")
             .build()
             .unwrap_or_default();
         Self { base_dir, client }
@@ -70,9 +71,16 @@ impl OtaManager {
     }
 
     pub async fn check(&self) -> Result<Option<OtaManifest>> {
+        let ts = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_millis())
+            .unwrap_or(0);
+        let url = format!("{}?t={}", MANIFEST_URL, ts);
         let response = self
             .client
-            .get(MANIFEST_URL)
+            .get(&url)
+            .header("Cache-Control", "no-cache")
+            .header("Pragma", "no-cache")
             .send()
             .await
             .map_err(|_| Error::Remote)?;
@@ -92,9 +100,16 @@ impl OtaManager {
     }
 
     pub async fn download_and_apply(&self, manifest: &OtaManifest) -> Result<()> {
+        let ts = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_millis())
+            .unwrap_or(0);
+        let url = format!("{}?t={}", manifest.url, ts);
         let bytes = self
             .client
-            .get(&manifest.url)
+            .get(&url)
+            .header("Cache-Control", "no-cache")
+            .header("Pragma", "no-cache")
             .send()
             .await
             .map_err(|_| Error::Remote)?
