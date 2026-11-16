@@ -20,6 +20,8 @@ export function PersonForm({
 }) {
   const t = useT();
   const context = useContext(AutoSaveContext)!;
+  const lastNameRef = useRef<HTMLInputElement>(null);
+
   const [id] = useState(
     () =>
       person?.id ??
@@ -49,20 +51,21 @@ export function PersonForm({
     },
   );
 
-  // Municipality search dropdown state
   const [muniQuery, setMuniQuery] = useState(value.birthPlace || value.municipality?.name || '');
   const [muniResults, setMuniResults] = useState<DirectoryEntry[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Synchronize when person or value changes
+  useEffect(() => {
+    lastNameRef.current?.focus();
+  }, []);
+
   useEffect(() => {
     if (value.birthPlace && muniQuery !== value.birthPlace) {
       setMuniQuery(value.birthPlace);
     }
   }, [value.birthPlace]);
 
-  // Search ISTAT municipalities
   useEffect(() => {
     let active = true;
     if (muniQuery.trim().length < 2 || !showDropdown) {
@@ -88,7 +91,6 @@ export function PersonForm({
     };
   }, [muniQuery, showDropdown]);
 
-  // Click outside listener for dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -110,7 +112,6 @@ export function PersonForm({
     setShowDropdown(false);
   };
 
-  // Validation helpers
   const getStatus = (name: keyof Person): FieldStatus => {
     const val = value[name];
     if (name === 'lastName' || name === 'firstName') {
@@ -154,29 +155,28 @@ export function PersonForm({
       </div>
 
       <div className="person-fields-grid">
-        {/* Cognome */}
         <FormField
           label={t('lastName')}
           tip={t('tipLastName')}
           status={getStatus('lastName')}
-          errorMessage="Il cognome è obbligatorio"
+          errorMessage={t('requiredField')}
         >
           <input
+            ref={lastNameRef}
             type="text"
             required
             maxLength={80}
             value={value.lastName || ''}
             onChange={e => setValue({ ...value, lastName: e.target.value })}
-            placeholder="es. Rossi"
+            placeholder={t('placeholderLastName')}
           />
         </FormField>
 
-        {/* Nome */}
         <FormField
           label={t('firstName')}
           tip={t('tipFirstName')}
           status={getStatus('firstName')}
-          errorMessage="Il nome è obbligatorio"
+          errorMessage={t('requiredField')}
         >
           <input
             type="text"
@@ -184,16 +184,15 @@ export function PersonForm({
             maxLength={80}
             value={value.firstName || ''}
             onChange={e => setValue({ ...value, firstName: e.target.value })}
-            placeholder="es. Mario"
+            placeholder={t('placeholderFirstName')}
           />
         </FormField>
 
-        {/* Data di Nascita */}
         <FormField
           label={t('birthDate')}
           tip={t('tipBirthDate')}
           status={getStatus('birthDate')}
-          errorMessage="Data di nascita non valida"
+          errorMessage={t('invalidField')}
         >
           <input
             type="date"
@@ -203,7 +202,6 @@ export function PersonForm({
           />
         </FormField>
 
-        {/* Luogo di Nascita (Comune) con suggerimenti ISTAT */}
         <div className="birth-place-container" ref={dropdownRef}>
           <FormField
             label={t('birthPlace')}
@@ -222,7 +220,7 @@ export function PersonForm({
               onFocus={() => {
                 if (muniQuery.trim().length >= 2) setShowDropdown(true);
               }}
-              placeholder="es. Milano o Stato estero"
+              placeholder={t('placeholderBirthPlace')}
             />
           </FormField>
           {showDropdown && muniResults.length > 0 && (
@@ -242,7 +240,6 @@ export function PersonForm({
           )}
         </div>
 
-        {/* Provincia di Nascita */}
         <FormField
           label={t('birthProvince')}
           tip={t('tipBirthProvince')}
@@ -255,11 +252,10 @@ export function PersonForm({
             onChange={e =>
               setValue({ ...value, birthProvince: e.target.value.toUpperCase() })
             }
-            placeholder="es. MI o EE"
+            placeholder="RM / EE"
           />
         </FormField>
 
-        {/* Genere */}
         <FormField
           label={t('gender')}
           tip={t('tipGender')}
@@ -275,12 +271,11 @@ export function PersonForm({
           </select>
         </FormField>
 
-        {/* Codice Fiscale */}
         <FormField
           label={t('fiscalCode')}
           tip={t('tipFiscalCode')}
           status={getStatus('fiscalCode')}
-          errorMessage="Il codice fiscale deve essere di 16 caratteri alfanumerici"
+          errorMessage={t('invalidField')}
           className="wide"
         >
           <input
@@ -290,7 +285,7 @@ export function PersonForm({
             onChange={e =>
               setValue({ ...value, fiscalCode: e.target.value.toUpperCase().replace(/\s+/g, '') })
             }
-            placeholder="es. RSSMRA80A01F205X"
+            placeholder={t('placeholderFiscalCode')}
           />
         </FormField>
       </div>

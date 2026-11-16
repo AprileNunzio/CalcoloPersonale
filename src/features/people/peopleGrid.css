@@ -1,0 +1,137 @@
+.person-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.person-card {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  background: #ffffff;
+  border: 1.5px solid #dfede8;
+  color: #1e332f;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(17, 107, 98, 0.04);
+  min-height: 230px;
+}
+
+.person-card:hover {
+  transform: translateY(-3px);
+  border-color: #b7dbd2;
+  box-shadow: 0 12px 32px rgba(17, 107, 98, 0.1);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  height: 52px;
+  width: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: #eef3f1;
+  color: #4b6863;
+}
+
+.avatar.female {
+  background: #fdf2f4;
+  color: #be185d;
+}
+
+.avatar.male {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.badge {
+  display: inline-block;
+  border: 1px solid #d4e4df;
+  border-radius: 8px;
+  color: #4f6e66;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #f8fbfa;
+}
+
+.person-card h2 {
+  margin-bottom: 6px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.person-card p {
+  font-size: 12px;
+  color: #7b8e8b;
+  margin-bottom: auto;
+}
+
+.card-footer {
+  border-top: 1px solid #eff4f2;
+  padding-top: 14px;
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #116b62;
+}
+
+.add-card {
+  min-height: 230px;
+  border: 2px dashed #b5cec6;
+  background: #f2f7f5;
+  color: #3b7468;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-radius: 18px;
+}
+
+.add-card:hover {
+  background: #e8f3ef;
+  border-color: #116b62;
+  color: #116b62;
+}
+
+.add-card span {
+  background: #d8ece5;
+  border-radius: 50%;
+  padding: 12px;
+  display: flex;
+}
+
+.empty {
+  text-align: center;
+  padding: 48px;
+  color: #768a86;
+}
+
+.person-heading {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.person-profile-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+  .person-grid {
+    grid-template-columns: 1fr;
+  }
+}

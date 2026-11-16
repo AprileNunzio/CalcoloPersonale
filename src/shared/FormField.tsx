@@ -30,7 +30,7 @@ export function FormField({
           {label}
         </label>
         {tip && (
-          <span className="field-tip-anchor" tabIndex={0} aria-label={tip} role="note">
+          <span className="field-tip-anchor" tabIndex={-1} aria-label={tip} role="note">
             <Info size={14} className="tip-icon" />
             <span className="field-tooltip" role="tooltip">
               {tip}

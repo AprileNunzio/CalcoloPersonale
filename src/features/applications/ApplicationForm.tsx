@@ -1,0 +1,235 @@
+import { useState } from 'react';
+import { Entry, Person } from '../../shared/types';
+import { useT } from '../../shared/i18n';
+import { FormField } from '../../shared/FormField';
+import { ATA_PROFILES } from '../../shared/personUtils';
+import { ProfileBadge3d } from '../../shared/icons3d';
+import { ApplicationData, TRIENNIUMS } from './types';
+import { DirectoryPicker, DirectoryEntry } from '../directory/DirectoryPicker';
+
+export function ApplicationForm({
+  person,
+  entry,
+  onSave,
+  onCancel,
+  busy,
+}: {
+  person: Person;
+  entry?: Entry;
+  onSave: (record: Entry) => void;
+  onCancel: () => void;
+  busy: boolean;
+}) {
+  const t = useT();
+
+  let initialData: ApplicationData = {
+    triennium: TRIENNIUMS[0],
+    profiles: ['CS'],
+    applicationType: 'insert',
+    submissionDate: new Date().toISOString().slice(0, 10),
+    protocol: '',
+    province: person.birthProvince || 'RM',
+    headSchool: null,
+    declaredAccess: '',
+    declaredCultural: '',
+    declaredServices: '',
+    notes: '',
+  };
+
+  if (entry) {
+    try {
+      if (entry.notes.startsWith('{')) {
+        const parsed = JSON.parse(entry.notes);
+        initialData = { ...initialData, ...parsed };
+      } else {
+        initialData.notes = entry.notes;
+      }
+    } catch {
+      initialData.notes = entry.notes;
+    }
+  }
+
+  const [formData, setFormData] = useState<ApplicationData>(initialData);
+
+  const toggleProfile = (code: string) => {
+    setFormData(prev => {
+      const exists = prev.profiles.includes(code);
+      const next = exists ? prev.profiles.filter(p => p !== code) : [...prev.profiles, code];
+      return { ...prev, profiles: next.length > 0 ? next : [code] };
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const jsonNotes = JSON.stringify(formData);
+    const updatedRecord: Entry = {
+      id: entry?.id ?? crypto.randomUUID(),
+      kind: 'application',
+      title: `${formData.triennium.split(' ')[0]} - ${formData.profiles.join(', ')}`,
+      start: formData.submissionDate || new Date().toISOString().slice(0, 10),
+      end: null,
+      amount: null,
+      notes: jsonNotes,
+      profile: formData.profiles[0] || null,
+      school: formData.headSchool || null,
+    };
+    onSave(updatedRecord);
+  };
+
+  return (
+    <form className="panel form app-form" onSubmit={handleSubmit}>
+      <div className="section-heading">
+        <div>
+          <h2>{t(entry ? 'edit' : 'newApplication')}</h2>
+          <p className="muted">{t('addApplicationHelp')}</p>
+        </div>
+      </div>
+
+      <div className="fields app-fields">
+        <FormField label={t('triennium')} tip={t('tipTriennium')}>
+          <select
+            value={formData.triennium}
+            onChange={e => setFormData({ ...formData, triennium: e.target.value })}
+          >
+            {TRIENNIUMS.map(tri => (
+              <option key={tri} value={tri}>
+                {tri}
+              </option>
+            ))}
+          </select>
+        </FormField>
+
+        <FormField label={t('applicationType')}>
+          <select
+            value={formData.applicationType}
+            onChange={e =>
+              setFormData({
+                ...formData,
+                applicationType: e.target.value as 'insert' | 'update',
+              })
+            }
+          >
+            <option value="insert">{t('newInclusion')}</option>
+            <option value="update">{t('updateConfirmation')}</option>
+          </select>
+        </FormField>
+
+        <div className="wide-field profiles-selector-field">
+          <label className="field-label-text">{t('profilesChosen')}</label>
+          <div className="profile-chips-group">
+            {ATA_PROFILES.map(prof => {
+              const selected = formData.profiles.includes(prof.code);
+              return (
+                <button
+                  type="button"
+                  key={prof.code}
+                  className={`profile-chip-btn ${selected ? 'active' : ''}`}
+                  onClick={() => toggleProfile(prof.code)}
+                >
+                  <ProfileBadge3d code={prof.code} size={28} />
+                  <span>{prof.code}</span>
+                  <small>{prof.label.split('(')[0].trim()}</small>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <FormField label={t('submissionDate')}>
+          <input
+            type="date"
+            value={formData.submissionDate}
+            onChange={e => setFormData({ ...formData, submissionDate: e.target.value })}
+          />
+        </FormField>
+
+        <FormField label={t('protocolNumber')} tip={t('tipProtocol')}>
+          <input
+            type="text"
+            value={formData.protocol}
+            onChange={e => setFormData({ ...formData, protocol: e.target.value })}
+            placeholder="es. MIIC8XXXXX-2024-00123"
+          />
+        </FormField>
+
+        <FormField label={t('province')}>
+          <input
+            type="text"
+            maxLength={10}
+            value={formData.province}
+            onChange={e => setFormData({ ...formData, province: e.target.value.toUpperCase() })}
+            placeholder="es. RM, MI, NA"
+          />
+        </FormField>
+
+        <div className="wide-field">
+          <label className="field-label-text">{t('headSchool')}</label>
+          {formData.headSchool ? (
+            <div className="app-selected-school">
+              <div>
+                <strong>{formData.headSchool.name}</strong>
+                <small>{formData.headSchool.code} · {formData.headSchool.municipality} ({formData.headSchool.province})</small>
+              </div>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => setFormData({ ...formData, headSchool: null })}
+              >
+                {t('edit')}
+              </button>
+            </div>
+          ) : (
+            <DirectoryPicker
+              kind="school"
+              onSelect={(school: DirectoryEntry) =>
+                setFormData({ ...formData, headSchool: school })
+              }
+            />
+          )}
+        </div>
+
+        <div className="wide-field">
+          <FormField label={t('declaredAccessTitles')}>
+            <input
+              type="text"
+              value={formData.declaredAccess}
+              onChange={e => setFormData({ ...formData, declaredAccess: e.target.value })}
+              placeholder="es. Diploma di Maturità votazione 84/100 conseguito nel 2012"
+            />
+          </FormField>
+        </div>
+
+        <div className="wide-field">
+          <FormField label={t('declaredCulturalTitles')}>
+            <input
+              type="text"
+              value={formData.declaredCultural}
+              onChange={e => setFormData({ ...formData, declaredCultural: e.target.value })}
+              placeholder="es. Certificazione Internazionale di Alfabetizzazione Digitale (CIAD), Dattilografia"
+            />
+          </FormField>
+        </div>
+
+        <div className="wide-field">
+          <FormField label={t('declaredServices')}>
+            <textarea
+              rows={3}
+              value={formData.declaredServices}
+              onChange={e => setFormData({ ...formData, declaredServices: e.target.value })}
+              placeholder="es. Servizio A.S. 2021/2022 come CS (8 mesi) e 2022/2023 come AA (6 mesi)"
+            />
+          </FormField>
+        </div>
+      </div>
+
+      <div className="actions">
+        <button type="button" className="secondary" onClick={onCancel}>
+          {t('cancel')}
+        </button>
+        <button disabled={busy} type="submit">
+          {t('save')}
+        </button>
+      </div>
+    </form>
+  );
+}

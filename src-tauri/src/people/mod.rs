@@ -85,6 +85,7 @@ impl Person {
                     "bereavement",
                     "blood",
                     "other",
+                    "application",
                 ]
                 .contains(&record.kind.as_str())
                 || record.title.trim().is_empty()
