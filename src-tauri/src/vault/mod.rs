@@ -114,8 +114,8 @@ impl Vault {
     }
     pub fn unlock(&self, password: Zeroizing<String>) -> Result<Archive> {
         let mut guard = self.session.lock().map_err(|_| Error::Locked)?;
-        if guard.is_some() {
-            return Err(Error::Conflict);
+        if let Some(ref session) = *guard {
+            return Ok(session.archive.clone());
         }
         if password.len() < 12 || password.len() > 1024 {
             return Err(Error::Invalid);

@@ -1,6 +1,7 @@
 import { it } from './it';
 import { familyLocalesEn } from './familyLocales';
 import { absenceLocalesEn } from './absenceLocales';
+import { copilotLocalesEn } from './copilotLocales';
 
 const coreEn = {
   assistant: 'AI Assistant',
@@ -403,5 +404,7 @@ export const en: typeof it = {
   ...coreEn,
   ...familyLocalesEn,
   ...absenceLocalesEn,
+  ...copilotLocalesEn,
 };
+
 

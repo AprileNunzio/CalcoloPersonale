@@ -7,10 +7,12 @@ export function ChatInput({
   onSendMessage,
   busy,
   disabled,
+  customQuickPrompts,
 }: {
   onSendMessage: (text: string, attachments: ChatAttachment[]) => void;
   busy: boolean;
   disabled?: boolean;
+  customQuickPrompts?: string[];
 }) {
   const t = useT();
   const [text, setText] = useState('');
@@ -18,7 +20,7 @@ export function ChatInput({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const quickPrompts = [
+  const quickPrompts = customQuickPrompts || [
     t('quickPrompt1'),
     t('quickPrompt2'),
     t('quickPrompt3'),

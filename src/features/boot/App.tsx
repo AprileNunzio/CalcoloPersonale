@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   ArrowLeft,
-  ArrowUpRight,
   BriefcaseBusiness,
   FolderHeart,
   LayoutDashboard,
   LockKeyhole,
-  Plus,
-  Search,
   ShieldCheck,
   Users,
   UserRound,
@@ -20,13 +17,15 @@ import { Venus, Mars } from '../people/GenderIcons';
 import { Archive, Analysis, Person } from '../../shared/types';
 import { Locale, LocaleContext, useT } from '../../shared/i18n';
 import { AutoSaveContext, AutoSaveStatus } from '../autosave/AutoSave';
-import { UpdatesBoundary, requestUpdate } from '../updates/UpdatesBoundary';
+import { UpdatesBoundary } from '../updates/UpdatesBoundary';
 import { useCloseGuard } from '../autosave/useCloseGuard';
 import { flush } from '../autosave/store';
 import { call, getRevision } from '../../shared/api';
 import { PersonForm } from '../people/PersonForm';
+import { PeopleGrid } from '../people/PeopleGrid';
 import { Records } from '../records/Records';
 import { AiAssistantPage } from '../ai/AiAssistantPage';
+import { FloatingAssistant } from '../ai/FloatingAssistant';
 import { Dashboard } from '../dashboard/Dashboard';
 import { Applications } from '../applications/Applications';
 import { FamilyPage } from '../family/FamilyPage';
@@ -81,6 +80,20 @@ function Workspace({
     } finally {
       setBusy(false);
     }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    call<Archive>('save_draft', { key: 'assistant', value: null })
+      .then(res => {
+        if (active && res && res.people) {
+          setArchive(res);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -181,8 +194,18 @@ function Workspace({
         setLocale={setLocale}
         onUnlock={pwd =>
           void execute(async () => {
-            const result = await call<Archive>('unlock', { password: pwd });
-            setArchive(result);
+            try {
+              const result = await call<Archive>('unlock', { password: pwd });
+              setArchive(result);
+            } catch (err) {
+              if (err === 'conflict') {
+                await call('lock').catch(() => {});
+                const result = await call<Archive>('unlock', { password: pwd });
+                setArchive(result);
+                return;
+              }
+              throw err;
+            }
           })
         }
         busy={busy}
@@ -387,96 +410,24 @@ function Workspace({
                 )}
               </>
             ) : (
-              <>
-                <div className="page-heading">
-                  <div>
-                    <span className="eyebrow">{t('app')}</span>
-                    <h1>{t('welcome')}</h1>
-                    <p className="muted">{t('intro')}</p>
-                  </div>
-                  <button onClick={() => setCreating(true)}>
-                    <Plus size={18} />
-                    {t('add')}
-                  </button>
-                </div>
-
-                <div className="collection-heading">
-                  <h2>
-                    {t('people')} <span className="count">{archive.people.length}</span>
-                  </h2>
-                  <div className="search-wrapper">
-                    <Search size={18} className="search-icon" />
-                    <input
-                      type="text"
-                      aria-label={t('search')}
-                      placeholder={t('search')}
-                      value={search}
-                      onChange={e => setSearch(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="person-grid">
-                  {archive.people
-                    .filter(p =>
-                      `${p.lastName} ${p.firstName}`
-                        .toLocaleLowerCase()
-                        .includes(search.toLocaleLowerCase()),
-                    )
-                    .map(p => {
-                      const prof = getPersonCurrentProfile(p);
-                      return (
-                        <button
-                          className="person-card"
-                          key={p.id}
-                          onClick={() => {
-                            setSelected(p.id);
-                            setSection('overview');
-                          }}
-                        >
-                          <div className="card-top">
-                            <div className={`avatar ${p.gender}`}>
-                              {p.gender === 'female' ? (
-                                <Venus />
-                              ) : p.gender === 'male' ? (
-                                <Mars />
-                              ) : (
-                                <UserRound />
-                              )}
-                            </div>
-                            {prof.code !== '—' && <ProfileBadge3d code={prof.code} size={34} />}
-                          </div>
-                          <h2>
-                            {p.lastName} {p.firstName}
-                          </h2>
-                          <p>
-                            {p.records.length} {t('records')}
-                          </p>
-                          <div className="card-footer">
-                            {t('open')}
-                            <ArrowUpRight size={18} />
-                          </div>
-                        </button>
-                      );
-                    })}
-                  <button className="add-card" onClick={() => setCreating(true)}>
-                    <span>
-                      <Plus size={24} />
-                    </span>
-                    <strong>{t('add')}</strong>
-                  </button>
-                </div>
-
-                {!archive.people.length && (
-                  <div className="empty">
-                    <h3>{t('empty')}</h3>
-                    <p>{t('emptyHelp')}</p>
-                  </div>
-                )}
-              </>
+              <PeopleGrid
+                people={archive.people}
+                search={search}
+                onSearchChange={setSearch}
+                onSelect={id => {
+                  setSelected(id);
+                  setSection('overview');
+                }}
+                onCreate={() => setCreating(true)}
+              />
             )}
           </main>
         </div>
+        <FloatingAssistant
+          person={person}
+          currentSection={section}
+          archive={archive}
+        />
       </div>
     </AutoSaveContext.Provider>
   );
