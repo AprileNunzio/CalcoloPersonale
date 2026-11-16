@@ -218,9 +218,7 @@ fn get_ollama_candidates(endpoint: Option<String>) -> Result<Vec<String>> {
 #[tauri::command]
 pub async fn ollama_models(
     endpoint: Option<String>,
-    vault: State<'_, Vault>,
 ) -> Result<Vec<String>> {
-    require_unlock(&vault)?;
     let candidates = get_ollama_candidates(endpoint)?;
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
@@ -265,10 +263,8 @@ pub async fn ask_ollama(
     model: String,
     prompt: String,
     images: Option<Vec<String>>,
-    vault: State<'_, Vault>,
     state: State<'_, GeminiState>,
 ) -> Result<String> {
-    require_unlock(&vault)?;
     if prompt.trim().is_empty() || model.is_empty() || model.len() > 100 {
         return Err(Error::Invalid);
     }

@@ -85,9 +85,32 @@ export function detectCurrentContract(
       monthsWorkedInYear = Math.max(1, Math.min(12, Math.round(days / 30)));
     }
   } else {
-    // Contract in progress
     contractType = 'term';
     monthsWorkedInYear = 10;
+  }
+
+  // Check JSON notes for explicit contractType or weeklyHours
+  if (latest.notes && latest.notes.startsWith('{')) {
+    try {
+      const parsed = JSON.parse(latest.notes);
+      if (parsed.contractType) {
+        if (parsed.contractType === 'annual') {
+          contractType = 'annual';
+          monthsWorkedInYear = 12;
+        } else if (parsed.contractType === 'term') {
+          contractType = 'term';
+          monthsWorkedInYear = 10;
+        } else if (parsed.contractType === 'short') {
+          contractType = 'short';
+          monthsWorkedInYear = Math.max(1, Math.min(12, Math.round(days / 30)));
+        }
+      }
+      if (typeof parsed.weeklyHours === 'number' && parsed.weeklyHours > 0) {
+        weeklyHours = parsed.weeklyHours;
+      }
+    } catch {
+      // ignore
+    }
   }
 
   const schoolName = latest.school?.name || latest.title || '';

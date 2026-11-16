@@ -1,8 +1,8 @@
-import { Briefcase, Link2, Pencil, Trash2 } from 'lucide-react';
+import { Briefcase, Link2, Pencil, Trash2, Clock } from 'lucide-react';
 import { Entry } from '../../shared/types';
 import { useT } from '../../shared/i18n';
 import { PROFILE_LABELS } from '../../shared/personUtils';
-import { ServiceSector } from './serviceCalculations';
+import { ServiceSector, ServiceContractType } from './serviceCalculations';
 
 interface RecordItemCardProps {
   record: Entry;
@@ -13,11 +13,15 @@ interface RecordItemCardProps {
   onRemove: (record: Entry) => void;
 }
 
-function parseNotes(notes: string): { text: string; sector?: ServiceSector; linkedPersonId?: string } {
+function parseNotes(notes: string): {
+  text: string;
+  sector?: ServiceSector;
+  contractType?: ServiceContractType;
+  weeklyHours?: number;
+  linkedPersonId?: string;
+} {
   try {
-    if (notes.startsWith('{')) {
-      return JSON.parse(notes);
-    }
+    if (notes.startsWith('{')) return JSON.parse(notes);
   } catch {
     return { text: notes };
   }
@@ -60,15 +64,34 @@ export function RecordItemCard({
           )}
           {record.kind === 'service' && parsed.sector && (
             <span className="badge">
-              {t(
-                parsed.sector === 'statale_ata'
-                  ? 'sectorStataleAta'
-                  : parsed.sector === 'statale_docente'
-                  ? 'sectorStataleDocente'
-                  : parsed.sector === 'paritaria_ata'
-                  ? 'sectorParitariaAta'
-                  : 'sectorParitariaDocente',
-              )}
+              {parsed.sector === 'ente_locale'
+                ? 'Ente Locale'
+                : t(
+                    parsed.sector === 'statale_ata'
+                      ? 'sectorStataleAta'
+                      : parsed.sector === 'statale_docente'
+                      ? 'sectorStataleDocente'
+                      : parsed.sector === 'paritaria_ata'
+                      ? 'sectorParitariaAta'
+                      : 'sectorParitariaDocente',
+                  )}
+            </span>
+          )}
+          {record.kind === 'service' && (typeof record.amount === 'number' && record.amount > 0 || parsed.weeklyHours) && (
+            <span className="badge" style={{ background: '#f0fdf4', color: '#166534', borderColor: '#bbf7d0', fontWeight: 600 }}>
+              <Clock size={11} style={{ display: 'inline', marginRight: 3, verticalAlign: '-1px' }} />
+              {typeof record.amount === 'number' && record.amount > 0 ? record.amount : parsed.weeklyHours}h/sett
+            </span>
+          )}
+          {record.kind === 'service' && parsed.contractType && (
+            <span className="badge" style={{ background: '#f8fafc', color: '#334155', borderColor: '#cbd5e1' }}>
+              {parsed.contractType === 'annual'
+                ? 'Annuale (31 Ago)'
+                : parsed.contractType === 'term'
+                ? 'Termine Attività (30 Giu)'
+                : parsed.contractType === 'permanent'
+                ? 'Ruolo'
+                : 'Supplenza Breve'}
             </span>
           )}
           {isLinked && (

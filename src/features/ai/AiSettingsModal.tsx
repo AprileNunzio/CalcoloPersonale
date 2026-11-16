@@ -1,29 +1,51 @@
 import { useState, useEffect } from 'react';
-import { X, Key, Server, Check, RefreshCw, ShieldCheck, Trash2, Cpu, Save } from 'lucide-react';
+import {
+  X,
+  Key,
+  ShieldCheck,
+  CheckCircle2,
+  AlertTriangle,
+  RefreshCw,
+  Cpu,
+  Trash2,
+  ExternalLink,
+  Sparkles,
+  Terminal,
+} from 'lucide-react';
 import { AiConfig, AiProvider } from './types';
-import { fetchGeminiModels, fetchOllamaModels, saveGeminiApiKey, removeGeminiApiKey } from './aiService';
+import {
+  fetchGeminiModels,
+  checkOllamaStatus,
+  saveGeminiApiKey,
+  removeGeminiApiKey,
+} from './aiService';
 import { useT } from '../../shared/i18n';
+import './aiAssistant.css';
 
 export function AiSettingsModal({
   config,
+  onSave,
   onSaveConfig,
   onClose,
 }: {
   config: AiConfig;
-  onSaveConfig: (cfg: AiConfig) => void;
+  onSave?: (newConfig: AiConfig) => void;
+  onSaveConfig?: (newConfig: AiConfig) => void;
   onClose: () => void;
 }) {
   const t = useT();
   const [provider, setProvider] = useState<AiProvider>(config.provider);
   const [geminiKey, setGeminiKey] = useState('');
-  const [geminiModel, setGeminiModel] = useState(config.geminiModel);
+  const [geminiModel, setGeminiModel] = useState(config.geminiModel || 'gemini-1.5-flash');
   const [geminiModels, setGeminiModels] = useState<string[]>([]);
-  const [consent, setConsent] = useState(config.consent);
-  
+  const [hasGeminiKeySaved, setHasGeminiKeySaved] = useState(false);
+
   const [ollamaEndpoint, setOllamaEndpoint] = useState(config.ollamaEndpoint || 'http://127.0.0.1:11434');
-  const [ollamaModel, setOllamaModel] = useState(config.ollamaModel);
+  const [ollamaModel, setOllamaModel] = useState(config.ollamaModel || 'llama3.2');
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
-  
+  const [ollamaRunning, setOllamaRunning] = useState<boolean | null>(null);
+
+  const [consent, setConsent] = useState(config.consent);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -34,12 +56,12 @@ export function AiSettingsModal({
     try {
       const list = await fetchGeminiModels();
       setGeminiModels(list);
-      if (!geminiModel && list.length > 0) {
+      setHasGeminiKeySaved(list.length > 0);
+      if (list.length > 0 && !list.includes(geminiModel)) {
         setGeminiModel(list[0]);
       }
-      setSuccess(t('modelsLoadedSuccess'));
     } catch {
-      setError(t('geminiKeyNeededOrInvalid'));
+      setHasGeminiKeySaved(false);
     } finally {
       setBusy(false);
     }
@@ -48,19 +70,26 @@ export function AiSettingsModal({
   const loadOllama = async () => {
     setBusy(true);
     setError('');
+    setSuccess('');
     try {
-      const list = await fetchOllamaModels(ollamaEndpoint);
-      setOllamaModels(list);
-      if (list.length > 0) {
-        if (!ollamaModel || !list.includes(ollamaModel)) {
-          setOllamaModel(list[0]);
+      const res = await checkOllamaStatus(ollamaEndpoint);
+      setOllamaRunning(res.isRunning);
+      setOllamaModels(res.models);
+
+      if (res.isRunning) {
+        if (res.models.length > 0) {
+          if (!ollamaModel || !res.models.includes(ollamaModel)) {
+            setOllamaModel(res.models[0]);
+          }
+          setSuccess(`Connessione a Ollama riuscita! Rilevati ${res.models.length} modelli installati.`);
+        } else {
+          setSuccess('Ollama è attivo e in esecuzione! Nessun modello ancora scaricato.');
         }
-        setSuccess(t('ollamaConnectedSuccess'));
       } else {
-        setOllamaModel('');
-        setError(t('noOllamaModelsFound'));
+        setError(res.error || t('ollamaConnectionFailed'));
       }
     } catch {
+      setOllamaRunning(false);
       setError(t('ollamaConnectionFailed'));
       setOllamaModels([]);
     } finally {
@@ -83,10 +112,10 @@ export function AiSettingsModal({
     try {
       await saveGeminiApiKey(geminiKey);
       setGeminiKey('');
-      setSuccess(t('credentialSaved'));
+      setSuccess(t('geminiKeySavedSuccess'));
       await loadGemini();
     } catch {
-      setError(t('invalidApiKey'));
+      setError(t('geminiKeySaveFailed'));
     } finally {
       setBusy(false);
     }
@@ -94,26 +123,34 @@ export function AiSettingsModal({
 
   const handleRemoveGeminiKey = async () => {
     setBusy(true);
+    setError('');
     try {
       await removeGeminiApiKey();
+      setHasGeminiKeySaved(false);
       setGeminiModels([]);
-      setGeminiModel('');
-      setSuccess(t('credentialRemoved'));
+      setSuccess(t('geminiKeyRemoved'));
     } catch {
-      setError(t('error'));
+      setError(t('geminiKeyRemoveFailed'));
     } finally {
       setBusy(false);
     }
   };
 
   const handleConfirmSettings = () => {
-    onSaveConfig({
+    if (provider === 'gemini' && !consent) {
+      setError(t('consentRequiredForGemini'));
+      return;
+    }
+
+    const newConfig: AiConfig = {
       provider,
-      geminiModel: geminiModel || (geminiModels[0] ?? 'gemini-1.5-flash'),
+      geminiModel: geminiModel || 'gemini-1.5-flash',
       ollamaEndpoint: (ollamaEndpoint || 'http://127.0.0.1:11434').trim().replace(/\/+$/, ''),
-      ollamaModel: ollamaModel || (ollamaModels[0] ?? ''),
-      consent,
-    });
+      ollamaModel: (ollamaModel || 'llama3.2').trim(),
+      consent: provider === 'gemini' ? consent : false,
+    };
+    if (onSave) onSave(newConfig);
+    if (onSaveConfig) onSaveConfig(newConfig);
     onClose();
   };
 
@@ -121,15 +158,16 @@ export function AiSettingsModal({
     <div className="modal-backdrop">
       <div className="modal-content ai-settings-modal">
         <div className="modal-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Cpu size={20} className="text-primary" />
-            <h3>{t('aiSettingsTitle')}</h3>
-          </div>
-          <button type="button" className="icon secondary" onClick={onClose}>
+          <h3>
+            <Cpu size={20} />
+            {t('aiSettingsTitle')}
+          </h3>
+          <button type="button" className="close-btn" onClick={onClose}>
             <X size={18} />
           </button>
         </div>
 
+        {/* PROVIDER SELECTOR TABS */}
         <div className="provider-tabs">
           <button
             type="button"
@@ -144,92 +182,101 @@ export function AiSettingsModal({
             className={`provider-tab-btn ${provider === 'ollama' ? 'active' : ''}`}
             onClick={() => setProvider('ollama')}
           >
-            <Server size={16} />
+            <Cpu size={16} />
             <span>Ollama Locale</span>
           </button>
         </div>
 
-        {error && <div className="error-box">{error}</div>}
-        {success && <div className="success-box">{success}</div>}
+        {error && (
+          <div className="settings-error-banner">
+            <AlertTriangle size={16} />
+            <span>{error}</span>
+          </div>
+        )}
 
+        {success && (
+          <div className="settings-success-banner">
+            <CheckCircle2 size={16} />
+            <span>{success}</span>
+          </div>
+        )}
+
+        {/* GEMINI CONFIG */}
         {provider === 'gemini' ? (
           <div className="provider-config-body">
-            <p className="muted" style={{ fontSize: '13px', margin: '0 0 12px' }}>
-              {t('geminiSettingsDesc')}
-            </p>
-
-            <div className="config-form-field">
-              <label>{t('apiKey')}</label>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <input
-                  type="password"
-                  placeholder="AIzaSy..."
-                  value={geminiKey}
-                  onChange={e => setGeminiKey(e.target.value)}
-                />
-                <button
-                  type="button"
-                  disabled={busy || !geminiKey}
-                  onClick={handleSaveGeminiKey}
-                >
-                  <Save size={14} />
-                  {t('saveKey')}
-                </button>
-              </div>
+            <div className="privacy-badge-banner">
+              <ShieldCheck size={16} className="text-green" />
+              <span>{t('geminiCloudPrivacyBanner')}</span>
             </div>
 
             <div className="config-form-field">
-              <label>{t('model')}</label>
-              <div style={{ display: 'flex', gap: 8 }}>
+              <label>{t('geminiApiKeyLabel')}</label>
+              {hasGeminiKeySaved ? (
+                <div className="key-saved-pill">
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <CheckCircle2 size={15} className="text-green" />
+                    <strong>{t('apiKeyConfigured')}</strong>
+                  </span>
+                  <button
+                    type="button"
+                    className="danger mini-btn"
+                    disabled={busy}
+                    onClick={handleRemoveGeminiKey}
+                  >
+                    <Trash2 size={13} />
+                    {t('removeKey')}
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <input
+                    type="password"
+                    placeholder="AIzaSy..."
+                    value={geminiKey}
+                    onChange={e => setGeminiKey(e.target.value)}
+                    style={{ flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    disabled={!geminiKey || busy}
+                    onClick={handleSaveGeminiKey}
+                  >
+                    {t('save')}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {hasGeminiKeySaved && geminiModels.length > 0 && (
+              <div className="config-form-field">
+                <label>{t('cloudModel')}</label>
                 <select
                   value={geminiModel}
                   onChange={e => setGeminiModel(e.target.value)}
-                  style={{ flex: 1 }}
+                  style={{ width: '100%' }}
                 >
-                  {geminiModels.length === 0 ? (
-                    <option value="">{t('noModelsLoaded')}</option>
-                  ) : (
-                    geminiModels.map(m => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))
-                  )}
+                  {geminiModels.map(m => (
+                    <option key={m} value={m}>
+                      {m}
+                    </option>
+                  ))}
                 </select>
-                <button
-                  type="button"
-                  className="secondary"
-                  disabled={busy}
-                  onClick={loadGemini}
-                  title={t('refreshModels')}
-                >
-                  <RefreshCw size={14} className={busy ? 'spinning' : ''} />
-                </button>
               </div>
-            </div>
+            )}
 
-            <label className="checkbox-label" style={{ marginTop: 12 }}>
-              <input
-                type="checkbox"
-                checked={consent}
-                onChange={e => setConsent(e.target.checked)}
-              />
-              <span style={{ fontSize: '12px' }}>{t('geminiConsent')}</span>
-            </label>
-
-            <div style={{ marginTop: 14 }}>
-              <button
-                type="button"
-                className="danger mini-btn"
-                disabled={busy}
-                onClick={handleRemoveGeminiKey}
-              >
-                <Trash2 size={13} />
-                {t('removeKey')}
-              </button>
+            <div className="consent-checkbox-wrap">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={e => setConsent(e.target.checked)}
+                />
+                <span>{t('geminiCloudConsentNotice')}</span>
+              </label>
             </div>
           </div>
         ) : (
+          /* OLLAMA LOCAL CONFIG */
           <div className="provider-config-body">
             <div className="privacy-badge-banner">
               <ShieldCheck size={16} className="text-green" />
@@ -287,23 +334,57 @@ export function AiSettingsModal({
                       </button>
                     ))}
                   </div>
-                  <span style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: 6 }}>
-                    {t('onlyInstalledModelsNotice')}
-                  </span>
                 </>
               ) : (
-                <div style={{
-                  padding: '12px 14px',
-                  background: 'var(--color-bg-secondary, #f8fafc)',
-                  border: '1px dashed var(--color-border, #cbd5e1)',
-                  borderRadius: '8px',
-                  fontSize: '12px',
-                  color: 'var(--color-text-muted, #64748b)',
-                  lineHeight: 1.5,
-                }}>
-                  {busy ? t('loading') : t('noOllamaModelsFound')}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <input
+                    type="text"
+                    value={ollamaModel}
+                    onChange={e => setOllamaModel(e.target.value)}
+                    placeholder="es. llama3.2 o mistral"
+                    style={{ width: '100%' }}
+                  />
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 11, color: '#64748b', alignSelf: 'center' }}>Modelli consigliati:</span>
+                    {['llama3.2', 'llama3.2-vision', 'mistral', 'qwen2.5', 'gemma2'].map(rec => (
+                      <button
+                        key={rec}
+                        type="button"
+                        className="mini-btn secondary"
+                        style={{ fontSize: '11px', padding: '3px 8px', borderRadius: '6px' }}
+                        onClick={() => setOllamaModel(rec)}
+                      >
+                        {rec}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
+
+              {/* Informative command card */}
+              <div style={{
+                marginTop: 10,
+                padding: '10px 12px',
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                fontSize: '11px',
+                color: '#475569',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, color: '#1e293b' }}>
+                  <Terminal size={13} color="#059669" />
+                  <span>Comando da eseguire in terminale se il modello non è installato:</span>
+                </div>
+                <code style={{ background: '#1e293b', color: '#a7f3d0', padding: '4px 8px', borderRadius: 4, fontSize: 12 }}>
+                  ollama run {ollamaModel || 'llama3.2'}
+                </code>
+                <span style={{ color: '#64748b', fontSize: 10 }}>
+                  * Se usi l'app via browser web, avvia Ollama abilitando le chiamate web con: <code>OLLAMA_ORIGINS="*" ollama serve</code>
+                </span>
+              </div>
             </div>
           </div>
         )}
@@ -313,7 +394,7 @@ export function AiSettingsModal({
             {t('cancel')}
           </button>
           <button type="button" onClick={handleConfirmSettings}>
-            <Check size={16} />
+            <CheckCircle2 size={16} />
             {t('apply')}
           </button>
         </div>

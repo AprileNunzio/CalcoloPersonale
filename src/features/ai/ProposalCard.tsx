@@ -1,5 +1,18 @@
 import { useState, useContext } from 'react';
-import { CheckCircle2, AlertTriangle, Building2, Calendar, Award, User, Pencil, Save, X } from 'lucide-react';
+import {
+  CheckCircle2,
+  AlertTriangle,
+  Building2,
+  Calendar,
+  Award,
+  User,
+  Pencil,
+  Save,
+  X,
+  Clock,
+  Briefcase,
+  HeartHandshake,
+} from 'lucide-react';
 import { ExtractedRecordProposal } from './types';
 import { Person, Archive, Entry } from '../../shared/types';
 import { call, getRevision } from '../../shared/api';
@@ -61,21 +74,52 @@ export function ProposalCard({
 
     try {
       await flush();
+
+      let kind: string = proposal.category;
+      let amount: number | null = null;
+      let profile: string | null = null;
+      let notes = proposal.notes || '';
+
+      if (proposal.category === 'service') {
+        kind = 'service';
+        profile = proposal.profile || 'CS';
+        const hours = typeof proposal.weeklyHours === 'number' && proposal.weeklyHours > 0
+          ? proposal.weeklyHours
+          : (profile === 'DOCENTE' ? 18 : 36);
+        amount = hours;
+        notes = JSON.stringify({
+          sector: proposal.sector || 'statale_ata',
+          contractType: proposal.contractType || 'term',
+          weeklyHours: hours,
+          institution: proposal.institution,
+          text: proposal.notes || '',
+          extractedViaAi: true,
+        });
+      } else if (proposal.category === 'absence') {
+        kind = proposal.absenceType || 'sickness';
+        notes = proposal.notes || '';
+      } else if (proposal.category === 'child') {
+        kind = 'child';
+      } else if (proposal.category === 'title') {
+        kind = 'qualification';
+        amount = parseFloat(proposal.grade || '') || null;
+        notes = JSON.stringify({
+          institution: proposal.institution,
+          grade: proposal.grade,
+          isAccessTitle: proposal.isAccessTitle,
+          extractedViaAi: true,
+        });
+      }
+
       const newEntry: Entry = {
         id: crypto.randomUUID(),
-        kind: proposal.category,
+        kind,
         title: proposal.title,
         start: proposal.start,
         end: proposal.end,
-        amount: null,
-        notes: JSON.stringify({
-          institution: proposal.institution,
-          grade: proposal.grade,
-          sector: proposal.sector,
-          isAccessTitle: proposal.isAccessTitle,
-          extractedViaAi: true,
-        }),
-        profile: proposal.category === 'service' ? proposal.profile || 'CS' : null,
+        amount,
+        notes,
+        profile,
         school: proposal.institution
           ? {
               code: proposal.schoolCode || '',
@@ -120,7 +164,13 @@ export function ProposalCard({
       <div className="proposal-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className={`proposal-badge ${proposal.category}`}>
-            {t(proposal.category)}
+            {proposal.category === 'service'
+              ? 'Contratto Servizio'
+              : proposal.category === 'absence'
+              ? 'Assenza / Malattia'
+              : proposal.category === 'child'
+              ? 'Figlio a Carico'
+              : 'Titolo / Certificazione'}
           </span>
           <span className={`confidence-pill ${proposal.confidence}`}>
             {t(`confidence_${proposal.confidence}`)}
@@ -141,12 +191,13 @@ export function ProposalCard({
             onClick={() => setProposal(prev => ({ ...prev, status: 'dismissed' }))}
           >
             <X size={13} />
+            {t('dismiss')}
           </button>
         </div>
       </div>
 
       {proposal.anomalies.length > 0 && (
-        <div className="anomalies-banner">
+        <div className="proposal-anomalies-box">
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600, marginBottom: 4 }}>
             <AlertTriangle size={15} />
             <span>{t('anomaliesDetectedTitle')}</span>
@@ -181,7 +232,7 @@ export function ProposalCard({
                 onChange={e => setProposal({ ...proposal, start: e.target.value })}
               />
             </div>
-            {proposal.category !== 'title' && (
+            {proposal.category !== 'title' && proposal.category !== 'child' && (
               <div className="proposal-field">
                 <label>{t('end')}</label>
                 <input
@@ -194,32 +245,77 @@ export function ProposalCard({
           </div>
 
           {proposal.category === 'service' && (
-            <div className="proposal-row">
-              <div className="proposal-field">
-                <label>{t('profile')}</label>
-                <select
-                  value={proposal.profile || 'CS'}
-                  onChange={e => setProposal({ ...proposal, profile: e.target.value })}
-                >
-                  {ATA_PROFILES.map(p => (
-                    <option key={p.code} value={p.code}>
-                      {p.code} - {p.label}
-                    </option>
-                  ))}
-                </select>
+            <>
+              <div className="proposal-row">
+                <div className="proposal-field">
+                  <label>{t('profile')}</label>
+                  <select
+                    value={proposal.profile || 'CS'}
+                    onChange={e => setProposal({ ...proposal, profile: e.target.value })}
+                  >
+                    {ATA_PROFILES.map(p => (
+                      <option key={p.code} value={p.code}>
+                        {p.code} - {p.label}
+                      </option>
+                    ))}
+                    <option value="DOCENTE">DOCENTE</option>
+                  </select>
+                </div>
+                <div className="proposal-field">
+                  <label>Orario Settimanale (ore)</label>
+                  <input
+                    type="number"
+                    min={6}
+                    max={36}
+                    value={proposal.weeklyHours ?? 36}
+                    onChange={e => setProposal({ ...proposal, weeklyHours: parseInt(e.target.value, 10) || 36 })}
+                  />
+                </div>
               </div>
-              <div className="proposal-field">
-                <label>{t('serviceSector')}</label>
-                <select
-                  value={proposal.sector || 'statale_ata'}
-                  onChange={e => setProposal({ ...proposal, sector: e.target.value as any })}
-                >
-                  <option value="statale_ata">{t('sectorStataleAta')}</option>
-                  <option value="statale_docente">{t('sectorStataleDocente')}</option>
-                  <option value="paritaria_ata">{t('sectorParitariaAta')}</option>
-                  <option value="paritaria_docente">{t('sectorParitariaDocente')}</option>
-                </select>
+
+              <div className="proposal-row">
+                <div className="proposal-field">
+                  <label>Tipologia Contratto</label>
+                  <select
+                    value={proposal.contractType || 'term'}
+                    onChange={e => setProposal({ ...proposal, contractType: e.target.value as any })}
+                  >
+                    <option value="term">Fino al 30 giugno (10 mesi)</option>
+                    <option value="annual">Annuale 31 agosto (12 mesi)</option>
+                    <option value="short">Supplenza breve</option>
+                    <option value="permanent">Ruolo</option>
+                  </select>
+                </div>
+                <div className="proposal-field">
+                  <label>{t('serviceSector')}</label>
+                  <select
+                    value={proposal.sector || 'statale_ata'}
+                    onChange={e => setProposal({ ...proposal, sector: e.target.value as any })}
+                  >
+                    <option value="statale_ata">{t('sectorStataleAta')}</option>
+                    <option value="statale_docente">{t('sectorStataleDocente')}</option>
+                    <option value="paritaria_ata">{t('sectorParitariaAta')}</option>
+                    <option value="paritaria_docente">{t('sectorParitariaDocente')}</option>
+                    <option value="ente_locale">Ente Locale</option>
+                  </select>
+                </div>
               </div>
+            </>
+          )}
+
+          {proposal.category === 'absence' && (
+            <div className="proposal-field">
+              <label>Tipologia Assenza</label>
+              <select
+                value={proposal.absenceType || 'sickness'}
+                onChange={e => setProposal({ ...proposal, absenceType: e.target.value as any })}
+              >
+                <option value="sickness">Malattia ordinaria</option>
+                <option value="specialist">Visita specialistica</option>
+                <option value="parental">Congedo parentale</option>
+                <option value="strike">Sciopero</option>
+                <option value="law104">Permesso Legge 104</option>
+              </select>
             </div>
           )}
 
@@ -263,8 +359,23 @@ export function ProposalCard({
             )}
             {proposal.profile && (
               <div className="proposal-detail-item">
-                <Award size={14} />
-                <span>{proposal.profile}</span>
+                <Briefcase size={14} />
+                <span>
+                  {proposal.profile}
+                  {proposal.weeklyHours ? ` • ${proposal.weeklyHours}h/sett.` : ''}
+                </span>
+              </div>
+            )}
+            {proposal.contractType && (
+              <div className="proposal-detail-item">
+                <Clock size={14} />
+                <span>
+                  {proposal.contractType === 'annual'
+                    ? '31 Agosto'
+                    : proposal.contractType === 'term'
+                    ? '30 Giugno'
+                    : 'Supplenza breve'}
+                </span>
               </div>
             )}
             {proposal.grade && (

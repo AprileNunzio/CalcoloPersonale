@@ -12,6 +12,9 @@ import {
   Sliders,
   ShieldCheck,
   HeartHandshake,
+  Users,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { Person } from '../../shared/types';
 import { ATA_PROFILES } from '../../shared/personUtils';
@@ -47,6 +50,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
   const [sicknessDaysInMonth, setSicknessDaysInMonth] = useState<number>(detectedAbsences.sicknessDaysInMonth);
   const [strikeDaysInMonth, setStrikeDaysInMonth] = useState<number>(detectedAbsences.strikeDaysInMonth);
   const [isManualOverride, setIsManualOverride] = useState<boolean>(false);
+  const [showSimulatorControls, setShowSimulatorControls] = useState<boolean>(false);
 
   // 3. Career Seniority calculation
   const seniority = useMemo(
@@ -75,6 +79,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
     setStrikeDaysInMonth(detectedAbsences.strikeDaysInMonth);
     setSelectedFascia(seniority.currentFascia);
     setIsManualOverride(false);
+    setShowSimulatorControls(false);
   };
 
   const simulationParams: SalarySimulationParams = {
@@ -174,7 +179,50 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
         profileLabel={profileLabel}
       />
 
-      {/* CONTROLS */}
+      {/* AUTOMATIC CONTRACT & PARAMETERS SUMMARY BAR */}
+      <div className="salary-auto-summary-card">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
+          <div className="auto-summary-item">
+            <span className="summary-label">Profilo Rilevato</span>
+            <strong style={{ fontSize: 13, color: '#1e293b' }}>{profileLabel}</strong>
+          </div>
+          <div className="auto-summary-item">
+            <span className="summary-label">Orario Contrattuale</span>
+            <strong style={{ fontSize: 13, color: '#1e293b' }}>
+              {weeklyHours}h / sett. ({Math.round((weeklyHours / (profile === 'DOCENTE' ? 18 : 36)) * 100)}%)
+            </strong>
+          </div>
+          <div className="auto-summary-item">
+            <span className="summary-label">Tipologia Supplenza</span>
+            <strong style={{ fontSize: 13, color: '#1e293b' }}>
+              {contractType === 'annual' ? 'Annuale al 31/08' : contractType === 'term' ? 'Fino al 30/06' : 'Supplenza breve'}
+            </strong>
+          </div>
+          <div className="auto-summary-item">
+            <span className="summary-label">Figli a Carico</span>
+            <strong style={{ fontSize: 13, color: '#1e293b' }}>{dependentChildrenCount}</strong>
+          </div>
+          {sicknessDaysInMonth > 0 && (
+            <div className="auto-summary-item">
+              <span className="summary-label">Malattia Mese</span>
+              <strong style={{ fontSize: 13, color: '#dc2626' }}>{sicknessDaysInMonth} gg (-{result.sicknessDeductions.toFixed(0)}€)</strong>
+            </div>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="salary-toggle-controls-btn"
+          onClick={() => setShowSimulatorControls(!showSimulatorControls)}
+        >
+          <Sliders size={14} />
+          <span>{showSimulatorControls ? 'Nascondi Personalizzazione' : 'Personalizza / Simula Scenari'}</span>
+          {showSimulatorControls ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        </button>
+      </div>
+
+      {/* CONTROLS (EXPANDABLE) */}
+      {showSimulatorControls && (
       <div className="salary-controls-grid">
         <div className="salary-control-card">
           <h4>
@@ -331,6 +379,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
           </div>
         </div>
       </div>
+      )}
 
       {/* KPI METRICS */}
       <div className="salary-kpi-deck">

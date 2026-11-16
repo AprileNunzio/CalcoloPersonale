@@ -18,12 +18,16 @@ export interface ChatAttachment {
 }
 
 export interface ExtractedRecordProposal {
-  category: 'title' | 'service' | 'absence';
+  category: 'title' | 'service' | 'absence' | 'child' | 'validation';
   title: string;
   start: string;
   end: string | null;
   profile?: string | null;
-  sector?: 'statale_ata' | 'statale_docente' | 'paritaria_ata' | 'paritaria_docente' | null;
+  sector?: 'statale_ata' | 'statale_docente' | 'paritaria_ata' | 'paritaria_docente' | 'ente_locale' | null;
+  weeklyHours?: number | null;
+  contractType?: 'annual' | 'term' | 'short' | 'permanent' | null;
+  absenceType?: 'sickness' | 'specialist' | 'parental' | 'strike' | 'law104' | 'other' | null;
+  validatedScore?: number | null;
   institution?: string | null;
   schoolCode?: string | null;
   grade?: string | null;

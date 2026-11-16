@@ -10,7 +10,7 @@ import { FormField, FieldStatus } from '../../shared/FormField';
 import { ATA_PROFILES, PROFILE_LABELS } from '../../shared/personUtils';
 import { AbsenceInfoCard } from './AbsenceInfoCard';
 import { ServiceDetailFields } from './ServiceDetailFields';
-import { ServiceSector } from './serviceCalculations';
+import { ServiceSector, ServiceContractType } from './serviceCalculations';
 import { FamilyMemberPicker } from './FamilyMemberPicker';
 import { detectContractType } from '../../shared/entitlements';
 import { QualificationPresetSelector } from './QualificationPresetSelector';
@@ -19,26 +19,17 @@ import { RecordItemCard } from './RecordItemCard';
 import { getTitleLabel, getTitlePlaceholder, getStartLabel } from './recordFormLabels';
 import './recordDetails.css';
 
-const absenceKinds = [
-  'sickness',
-  'specialist',
-  'parental',
-  'holiday',
-  'festivity',
-  'bereavement',
-  'personal',
-  'law104',
-  'blood',
-  'study',
-  'marriage',
-  'other',
-];
+const absenceKinds = ['sickness', 'specialist', 'parental', 'holiday', 'festivity', 'bereavement', 'personal', 'law104', 'blood', 'study', 'marriage', 'other'];
 
-function parseNotes(notes: string): { text: string; sector?: ServiceSector; linkedPersonId?: string } {
+function parseNotes(notes: string): {
+  text: string;
+  sector?: ServiceSector;
+  contractType?: ServiceContractType;
+  weeklyHours?: number;
+  linkedPersonId?: string;
+} {
   try {
-    if (notes.startsWith('{')) {
-      return JSON.parse(notes);
-    }
+    if (notes.startsWith('{')) return JSON.parse(notes);
   } catch {
     return { text: notes };
   }
@@ -128,11 +119,32 @@ export function Records({
 
   const parsedDraftNotes = draft ? parseNotes(draft.notes) : { text: '' };
   const currentSector: ServiceSector = parsedDraftNotes.sector || 'statale_ata';
+  const currentWeeklyHours: number =
+    typeof draft?.amount === 'number' && draft.amount > 0
+      ? draft.amount
+      : parsedDraftNotes.weeklyHours || (draft?.profile === 'DOCENTE' ? 18 : 36);
+  const currentContractType: ServiceContractType = parsedDraftNotes.contractType || 'term';
 
   const handleSectorChange = (sector: ServiceSector) => {
     if (!draft) return;
-    const updated = { ...parsedDraftNotes, sector };
-    setDraft({ ...draft, notes: JSON.stringify(updated) });
+    setDraft({ ...draft, notes: JSON.stringify({ ...parsedDraftNotes, sector }) });
+  };
+
+  const handleWeeklyHoursChange = (weeklyHours: number) => {
+    if (!draft) return;
+    setDraft({
+      ...draft,
+      amount: weeklyHours,
+      notes: JSON.stringify({ ...parsedDraftNotes, weeklyHours }),
+    });
+  };
+
+  const handleContractTypeChange = (contractType: ServiceContractType) => {
+    if (!draft) return;
+    setDraft({
+      ...draft,
+      notes: JSON.stringify({ ...parsedDraftNotes, contractType }),
+    });
   };
 
   const handleNotesTextChange = (text: string) => {
@@ -389,8 +401,12 @@ export function Records({
                     end={draft.end}
                     profile={draft.profile || 'CS'}
                     sector={currentSector}
+                    weeklyHours={currentWeeklyHours}
+                    contractType={currentContractType}
                     notes={draft.notes}
                     onChangeSector={handleSectorChange}
+                    onChangeWeeklyHours={handleWeeklyHoursChange}
+                    onChangeContractType={handleContractTypeChange}
                   />
                 </div>
               )}
