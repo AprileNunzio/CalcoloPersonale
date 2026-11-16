@@ -29,6 +29,7 @@ import { Records } from '../records/Records';
 import { AiAssistantPage } from '../ai/AiAssistantPage';
 import { Dashboard } from '../dashboard/Dashboard';
 import { Applications } from '../applications/Applications';
+import { FamilyPage } from '../family/FamilyPage';
 import { getPersonCurrentProfile } from '../../shared/personUtils';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { OtaBanner } from '../ota/OtaBanner';
@@ -227,7 +228,7 @@ function Workspace({
                 { k: 'applications', icon: FileText },
                 { k: 'service', icon: FolderHeart },
                 { k: 'qualification', icon: FolderHeart },
-                { k: 'child', icon: FolderHeart },
+                { k: 'child', icon: Users },
                 { k: 'absences', icon: FolderHeart },
               ].map(({ k, icon: Icon }) => (
                 <button
@@ -366,6 +367,13 @@ function Workspace({
                     key={`${person.id}-applications`}
                     person={person}
                     save={save}
+                    busy={busy}
+                  />
+                ) : section === 'child' ? (
+                  <FamilyPage
+                    key={`${person.id}-family`}
+                    person={person}
+                    allPeople={archive.people}
                     busy={busy}
                   />
                 ) : (

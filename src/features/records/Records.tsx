@@ -12,6 +12,7 @@ import { AbsenceInfoCard } from './AbsenceInfoCard';
 import { ServiceDetailFields } from './ServiceDetailFields';
 import { ServiceSector } from './serviceCalculations';
 import { FamilyMemberPicker } from './FamilyMemberPicker';
+import { detectContractType } from '../../shared/entitlements';
 import './recordDetails.css';
 
 const absenceKinds = [
@@ -186,12 +187,6 @@ export function Records({
               <AutoSaveStatus />
             </div>
 
-            {section === 'absences' && (
-              <div style={{ marginBottom: 16 }}>
-                <AbsenceInfoCard kind={draft.kind} />
-              </div>
-            )}
-
             {draft.kind === 'child' && (
               <FamilyMemberPicker
                 otherPeople={otherPeople}
@@ -345,6 +340,15 @@ export function Records({
                 />
               </FormField>
             </div>
+
+            {section === 'absences' && (
+              <div style={{ marginTop: 16, marginBottom: 8 }}>
+                <AbsenceInfoCard
+                  kind={draft.kind}
+                  defaultContractType={detectContractType(person)}
+                />
+              </div>
+            )}
 
             <div className="actions">
               <button

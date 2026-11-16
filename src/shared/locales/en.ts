@@ -1,6 +1,8 @@
 import { it } from './it';
+import { familyLocalesEn } from './familyLocales';
+import { absenceLocalesEn } from './absenceLocales';
 
-export const en: typeof it = {
+const coreEn = {
   assistant: 'AI Assistant',
   geminiDescription: 'On-demand assistance. The key is stored in Windows credentials; records are never sent automatically.',
   apiKey: 'Gemini API key',
@@ -396,3 +398,10 @@ export const en: typeof it = {
   checkAiConfiguration: 'Check assistant configuration in settings',
   saveError: 'Error saving record',
 };
+
+export const en: typeof it = {
+  ...coreEn,
+  ...familyLocalesEn,
+  ...absenceLocalesEn,
+};
+

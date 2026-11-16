@@ -1,4 +1,7 @@
-export const it = {
+import { familyLocalesIt } from './familyLocales';
+import { absenceLocalesIt } from './absenceLocales';
+
+const coreIt = {
   assistant: 'Assistente AI',
   geminiDescription: 'Assistenza su richiesta. La chiave è custodita nelle credenziali Windows; nessun fascicolo viene trasmesso automaticamente.',
   apiKey: 'Chiave API Gemini',
@@ -394,3 +397,10 @@ export const it = {
   checkAiConfiguration: 'Verifica la configurazione dell’assistente nelle impostazioni',
   saveError: 'Errore durante il salvataggio del record',
 };
+
+export const it = {
+  ...coreIt,
+  ...familyLocalesIt,
+  ...absenceLocalesIt,
+};
+
