@@ -1,11 +1,12 @@
 import { call } from '../../shared/api';
-import { AiConfig, ChatAttachment } from './types';
+import { AiConfig, ChatAttachment, OllamaModelDetail } from './types';
 import { OCR_SYSTEM_PROMPT } from './documentOcr';
 import { buildDocumentContext } from './documentParser';
 
 export interface OllamaStatusResult {
   isRunning: boolean;
   models: string[];
+  modelDetails: OllamaModelDetail[];
   error?: string;
 }
 
@@ -14,16 +15,32 @@ export async function fetchGeminiModels(): Promise<string[]> {
 }
 
 /**
- * Checks connection to local Ollama instance and returns the list of installed models.
+ * Checks connection to local Ollama instance and returns the list of installed models with memory and size details.
  */
 export async function checkOllamaStatus(endpoint?: string): Promise<OllamaStatusResult> {
   const base = (endpoint || 'http://127.0.0.1:11434').trim().replace(/\/+$/, '');
 
-  // 1. Try Tauri backend command first (if in desktop app, avoids any CORS)
+  // 1. Try Tauri backend command first (avoids any CORS)
   try {
-    const list = await call<string[]>('ollama_models', { endpoint: base });
+    const list = await call<any[]>('ollama_models', { endpoint: base });
     if (Array.isArray(list)) {
-      return { isRunning: true, models: list };
+      const modelDetails: OllamaModelDetail[] = list.map(item => {
+        if (typeof item === 'string') {
+          return { name: item, inMemory: false };
+        }
+        return {
+          name: item.name || item.model || '',
+          size: item.size,
+          parameterSize: item.parameter_size || item.details?.parameter_size,
+          inMemory: Boolean(item.in_memory),
+        };
+      }).filter(m => Boolean(m.name));
+
+      return {
+        isRunning: true,
+        models: modelDetails.map(m => m.name),
+        modelDetails,
+      };
     }
   } catch {}
 
@@ -42,21 +59,43 @@ export async function checkOllamaStatus(endpoint?: string): Promise<OllamaStatus
 
   for (const target of candidates) {
     try {
-      // First verify tags
       const response = await fetch(`${target}/api/tags`, {
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
       if (response.ok) {
         const body = await response.json();
-        const models = Array.isArray(body.models)
-          ? body.models.map((m: any) => m.name || m.model).filter(Boolean)
-          : [];
-        return { isRunning: true, models };
+        let runningNames: string[] = [];
+        try {
+          const psRes = await fetch(`${target}/api/ps`);
+          if (psRes.ok) {
+            const psBody = await psRes.json();
+            if (Array.isArray(psBody.models)) {
+              runningNames = psBody.models.map((m: any) => m.name || m.model).filter(Boolean);
+            }
+          }
+        } catch {}
+
+        const rawList = Array.isArray(body.models) ? body.models : [];
+        const modelDetails: OllamaModelDetail[] = rawList.map((m: any) => {
+          const name = m.name || m.model || '';
+          const inMemory = runningNames.some(rn => rn === name || rn.startsWith(name + ':') || name.startsWith(rn + ':'));
+          return {
+            name,
+            size: m.size,
+            parameterSize: m.details?.parameter_size,
+            inMemory,
+          };
+        }).filter((m: OllamaModelDetail) => Boolean(m.name));
+
+        return {
+          isRunning: true,
+          models: modelDetails.map(m => m.name),
+          modelDetails,
+        };
       }
     } catch {}
 
-    // Check if root responds (e.g. "Ollama is running")
     try {
       const ping = await fetch(`${target}/`, { method: 'GET' });
       if (ping.ok || ping.status === 200) {
@@ -69,13 +108,15 @@ export async function checkOllamaStatus(endpoint?: string): Promise<OllamaStatus
     return {
       isRunning: true,
       models: [],
-      error: 'Ollama è in esecuzione, ma non è stato ancora installato alcun modello.',
+      modelDetails: [],
+      error: 'Ollama è in esecuzione, ma non è stato ancora scaricato alcun modello.',
     };
   }
 
   return {
     isRunning: false,
     models: [],
+    modelDetails: [],
     error: 'Impossibile connettersi a Ollama su ' + base,
   };
 }

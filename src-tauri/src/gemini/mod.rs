@@ -215,8 +215,18 @@ fn get_ollama_candidates(endpoint: Option<String>) -> Result<Vec<String>> {
     Ok(candidates)
 }
 
+#[derive(Clone, Serialize, Deserialize)]
+pub struct OllamaModelInfo {
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameter_size: Option<String>,
+    pub in_memory: bool,
+}
+
 #[tauri::command]
-pub async fn ollama_models(endpoint: Option<String>) -> Result<Vec<String>> {
+pub async fn ollama_models(endpoint: Option<String>) -> Result<Vec<OllamaModelInfo>> {
     let candidates = get_ollama_candidates(endpoint)?;
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
@@ -239,14 +249,42 @@ pub async fn ollama_models(endpoint: Option<String>) -> Result<Vec<String>> {
                 continue;
             }
         };
+
+        let mut running_names = Vec::new();
+        if let Ok(ps_res) = client.get(format!("{url}/api/ps")).send().await {
+            if let Ok(ps_body) = response_json(ps_res).await {
+                if let Some(arr) = ps_body["models"].as_array() {
+                    for m in arr {
+                        if let Some(n) = m["name"].as_str().or_else(|| m["model"].as_str()) {
+                            running_names.push(n.to_string());
+                        }
+                    }
+                }
+            }
+        }
+
         if let Some(models) = body["models"].as_array() {
-            let list: Vec<String> = models
+            let list: Vec<OllamaModelInfo> = models
                 .iter()
                 .filter_map(|m| {
-                    m["name"]
+                    let name = m["name"]
                         .as_str()
-                        .or_else(|| m["model"].as_str())
-                        .map(str::to_string)
+                        .or_else(|| m["model"].as_str())?
+                        .to_string();
+                    let size = m["size"].as_u64();
+                    let parameter_size =
+                        m["details"]["parameter_size"].as_str().map(str::to_string);
+                    let in_memory = running_names.iter().any(|rn| {
+                        rn == &name
+                            || rn.starts_with(&format!("{}:", name))
+                            || name.starts_with(&format!("{}:", rn))
+                    });
+                    Some(OllamaModelInfo {
+                        name,
+                        size,
+                        parameter_size,
+                        in_memory,
+                    })
                 })
                 .collect();
             return Ok(list);

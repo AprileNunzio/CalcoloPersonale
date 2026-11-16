@@ -1,5 +1,12 @@
 export type AiProvider = 'gemini' | 'ollama';
 
+export interface OllamaModelDetail {
+  name: string;
+  size?: number;
+  parameterSize?: string;
+  inMemory?: boolean;
+}
+
 export interface AiConfig {
   provider: AiProvider;
   geminiModel: string;
