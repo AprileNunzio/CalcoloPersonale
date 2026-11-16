@@ -52,8 +52,14 @@ impl Person {
             || !["female", "male", "other"].contains(&self.gender.as_str())
             || (!self.profile.is_empty()
                 && !["AA", "AT", "CS", "CO", "IF", "GA", "OS"].contains(&self.profile.as_str()))
-            || self.birth_place.as_deref().is_some_and(|p| !text_valid(p, 100))
-            || self.birth_province.as_deref().is_some_and(|p| !text_valid(p, 10))
+            || self
+                .birth_place
+                .as_deref()
+                .is_some_and(|p| !text_valid(p, 100))
+            || self
+                .birth_province
+                .as_deref()
+                .is_some_and(|p| !text_valid(p, 10))
             || (!self.fiscal_code.is_empty()
                 && (self.fiscal_code.len() != 16
                     || !self
@@ -84,9 +90,10 @@ impl Person {
                 || record.title.trim().is_empty()
                 || !text_valid(&record.title, 160)
                 || !text_valid(&record.notes, 2000)
-                || record.profile.as_deref().is_some_and(|p| {
-                    !["AA", "AT", "CS", "CO", "IF", "GA", "OS"].contains(&p)
-                })
+                || record
+                    .profile
+                    .as_deref()
+                    .is_some_and(|p| !["AA", "AT", "CS", "CO", "IF", "GA", "OS"].contains(&p))
                 || record.end.is_some_and(|d| d < record.start)
                 || record
                     .amount
