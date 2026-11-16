@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Plus, Trash2, Pencil, Briefcase, Users, UserPlus, Link2 } from 'lucide-react';
+import { Plus, Trash2, Pencil, Briefcase, Link2 } from 'lucide-react';
 import { Archive, Entry, Person } from '../../shared/types';
 import { call, getRevision } from '../../shared/api';
 import { useT } from '../../shared/i18n';
@@ -8,8 +8,37 @@ import { flush } from '../autosave/store';
 import { DirectoryPicker } from '../directory/DirectoryPicker';
 import { FormField, FieldStatus } from '../../shared/FormField';
 import { ATA_PROFILES, PROFILE_LABELS } from '../../shared/personUtils';
+import { AbsenceInfoCard } from './AbsenceInfoCard';
+import { ServiceDetailFields } from './ServiceDetailFields';
+import { ServiceSector } from './serviceCalculations';
+import { FamilyMemberPicker } from './FamilyMemberPicker';
+import './recordDetails.css';
 
-const absenceKinds = ['sickness', 'parental', 'holiday', 'festivity', 'bereavement', 'blood', 'other'];
+const absenceKinds = [
+  'sickness',
+  'specialist',
+  'parental',
+  'holiday',
+  'festivity',
+  'bereavement',
+  'personal',
+  'law104',
+  'blood',
+  'study',
+  'marriage',
+  'other',
+];
+
+function parseNotes(notes: string): { text: string; sector?: ServiceSector; linkedPersonId?: string } {
+  try {
+    if (notes.startsWith('{')) {
+      return JSON.parse(notes);
+    }
+  } catch {
+    return { text: notes };
+  }
+  return { text: notes };
+}
 
 export function Records({
   person,
@@ -56,39 +85,57 @@ export function Records({
     }
   }
 
-  const handlePickArchivePerson = (targetId: string) => {
-    setSelectedLinkedId(targetId);
-    const chosen = otherPeople.find(p => p.id === targetId);
-    if (chosen && draft) {
-      const payload = { linkedPersonId: chosen.id, role: 'family' };
+  const handlePickArchivePerson = (chosen: Person | null) => {
+    if (!draft) return;
+    if (chosen) {
+      setSelectedLinkedId(chosen.id);
+      const payload = { linkedPersonId: chosen.id, role: 'family', text: draft.title || '' };
       setDraft({
         ...draft,
         title: `${chosen.lastName} ${chosen.firstName}`,
         start: chosen.birthDate || draft.start || '',
         notes: JSON.stringify(payload),
       });
+    } else {
+      setSelectedLinkedId('');
+      setDraft({
+        ...draft,
+        title: '',
+        notes: '',
+      });
     }
   };
 
   const getFieldStatus = (field: keyof Entry): FieldStatus => {
     if (!draft) return 'idle';
-    if (field === 'title') {
-      return draft.title.trim() ? 'saved' : 'idle';
-    }
-    if (field === 'start') {
-      return draft.start ? 'saved' : 'idle';
-    }
+    if (field === 'title') return draft.title.trim() ? 'saved' : 'idle';
+    if (field === 'start') return draft.start ? 'saved' : 'idle';
     if (field === 'end') {
       if (!draft.end) return 'idle';
       return draft.end >= draft.start ? 'saved' : 'error';
     }
-    if (field === 'profile') {
-      return draft.profile ? 'saved' : 'idle';
-    }
-    if (field === 'notes') {
-      return draft.notes?.trim() ? 'saved' : 'idle';
-    }
+    if (field === 'profile') return draft.profile ? 'saved' : 'idle';
+    if (field === 'notes') return draft.notes?.trim() ? 'saved' : 'idle';
     return 'idle';
+  };
+
+  const parsedDraftNotes = draft ? parseNotes(draft.notes) : { text: '' };
+  const currentSector: ServiceSector = parsedDraftNotes.sector || 'statale_ata';
+
+  const handleSectorChange = (sector: ServiceSector) => {
+    if (!draft) return;
+    const updated = { ...parsedDraftNotes, sector };
+    setDraft({ ...draft, notes: JSON.stringify(updated) });
+  };
+
+  const handleNotesTextChange = (text: string) => {
+    if (!draft) return;
+    if (draft.kind === 'service' || parsedDraftNotes.linkedPersonId) {
+      const updated = { ...parsedDraftNotes, text };
+      setDraft({ ...draft, notes: JSON.stringify(updated) });
+    } else {
+      setDraft({ ...draft, notes: text });
+    }
   };
 
   return (
@@ -139,48 +186,20 @@ export function Records({
               <AutoSaveStatus />
             </div>
 
-            {draft.kind === 'child' && otherPeople.length > 0 && (
-              <div style={{ marginBottom: 18 }}>
-                <label className="field-label-text">{t('familyMemberSource')}</label>
-                <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
-                  <button
-                    type="button"
-                    className={familySource === 'archive' ? '' : 'secondary'}
-                    onClick={() => setFamilySource('archive')}
-                  >
-                    <Users size={16} />
-                    {t('chooseFromArchive')}
-                  </button>
-                  <button
-                    type="button"
-                    className={familySource === 'manual' ? '' : 'secondary'}
-                    onClick={() => {
-                      setFamilySource('manual');
-                      setSelectedLinkedId('');
-                    }}
-                  >
-                    <UserPlus size={16} />
-                    {t('manualEntry')}
-                  </button>
-                </div>
-                {familySource === 'archive' && (
-                  <div style={{ marginTop: 12 }}>
-                    <FormField label={t('selectPerson')}>
-                      <select
-                        value={selectedLinkedId}
-                        onChange={e => handlePickArchivePerson(e.target.value)}
-                      >
-                        <option value="">-- {t('selectPerson')} --</option>
-                        {otherPeople.map(p => (
-                          <option key={p.id} value={p.id}>
-                            {p.lastName} {p.firstName} {p.birthDate ? `(${p.birthDate})` : ''}
-                          </option>
-                        ))}
-                      </select>
-                    </FormField>
-                  </div>
-                )}
+            {section === 'absences' && (
+              <div style={{ marginBottom: 16 }}>
+                <AbsenceInfoCard kind={draft.kind} />
               </div>
+            )}
+
+            {draft.kind === 'child' && (
+              <FamilyMemberPicker
+                otherPeople={otherPeople}
+                selectedPersonId={selectedLinkedId || parsedDraftNotes.linkedPersonId || ''}
+                onSelect={handlePickArchivePerson}
+                source={familySource}
+                onSourceChange={setFamilySource}
+              />
             )}
 
             {draft.kind === 'service' && (
@@ -299,6 +318,19 @@ export function Records({
                 </FormField>
               )}
 
+              {draft.kind === 'service' && (
+                <div className="wide" style={{ gridColumn: '1 / -1' }}>
+                  <ServiceDetailFields
+                    start={draft.start}
+                    end={draft.end}
+                    profile={draft.profile || 'CS'}
+                    sector={currentSector}
+                    notes={draft.notes}
+                    onChangeSector={handleSectorChange}
+                  />
+                </div>
+              )}
+
               <FormField
                 label={t('notes')}
                 tip={draft.kind === 'service' ? t('tipServiceNotes') : undefined}
@@ -307,8 +339,8 @@ export function Records({
               >
                 <input
                   maxLength={2000}
-                  value={draft.notes}
-                  onChange={event => setDraft({ ...draft, notes: event.target.value })}
+                  value={parsedDraftNotes.text ?? draft.notes}
+                  onChange={event => handleNotesTextChange(event.target.value)}
                   placeholder="Note opzionali..."
                 />
               </FormField>
@@ -333,15 +365,8 @@ export function Records({
           <p className="muted">{t('noRecords')}</p>
         ) : (
           entries.map(record => {
-            let isLinked = false;
-            try {
-              if (record.notes && record.notes.startsWith('{')) {
-                const parsed = JSON.parse(record.notes);
-                isLinked = !!parsed.linkedPersonId;
-              }
-            } catch {
-              isLinked = false;
-            }
+            const parsed = parseNotes(record.notes);
+            const isLinked = !!parsed.linkedPersonId;
 
             return (
               <article className="entry" key={record.id}>
@@ -363,6 +388,19 @@ export function Records({
                           style={{ display: 'inline', marginRight: 4, verticalAlign: '-1px' }}
                         />
                         {record.profile} · {PROFILE_LABELS[record.profile] || record.profile}
+                      </span>
+                    )}
+                    {record.kind === 'service' && parsed.sector && (
+                      <span className="badge">
+                        {t(
+                          parsed.sector === 'statale_ata'
+                            ? 'sectorStataleAta'
+                            : parsed.sector === 'statale_docente'
+                            ? 'sectorStataleDocente'
+                            : parsed.sector === 'paritaria_ata'
+                            ? 'sectorParitariaAta'
+                            : 'sectorParitariaDocente'
+                        )}
                       </span>
                     )}
                     {isLinked && (
@@ -390,8 +428,8 @@ export function Records({
                       {record.school.code} · {record.school.name} ({record.school.municipality} - {record.school.province})
                     </p>
                   )}
-                  {record.notes && !record.notes.startsWith('{') && (
-                    <p className="muted">{record.notes}</p>
+                  {parsed.text && (
+                    <p className="muted">{parsed.text}</p>
                   )}
                 </div>
                 <div className="actions">

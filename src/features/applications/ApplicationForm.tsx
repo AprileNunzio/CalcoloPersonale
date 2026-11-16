@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Sparkles } from 'lucide-react';
 import { Entry, Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
 import { FormField } from '../../shared/FormField';
@@ -59,6 +60,40 @@ export function ApplicationForm({
     });
   };
 
+  const handleAutoImport = () => {
+    const titles = person.records.filter(r => r.kind === 'title');
+    const services = person.records.filter(r => r.kind === 'service');
+
+    const accessTitles = titles.filter(t => 
+      t.notes?.toLowerCase().includes('accesso') || 
+      t.title.toLowerCase().includes('diploma') || 
+      t.title.toLowerCase().includes('laurea')
+    );
+    const culturalTitles = titles.filter(t => !accessTitles.includes(t));
+
+    const accessStr = accessTitles.length > 0
+      ? accessTitles.map(t => `${t.title}${t.start ? ` (${t.start})` : ''}`).join('; ')
+      : (titles[0] ? `${titles[0].title}${titles[0].start ? ` (${titles[0].start})` : ''}` : '');
+
+    const culturalStr = (accessTitles.length > 0 ? culturalTitles : titles.slice(1))
+      .map(t => `${t.title}${t.notes ? ` - ${t.notes}` : ''}`)
+      .join('; ');
+
+    const serviceStr = services.map(s => {
+      const prof = s.profile ? ` [${s.profile}]` : '';
+      const dates = s.start ? ` (${s.start}${s.end ? ` → ${s.end}` : ''})` : '';
+      const school = s.school ? ` c/o ${s.school.name}` : '';
+      return `${s.title}${prof}${dates}${school}`;
+    }).join('\n');
+
+    setFormData(prev => ({
+      ...prev,
+      declaredAccess: prev.declaredAccess || accessStr,
+      declaredCultural: prev.declaredCultural || culturalStr,
+      declaredServices: prev.declaredServices || serviceStr,
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const jsonNotes = JSON.stringify(formData);
@@ -83,6 +118,16 @@ export function ApplicationForm({
           <h2>{t(entry ? 'edit' : 'newApplication')}</h2>
           <p className="muted">{t('addApplicationHelp')}</p>
         </div>
+        <button
+          type="button"
+          className="secondary"
+          onClick={handleAutoImport}
+          title={t('autoImportTip')}
+          style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+        >
+          <Sparkles size={16} />
+          {t('autoImportFromDossier')}
+        </button>
       </div>
 
       <div className="fields app-fields">

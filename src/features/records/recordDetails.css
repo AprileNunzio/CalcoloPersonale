@@ -1,0 +1,159 @@
+.absence-statutory-card {
+  background: #f0fdf9;
+  border: 1.5px solid #a7f3d0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.absence-statutory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.absence-statutory-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #065f46;
+  font-size: 13px;
+}
+
+.absence-legal-pill {
+  background: #ffffff;
+  color: #047857;
+  border: 1px solid #6ee7b7;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.absence-statutory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.absence-statutory-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.absence-statutory-item.wide {
+  grid-column: 1 / -1;
+}
+
+.absence-statutory-item svg {
+  color: #059669;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.absence-statutory-item small {
+  display: block;
+  font-size: 10px;
+  color: #065f46;
+}
+
+.absence-statutory-item strong {
+  font-size: 11px;
+  color: #0f172a;
+}
+
+.absence-statutory-item p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.absence-statutory-summary {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #064e3b;
+  border-top: 1px solid #d1fae5;
+  padding-top: 8px;
+}
+
+.service-detail-fields-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+.service-live-calc-box {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.live-calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #1e293b;
+  font-size: 12px;
+}
+
+.live-days-pill {
+  background: #116b62;
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.live-calc-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.live-metric {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.live-metric small {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.live-metric strong {
+  font-size: 12px;
+  color: #0f172a;
+}
+
+.live-metric .text-green {
+  color: #16a34a;
+}
+
+.live-metric .text-amber {
+  color: #d97706;
+}
