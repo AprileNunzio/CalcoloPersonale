@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
+#[serde(rename_all = "camelCase")]
 pub struct Person {
     pub id: Uuid,
     pub first_name: String,
@@ -12,6 +12,11 @@ pub struct Person {
     pub gender: String,
     pub birth_date: Option<NaiveDate>,
     pub fiscal_code: String,
+    #[serde(default)]
+    pub birth_place: Option<String>,
+    #[serde(default)]
+    pub birth_province: Option<String>,
+    #[serde(default)]
     pub profile: String,
     #[serde(default)]
     pub municipality: Option<crate::directory::DirectoryEntry>,
@@ -19,7 +24,7 @@ pub struct Person {
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
+#[serde(rename_all = "camelCase")]
 pub struct Record {
     pub id: Uuid,
     pub kind: String,
@@ -28,6 +33,8 @@ pub struct Record {
     pub end: Option<NaiveDate>,
     pub amount: Option<f64>,
     pub notes: String,
+    #[serde(default)]
+    pub profile: Option<String>,
     #[serde(default)]
     pub school: Option<crate::directory::DirectoryEntry>,
 }
@@ -43,7 +50,10 @@ impl Person {
             || !text_valid(&self.first_name, 80)
             || !text_valid(&self.last_name, 80)
             || !["female", "male", "other"].contains(&self.gender.as_str())
-            || !["AA", "AT", "CS", "CO", "IF", "GA", "OS"].contains(&self.profile.as_str())
+            || (!self.profile.is_empty()
+                && !["AA", "AT", "CS", "CO", "IF", "GA", "OS"].contains(&self.profile.as_str()))
+            || self.birth_place.as_deref().is_some_and(|p| !text_valid(p, 100))
+            || self.birth_province.as_deref().is_some_and(|p| !text_valid(p, 10))
             || (!self.fiscal_code.is_empty()
                 && (self.fiscal_code.len() != 16
                     || !self
@@ -74,6 +84,9 @@ impl Person {
                 || record.title.trim().is_empty()
                 || !text_valid(&record.title, 160)
                 || !text_valid(&record.notes, 2000)
+                || record.profile.as_deref().is_some_and(|p| {
+                    !["AA", "AT", "CS", "CO", "IF", "GA", "OS"].contains(&p)
+                })
                 || record.end.is_some_and(|d| d < record.start)
                 || record
                     .amount

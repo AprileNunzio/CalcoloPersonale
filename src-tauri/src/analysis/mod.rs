@@ -115,6 +115,7 @@ mod tests {
             end: Some(date("2026-09-30")),
             amount: None,
             notes: String::new(),
+            profile: Some("CS".into()),
             school: None,
         };
         let mut other = record.clone();
@@ -125,6 +126,8 @@ mod tests {
             last_name: "B".into(),
             gender: "other".into(),
             birth_date: None,
+            birth_place: None,
+            birth_province: None,
             fiscal_code: String::new(),
             profile: "CS".into(),
             municipality: None,

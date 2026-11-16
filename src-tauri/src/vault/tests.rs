@@ -33,6 +33,8 @@ fn person() -> Person {
         last_name: "Test".into(),
         gender: "other".into(),
         birth_date: None,
+        birth_place: None,
+        birth_province: None,
         fiscal_code: String::new(),
         profile: "CS".into(),
         municipality: None,

@@ -1,0 +1,141 @@
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  min-width: 0;
+}
+
+.form-field.wide {
+  grid-column: 1 / -1;
+}
+
+.form-field-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  user-select: none;
+}
+
+.field-label-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #556c65;
+  margin: 0;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.field-tip-anchor {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #7d938d;
+  cursor: help;
+  outline: none;
+  transition: color 0.15s ease;
+}
+
+.field-tip-anchor:hover,
+.field-tip-anchor:focus-visible {
+  color: #146b60;
+}
+
+.tip-icon {
+  opacity: 0.8;
+}
+
+.field-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #172c27;
+  color: #f1f8f6;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  font-weight: 400;
+  white-space: normal;
+  width: max-content;
+  max-width: 280px;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(10, 25, 22, 0.25);
+  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.18s;
+}
+
+.field-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #172c27 transparent transparent transparent;
+}
+
+.field-tip-anchor:hover .field-tooltip,
+.field-tip-anchor:focus-visible .field-tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.input-wrapper {
+  display: flex;
+  position: relative;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper > input,
+.input-wrapper > select,
+.input-wrapper > textarea {
+  width: 100%;
+  border: 1.5px solid #d8e3dd;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #233e34;
+  font-size: 13.5px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.input-wrapper > input:focus,
+.input-wrapper > select:focus,
+.input-wrapper > textarea:focus {
+  border-color: #359183;
+  box-shadow: 0 0 0 3px rgba(53, 145, 131, 0.18);
+}
+
+/* Saved (valid) state with subtle green border */
+.input-wrapper.saved > input,
+.input-wrapper.saved > select,
+.input-wrapper.saved > textarea {
+  border-color: #238662 !important;
+  box-shadow: 0 0 0 2px rgba(35, 134, 98, 0.18);
+}
+
+/* Error state with red border */
+.input-wrapper.error > input,
+.input-wrapper.error > select,
+.input-wrapper.error > textarea {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.18);
+  background: #fffafa;
+}
+
+.field-error-text {
+  font-size: 11px;
+  color: #dc3545;
+  font-weight: 500;
+  margin-top: 2px;
+}
