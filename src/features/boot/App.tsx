@@ -13,6 +13,9 @@ import {
   FileText,
   Bot,
   Sparkles,
+  Banknote,
+  School,
+  FileCheck,
 } from 'lucide-react';
 import { Venus, Mars } from '../people/GenderIcons';
 import { Archive, Analysis, Person } from '../../shared/types';
@@ -30,6 +33,9 @@ import { FloatingAssistant } from '../ai/FloatingAssistant';
 import { Dashboard } from '../dashboard/Dashboard';
 import { Applications } from '../applications/Applications';
 import { FamilyPage } from '../family/FamilyPage';
+import { SalarySimulatorPane } from '../salary/SalarySimulatorPane';
+import { StrategicSchoolsPane } from '../schools30/StrategicSchoolsPane';
+import { DossierExportPane } from '../dossier/DossierExportPane';
 import { getPersonCurrentProfile } from '../../shared/personUtils';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { OtaBanner } from '../ota/OtaBanner';
@@ -257,20 +263,23 @@ function Workspace({
                 {person.firstName} {person.lastName}
               </div>
               {[
-                { k: 'overview', icon: LayoutDashboard },
-                { k: 'identity', icon: FolderHeart },
-                { k: 'applications', icon: FileText },
-                { k: 'service', icon: FolderHeart },
-                { k: 'qualification', icon: FolderHeart },
-                { k: 'child', icon: Users },
-                { k: 'absences', icon: FolderHeart },
-              ].map(({ k, icon: Icon }) => (
+                { k: 'overview', icon: LayoutDashboard, lbl: t('overview') },
+                { k: 'identity', icon: FolderHeart, lbl: t('identity') },
+                { k: 'salary', icon: Banknote, lbl: 'Busta Paga & TFR' },
+                { k: 'schools30', icon: School, lbl: '30 Scuole & Convocazioni' },
+                { k: 'dossier', icon: FileCheck, lbl: 'Scheda Sindacati & Backup' },
+                { k: 'applications', icon: FileText, lbl: t('applications') },
+                { k: 'service', icon: FolderHeart, lbl: t('service') },
+                { k: 'qualification', icon: FolderHeart, lbl: t('qualification') },
+                { k: 'child', icon: Users, lbl: t('child') },
+                { k: 'absences', icon: FolderHeart, lbl: t('absences') },
+              ].map(({ k, icon: Icon, lbl }) => (
                 <button
                   className={`nav ${section === k ? 'active' : ''}`}
                   key={k}
                   onClick={() => setSection(k)}
                 >
-                  <Icon size={18} /> {t(k)}
+                  <Icon size={18} /> {lbl}
                 </button>
               ))}
             </>
@@ -315,7 +324,17 @@ function Workspace({
         <div className="workspace">
           <header>
             <AutoSaveStatus />
-            <span>{section === 'updates' ? t('systemUpdates') : t(person ? section : 'people')}</span>
+            <span>
+              {section === 'updates'
+                ? t('systemUpdates')
+                : section === 'salary'
+                ? 'Simulatore Busta Paga NoiPA & TFR'
+                : section === 'schools30'
+                ? 'Scelta Strategica 30 Scuole & Convocazioni'
+                : section === 'dossier'
+                ? 'Scheda Fascicolo Sindacati & Backup'
+                : t(person ? section : 'people')}
+            </span>
             <div>
               {busy && <span role="status">{t('loading')}</span>}
               {language}
@@ -405,6 +424,12 @@ function Workspace({
                       {t('remove')}
                     </button>
                   </>
+                ) : section === 'salary' ? (
+                  <SalarySimulatorPane person={person} />
+                ) : section === 'schools30' ? (
+                  <StrategicSchoolsPane person={person} />
+                ) : section === 'dossier' ? (
+                  <DossierExportPane person={person} />
                 ) : section === 'applications' ? (
                   <Applications
                     key={`${person.id}-applications`}

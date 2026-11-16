@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   FileText,
   Upload,
@@ -30,6 +30,9 @@ export function IstanzeOnlineImportModal({
 }: IstanzeOnlineImportModalProps) {
   const [inputText, setInputText] = useState('');
   const [isParsing, setIsParsing] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [parsedData, setParsedData] = useState<{
     fiscalCode?: string;
     lastName?: string;
@@ -45,9 +48,35 @@ export function IstanzeOnlineImportModal({
   const [isSaving, setIsSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleParse = () => {
-    if (!inputText.trim()) {
-      setErrorMsg('Incolla il testo della domanda scaricata da Istanze Online (POLIS).');
+  const handleFile = async (file: File) => {
+    setIsParsing(true);
+    setErrorMsg('');
+    try {
+      if (file.name.toLowerCase().endsWith('.pdf')) {
+        const buffer = await file.arrayBuffer();
+        const decoder = new TextDecoder('latin1');
+        const raw = decoder.decode(buffer);
+        const matches = raw.match(/\(([^)]+)\)\s*(?:Tj|TJ)/g) || [];
+        const extracted = matches.map(m => m.replace(/^\(|\)\s*(?:Tj|TJ)$/g, '')).join(' ');
+        if (extracted.trim().length > 40) {
+          setInputText(extracted);
+          parseTextContent(extracted);
+          return;
+        }
+      }
+      const content = await file.text();
+      setInputText(content);
+      parseTextContent(content);
+    } catch {
+      setErrorMsg('Impossibile leggere il file selezionato.');
+    } finally {
+      setIsParsing(false);
+    }
+  };
+
+  const parseTextContent = (textToParse: string) => {
+    if (!textToParse.trim()) {
+      setErrorMsg('Incolla o carica il testo della domanda scaricata da Istanze Online (POLIS).');
       return;
     }
 
@@ -55,7 +84,7 @@ export function IstanzeOnlineImportModal({
     setErrorMsg('');
 
     try {
-      const text = inputText;
+      const text = textToParse;
 
       // Extract Fiscal Code
       const cfMatch = text.match(/[A-Z]{6}\d{2}[A-EHLMPR-T]\d{2}[A-Z]\d{3}[A-Z]/i);
@@ -286,18 +315,55 @@ export function IstanzeOnlineImportModal({
 
           {!parsedData ? (
             <div>
-              <div className="wizard-info-callout" style={{ marginBottom: 16 }}>
-                <FileText size={20} color="#2563eb" />
-                <div>
-                  <h4>Come importare la domanda Istanze Online</h4>
-                  <p>
-                    Apri il file PDF della domanda presentata su Istanze Online (POLIS) per le graduatorie ATA di III fascia (D.M. 89/2024 o precedenti), seleziona tutto il testo (<code>Ctrl+A</code>), copialo (<code>Ctrl+C</code>) e incollalo nel riquadro sottostante.
-                  </p>
+              <div
+                onDragOver={e => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={e => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  if (e.dataTransfer.files?.[0]) void handleFile(e.dataTransfer.files[0]);
+                }}
+                onClick={() => fileInputRef.current?.click()}
+                style={{
+                  border: isDragging ? '2px dashed #2563eb' : '2px dashed #cbd5e1',
+                  background: isDragging ? '#eff6ff' : '#f8fafc',
+                  padding: '24px 16px',
+                  borderRadius: 12,
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  marginBottom: 16,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <Upload size={32} color={isDragging ? '#2563eb' : '#64748b'} style={{ margin: '0 auto 8px auto' }} />
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b' }}>
+                  Trascina qui il file PDF della Domanda Istanze Online (Zero-Click)
                 </div>
+                <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
+                  oppure clicca qui per selezionare il file dal tuo computer
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept=".pdf,.txt"
+                  onChange={e => {
+                    if (e.target.files?.[0]) void handleFile(e.target.files[0]);
+                  }}
+                  style={{ display: 'none' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '14px 0', color: '#94a3b8' }}>
+                <div style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
+                <span style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase' }}>oppure incolla il testo</span>
+                <div style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
               </div>
 
               <textarea
-                rows={10}
+                rows={7}
                 value={inputText}
                 onChange={e => setInputText(e.target.value)}
                 placeholder="Incolla qui il testo della domanda scaricata da Istanze Online (POLIS)..."
@@ -308,7 +374,7 @@ export function IstanzeOnlineImportModal({
                 <button
                   type="button"
                   className="wizard-btn-next"
-                  onClick={handleParse}
+                  onClick={() => parseTextContent(inputText)}
                   disabled={isParsing || !inputText.trim()}
                 >
                   <Sparkles size={16} /> Analizza Domanda
