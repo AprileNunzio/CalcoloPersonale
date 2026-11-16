@@ -14,7 +14,7 @@ const DEFAULT_CONFIG: AiConfig = {
   provider: 'gemini',
   geminiModel: 'gemini-1.5-flash',
   ollamaEndpoint: 'http://127.0.0.1:11434',
-  ollamaModel: 'llama3:latest',
+  ollamaModel: '',
   consent: false,
 };
 
@@ -54,11 +54,17 @@ export function AiAssistantPage() {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-    } catch (reason) {
+    } catch (reason: any) {
+      let errorText = `${t('aiExecutionError')}. ${t('checkAiConfiguration')}`;
+      if (reason?.message === 'noOllamaModelSelected' || reason === 'noOllamaModelSelected') {
+        errorText = t('noOllamaModelSelectedDesc');
+      } else if (reason?.message === 'ollamaConnectionFailed' || reason === 'ollamaConnectionFailed') {
+        errorText = t('ollamaConnectionFailedDesc');
+      }
       const errorMessage: ChatMessage = {
         id: crypto.randomUUID(),
         sender: 'assistant',
-        text: `${t('aiExecutionError')}: ${typeof reason === 'string' ? reason : t('checkAiConfiguration')}`,
+        text: errorText,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages(prev => [...prev, errorMessage]);

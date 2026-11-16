@@ -17,13 +17,14 @@ import { ChatInput } from './ChatInput';
 import { AiSettingsModal } from './AiSettingsModal';
 import { executeAiQuery } from './aiService';
 import { OCR_SYSTEM_PROMPT, parseAndValidateAiResponse } from './documentOcr';
+import './aiAssistant.css';
 import './floatingAssistant.css';
 
 const DEFAULT_CONFIG: AiConfig = {
   provider: 'gemini',
   geminiModel: 'gemini-1.5-flash',
   ollamaEndpoint: 'http://127.0.0.1:11434',
-  ollamaModel: 'llama3:latest',
+  ollamaModel: '',
   consent: false,
 };
 
@@ -167,11 +168,17 @@ export function FloatingAssistant({
       };
 
       setMessages(prev => [...prev, assistantMsg]);
-    } catch {
+    } catch (err: any) {
+      let errorText = `${t('aiExecutionError')}. ${t('checkAiConfiguration')}`;
+      if (err?.message === 'noOllamaModelSelected' || err === 'noOllamaModelSelected') {
+        errorText = t('noOllamaModelSelectedDesc');
+      } else if (err?.message === 'ollamaConnectionFailed' || err === 'ollamaConnectionFailed') {
+        errorText = t('ollamaConnectionFailedDesc');
+      }
       const errorMsg: ChatMessage = {
         id: crypto.randomUUID(),
         sender: 'assistant',
-        text: `${t('aiExecutionError')}. ${t('checkAiConfiguration')}`,
+        text: errorText,
         timestamp: new Date().toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',

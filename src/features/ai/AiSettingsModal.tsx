@@ -51,12 +51,18 @@ export function AiSettingsModal({
     try {
       const list = await fetchOllamaModels(ollamaEndpoint);
       setOllamaModels(list);
-      if (!ollamaModel && list.length > 0) {
-        setOllamaModel(list[0]);
+      if (list.length > 0) {
+        if (!ollamaModel || !list.includes(ollamaModel)) {
+          setOllamaModel(list[0]);
+        }
+        setSuccess(t('ollamaConnectedSuccess'));
+      } else {
+        setOllamaModel('');
+        setError(t('noOllamaModelsFound'));
       }
-      setSuccess(t('ollamaConnectedSuccess'));
     } catch {
       setError(t('ollamaConnectionFailed'));
+      setOllamaModels([]);
     } finally {
       setBusy(false);
     }
@@ -104,8 +110,8 @@ export function AiSettingsModal({
     onSaveConfig({
       provider,
       geminiModel: geminiModel || (geminiModels[0] ?? 'gemini-1.5-flash'),
-      ollamaEndpoint: ollamaEndpoint || 'http://127.0.0.1:11434',
-      ollamaModel: ollamaModel || (ollamaModels[0] ?? 'llama3:latest'),
+      ollamaEndpoint: (ollamaEndpoint || 'http://127.0.0.1:11434').trim().replace(/\/+$/, ''),
+      ollamaModel: ollamaModel || (ollamaModels[0] ?? ''),
       consent,
     });
     onClose();
@@ -232,22 +238,12 @@ export function AiSettingsModal({
 
             <div className="config-form-field">
               <label>{t('ollamaEndpointUrl')}</label>
-              <input
-                type="text"
-                value={ollamaEndpoint}
-                onChange={e => setOllamaEndpoint(e.target.value)}
-                placeholder="http://127.0.0.1:11434"
-              />
-            </div>
-
-            <div className="config-form-field">
-              <label>{t('localModel')}</label>
               <div style={{ display: 'flex', gap: 8 }}>
                 <input
                   type="text"
-                  value={ollamaModel}
-                  onChange={e => setOllamaModel(e.target.value)}
-                  placeholder="llama3:latest"
+                  value={ollamaEndpoint}
+                  onChange={e => setOllamaEndpoint(e.target.value)}
+                  placeholder="http://127.0.0.1:11434"
                   style={{ flex: 1 }}
                 />
                 <button
@@ -261,20 +257,53 @@ export function AiSettingsModal({
                   {t('testConnection')}
                 </button>
               </div>
+            </div>
 
-              <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-                {(ollamaModels.length > 0 ? ollamaModels : ['llama3:latest', 'llama3.2:latest', 'mistral:latest', 'qwen2.5:latest', 'llava:latest']).map(m => (
-                  <button
-                    key={m}
-                    type="button"
-                    className={`mini-btn ${ollamaModel === m ? '' : 'secondary'}`}
-                    style={{ fontSize: '11px', padding: '3px 8px', borderRadius: '12px' }}
-                    onClick={() => setOllamaModel(m)}
+            <div className="config-form-field">
+              <label>{t('localModel')}</label>
+              {ollamaModels.length > 0 ? (
+                <>
+                  <select
+                    value={ollamaModel}
+                    onChange={e => setOllamaModel(e.target.value)}
+                    style={{ width: '100%', marginBottom: 8 }}
                   >
-                    {m}
-                  </button>
-                ))}
-              </div>
+                    {ollamaModels.map(m => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {ollamaModels.map(m => (
+                      <button
+                        key={m}
+                        type="button"
+                        className={`mini-btn ${ollamaModel === m ? '' : 'secondary'}`}
+                        style={{ fontSize: '11px', padding: '4px 10px', borderRadius: '12px' }}
+                        onClick={() => setOllamaModel(m)}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: 6 }}>
+                    {t('onlyInstalledModelsNotice')}
+                  </span>
+                </>
+              ) : (
+                <div style={{
+                  padding: '12px 14px',
+                  background: 'var(--color-bg-secondary, #f8fafc)',
+                  border: '1px dashed var(--color-border, #cbd5e1)',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  color: 'var(--color-text-muted, #64748b)',
+                  lineHeight: 1.5,
+                }}>
+                  {busy ? t('loading') : t('noOllamaModelsFound')}
+                </div>
+              )}
             </div>
           </div>
         )}

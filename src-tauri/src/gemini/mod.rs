@@ -200,32 +200,63 @@ pub async fn ask_gemini(
     Ok(answer)
 }
 
+fn get_ollama_candidates(endpoint: Option<String>) -> Result<Vec<String>> {
+    let url = endpoint.unwrap_or_else(|| "http://127.0.0.1:11434".into());
+    let url = url.trim_end_matches('/').to_string();
+    if !url.starts_with("http://") && !url.starts_with("https://") {
+        return Err(Error::Invalid);
+    }
+    let mut candidates = vec![url.clone()];
+    if url.contains("127.0.0.1") {
+        candidates.push(url.replace("127.0.0.1", "localhost"));
+    } else if url.contains("localhost") {
+        candidates.push(url.replace("localhost", "127.0.0.1"));
+    }
+    Ok(candidates)
+}
+
 #[tauri::command]
 pub async fn ollama_models(
     endpoint: Option<String>,
     vault: State<'_, Vault>,
 ) -> Result<Vec<String>> {
     require_unlock(&vault)?;
-    let url = endpoint.unwrap_or_else(|| "http://127.0.0.1:11434".into());
-    let url = url.trim_end_matches('/');
-    if !url.starts_with("http://") && !url.starts_with("https://") {
-        return Err(Error::Invalid);
-    }
+    let candidates = get_ollama_candidates(endpoint)?;
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
         .build()
         .map_err(|_| Error::Remote)?;
-    let response = client
-        .get(format!("{url}/api/tags"))
-        .send()
-        .await
-        .map_err(|_| Error::Remote)?;
-    let body = response_json(response).await?;
-    let models = body["models"].as_array().ok_or(Error::Remote)?;
-    Ok(models
-        .iter()
-        .filter_map(|m| m["name"].as_str().map(str::to_string))
-        .collect())
+
+    let mut last_err = Error::Remote;
+    for url in candidates {
+        let response = match client.get(format!("{url}/api/tags")).send().await {
+            Ok(r) => r,
+            Err(_) => {
+                last_err = Error::Remote;
+                continue;
+            }
+        };
+        let body = match response_json(response).await {
+            Ok(b) => b,
+            Err(e) => {
+                last_err = e;
+                continue;
+            }
+        };
+        if let Some(models) = body["models"].as_array() {
+            let list: Vec<String> = models
+                .iter()
+                .filter_map(|m| {
+                    m["name"]
+                        .as_str()
+                        .or_else(|| m["model"].as_str())
+                        .map(str::to_string)
+                })
+                .collect();
+            return Ok(list);
+        }
+    }
+    Err(last_err)
 }
 
 #[tauri::command]
@@ -246,11 +277,7 @@ pub async fn ask_ollama(
         .clone()
         .try_acquire_owned()
         .map_err(|_| Error::Busy)?;
-    let url = endpoint.unwrap_or_else(|| "http://127.0.0.1:11434".into());
-    let url = url.trim_end_matches('/');
-    if !url.starts_with("http://") && !url.starts_with("https://") {
-        return Err(Error::Invalid);
-    }
+    let candidates = get_ollama_candidates(endpoint)?;
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(180))
         .build()
@@ -265,16 +292,33 @@ pub async fn ask_ollama(
             payload["images"] = json!(imgs);
         }
     }
-    let response = client
-        .post(format!("{url}/api/generate"))
-        .json(&payload)
-        .send()
-        .await
-        .map_err(|_| Error::Remote)?;
-    let body = response_json(response).await?;
-    let answer = body["response"].as_str().ok_or(Error::Remote)?;
-    if answer.is_empty() {
-        return Err(Error::Remote);
+
+    let mut last_err = Error::Remote;
+    for url in candidates {
+        let response = match client
+            .post(format!("{url}/api/generate"))
+            .json(&payload)
+            .send()
+            .await
+        {
+            Ok(r) => r,
+            Err(_) => {
+                last_err = Error::Remote;
+                continue;
+            }
+        };
+        let body = match response_json(response).await {
+            Ok(b) => b,
+            Err(e) => {
+                last_err = e;
+                continue;
+            }
+        };
+        if let Some(answer) = body["response"].as_str() {
+            if !answer.is_empty() {
+                return Ok(answer.to_string());
+            }
+        }
     }
-    Ok(answer.to_string())
+    Err(last_err)
 }

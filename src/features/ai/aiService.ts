@@ -7,11 +7,11 @@ export async function fetchGeminiModels(): Promise<string[]> {
 }
 
 export async function fetchOllamaModels(endpoint?: string): Promise<string[]> {
-  const base = (endpoint || 'http://127.0.0.1:11434').replace(/\/+$/, '');
+  const base = (endpoint || 'http://127.0.0.1:11434').trim().replace(/\/+$/, '');
   
   try {
     const list = await call<string[]>('ollama_models', { endpoint: base });
-    if (Array.isArray(list) && list.length > 0) return list;
+    if (Array.isArray(list)) return list;
   } catch {}
 
   const candidates = [base];
@@ -57,27 +57,40 @@ export async function executeAiQuery(
   if (config.provider === 'ollama') {
     const images: string[] = attachments
       .filter(att => att.type.startsWith('image/'))
-      .map(att => att.base64.replace(/^data:image\/[a-z]+;base64,/, ''));
+      .map(att => att.base64.replace(/^data:[^;]+;base64,/, ''));
 
-    const endpoint = config.ollamaEndpoint || 'http://127.0.0.1:11434';
+    const endpoint = (config.ollamaEndpoint || 'http://127.0.0.1:11434').trim().replace(/\/+$/, '');
+
+    let modelToUse = config.ollamaModel?.trim();
+    if (!modelToUse) {
+      try {
+        const installed = await fetchOllamaModels(endpoint);
+        if (installed.length > 0) {
+          modelToUse = installed[0];
+        }
+      } catch {}
+    }
+
+    if (!modelToUse) {
+      throw new Error('noOllamaModelSelected');
+    }
 
     try {
       return await call<string>('ask_ollama', {
         endpoint,
-        model: config.ollamaModel,
+        model: modelToUse,
         prompt: fullPrompt,
         images: images.length > 0 ? images : null,
       });
     } catch {
-      const base = endpoint.replace(/\/+$/, '');
-      const candidates = [base];
-      if (base.includes('127.0.0.1')) candidates.push(base.replace('127.0.0.1', 'localhost'));
-      else if (base.includes('localhost')) candidates.push(base.replace('localhost', '127.0.0.1'));
+      const candidates = [endpoint];
+      if (endpoint.includes('127.0.0.1')) candidates.push(endpoint.replace('127.0.0.1', 'localhost'));
+      else if (endpoint.includes('localhost')) candidates.push(endpoint.replace('localhost', '127.0.0.1'));
 
       for (const target of candidates) {
         try {
           const payload: any = {
-            model: config.ollamaModel,
+            model: modelToUse,
             prompt: fullPrompt,
             stream: false,
           };

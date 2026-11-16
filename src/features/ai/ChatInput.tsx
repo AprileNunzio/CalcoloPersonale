@@ -19,6 +19,29 @@ export function ChatInput({
   const [attachments, setAttachments] = useState<ChatAttachment[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleQuickPromptClick = (prompt: string) => {
+    setText(prompt);
+    if (
+      attachments.length === 0 &&
+      (prompt.toLowerCase().includes('allegat') ||
+        prompt.toLowerCase().includes('scansiona') ||
+        prompt.toLowerCase().includes('attach') ||
+        prompt.toLowerCase().includes('scan'))
+    ) {
+      fileInputRef.current?.click();
+    }
+  };
+
+  const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
+    }
+  };
 
   const quickPrompts = customQuickPrompts || [
     t('quickPrompt1'),
@@ -74,6 +97,9 @@ export function ChatInput({
     onSendMessage(text.trim(), attachments);
     setText('');
     setAttachments([]);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -100,7 +126,7 @@ export function ChatInput({
             key={i}
             type="button"
             className="quick-prompt-chip"
-            onClick={() => setText(prompt)}
+            onClick={() => handleQuickPromptClick(prompt)}
             disabled={busy || disabled}
           >
             <Sparkles size={12} />
@@ -145,6 +171,7 @@ export function ChatInput({
           type="button"
           className="attach-file-btn"
           title={t('attachDocumentTooltip')}
+          aria-label={t('attachDocumentTooltip')}
           disabled={busy || disabled}
           onClick={() => fileInputRef.current?.click()}
         >
@@ -152,9 +179,10 @@ export function ChatInput({
         </button>
 
         <textarea
+          ref={textareaRef}
           rows={1}
           value={text}
-          onChange={e => setText(e.target.value)}
+          onChange={handleTextChange}
           onKeyDown={handleKeyDown}
           placeholder={attachments.length > 0 ? t('askAboutAttachedDoc') : t('chatInputPlaceholder')}
           disabled={busy || disabled}
@@ -167,6 +195,7 @@ export function ChatInput({
           disabled={busy || disabled || (!text.trim() && attachments.length === 0)}
           onClick={handleSend}
           title={t('send')}
+          aria-label={t('send')}
         >
           <Send size={16} />
         </button>
