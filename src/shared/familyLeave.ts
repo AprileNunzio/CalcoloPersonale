@@ -113,6 +113,16 @@ function detectRelation(entry: { notes?: string; title?: string; start?: string 
     }
   }
 
+  if (entry.title) {
+    const lowerTitle = entry.title.toLowerCase();
+    if (lowerTitle.includes('moglie') || lowerTitle.includes('marito') || lowerTitle.includes('coniuge') || lowerTitle.includes('spouse') || lowerTitle.includes('partner')) {
+      return 'spouse';
+    }
+    if (lowerTitle.includes('mamma') || lowerTitle.includes('papà') || lowerTitle.includes('padre') || lowerTitle.includes('madre') || lowerTitle.includes('genitore')) {
+      return 'parent';
+    }
+  }
+
   // If age is >= 18 and no explicit relation, classify as spouse/adult rather than assuming a child
   if (entry.start) {
     const age = calculateAgeDetailed(entry.start);
@@ -186,8 +196,20 @@ export function computeComprehensiveFamilyOverview(
 
     // It's a child: calculate exact age and legal applicability under D.Lgs. 151/2001
     const age = calculateAgeDetailed(record.start);
-    const ageYears = age ? age.years : 0;
-    const ageMonths = age ? age.months : 0;
+    if (!age || !record.start) {
+      others.push({
+        memberId: record.id,
+        fullName: record.title,
+        relation: 'Familiare (data mancante)',
+        birthDate: null,
+        isDisability104,
+        legalNote: 'Data di nascita non specificata: non è possibile attribuire congedo parentale senza data certa di nascita (D.Lgs. 151/2001).',
+      });
+      continue;
+    }
+
+    const ageYears = age.years;
+    const ageMonths = age.months;
     const isEligibleUnder12 = ageYears < 12;
     const deadline12Years = computeDeadline12Years(record.start);
 

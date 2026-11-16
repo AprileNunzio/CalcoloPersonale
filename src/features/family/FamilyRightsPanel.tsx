@@ -42,7 +42,7 @@ export function FamilyRightsPanel({
 
       {isOpen && (
         <div className="family-rights-content">
-          {sharedLeaves.length > 0 && (
+          {sharedLeaves.length > 0 ? (
             <div className="shared-leave-card-strip">
               {sharedLeaves.map(sl => (
                 <div key={sl.childName} className="shared-leave-box">
@@ -74,6 +74,10 @@ export function FamilyRightsPanel({
                   )}
                 </div>
               ))}
+            </div>
+          ) : (
+            <div style={{ padding: '12px 14px', background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13, color: '#64748b', marginBottom: 16 }}>
+              <strong>Nessun congedo parentale attivo:</strong> Ai sensi del D.Lgs. 151/2001 e del D.Lgs. 105/2022, il congedo parentale spetta esclusivamente in presenza di figli fino al compimento del 12° anno di vita.
             </div>
           )}
 

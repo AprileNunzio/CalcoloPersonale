@@ -67,7 +67,7 @@ export function CareerIntelligencePane({
 
                 <div className="first-tier-metrics">
                   <span>
-                    {firstTier.totalDays} / {firstTier.targetDays} {t('days')}
+                    Validi 24 Mesi ATA: <strong>{firstTier.totalDays} / {firstTier.targetDays} {t('days')}</strong>
                   </span>
                   {!firstTier.isEligible && (
                     <span>
@@ -76,7 +76,17 @@ export function CareerIntelligencePane({
                   )}
                 </div>
 
-                <div className="first-tier-window">
+                <div style={{ fontSize: 11, color: '#64748b', display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
+                  <span>Specifici: <strong>{firstTier.specificDays} gg</strong></span>
+                  {firstTier.otherAtaDays > 0 && <span>Altri ATA: <strong>{firstTier.otherAtaDays} gg</strong></span>}
+                  {firstTier.docenteDays > 0 && (
+                    <span style={{ color: '#d97706' }} title="Il servizio docente dà punteggio in III fascia ma non concorre ai 24 mesi I fascia ATA (art. 554 D.Lgs. 297/94)">
+                      Docente: <strong>{firstTier.docenteDays} gg</strong> (escluso dai 24M ATA)
+                    </span>
+                  )}
+                </div>
+
+                <div className="first-tier-window" style={{ marginTop: 6 }}>
                   <Calendar size={12} />
                   <span>{firstTier.projectedWindow}</span>
                 </div>

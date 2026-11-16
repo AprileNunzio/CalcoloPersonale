@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Plus, Trash2, Pencil, Briefcase, Link2 } from 'lucide-react';
+import { Plus, Trash2, Pencil, Briefcase, Link2, FileText } from 'lucide-react';
 import { Archive, Entry, Person } from '../../shared/types';
 import { call, getRevision } from '../../shared/api';
 import { useT } from '../../shared/i18n';
@@ -13,6 +13,10 @@ import { ServiceDetailFields } from './ServiceDetailFields';
 import { ServiceSector } from './serviceCalculations';
 import { FamilyMemberPicker } from './FamilyMemberPicker';
 import { detectContractType } from '../../shared/entitlements';
+import { QualificationPresetSelector } from './QualificationPresetSelector';
+import { IstanzeOnlineImportModal } from '../import/IstanzeOnlineImportModal';
+import { RecordItemCard } from './RecordItemCard';
+import { getTitleLabel, getTitlePlaceholder, getStartLabel } from './recordFormLabels';
 import './recordDetails.css';
 
 const absenceKinds = [
@@ -44,6 +48,7 @@ function parseNotes(notes: string): { text: string; sector?: ServiceSector; link
 export function Records({
   person,
   section,
+  save,
   busy,
 }: {
   person: Person;
@@ -58,6 +63,7 @@ export function Records({
   const [error, setError] = useState('');
   const [familySource, setFamilySource] = useState<'manual' | 'archive'>('manual');
   const [selectedLinkedId, setSelectedLinkedId] = useState('');
+  const [showImportModal, setShowImportModal] = useState(false);
 
   const kinds = section === 'absences' ? absenceKinds : [section];
   const entries = person.records.filter(record => kinds.includes(record.kind));
@@ -143,26 +149,39 @@ export function Records({
     <section>
       <div className="section-heading">
         <h2>{t(section)}</h2>
-        <button
-          disabled={busy || pending || draft !== null}
-          onClick={() => {
-            setFamilySource('manual');
-            setSelectedLinkedId('');
-            setDraft({
-              id: crypto.randomUUID(),
-              kind: kinds[0],
-              title: '',
-              start: '',
-              end: null,
-              amount: null,
-              notes: '',
-              profile: kinds[0] === 'service' ? 'CS' : null,
-            });
-          }}
-        >
-          <Plus size={18} />
-          {t('addRecord')}
-        </button>
+        <div>
+          <button
+            type="button"
+            className="secondary"
+            style={{ marginRight: 8 }}
+            disabled={busy || pending}
+            onClick={() => setShowImportModal(true)}
+            title="Importa la domanda presentata su Istanze Online (POLIS)"
+          >
+            <FileText size={16} />
+            Importa Domanda POLIS
+          </button>
+          <button
+            disabled={busy || pending || draft !== null}
+            onClick={() => {
+              setFamilySource('manual');
+              setSelectedLinkedId('');
+              setDraft({
+                id: crypto.randomUUID(),
+                kind: kinds[0],
+                title: '',
+                start: '',
+                end: null,
+                amount: null,
+                notes: '',
+                profile: kinds[0] === 'service' ? 'CS' : null,
+              });
+            }}
+          >
+            <Plus size={18} />
+            {t('addRecord')}
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -256,19 +275,47 @@ export function Records({
                 >
                   <select
                     value={draft.profile || 'CS'}
-                    onChange={event => setDraft({ ...draft, profile: event.target.value })}
+                    onChange={event => {
+                      const val = event.target.value;
+                      setDraft({
+                        ...draft,
+                        profile: val,
+                        notes: val === 'DOCENTE'
+                          ? JSON.stringify({ ...parsedDraftNotes, sector: 'statale_docente' })
+                          : draft.notes,
+                      });
+                    }}
                   >
                     {ATA_PROFILES.map(p => (
                       <option key={p.code} value={p.code}>
                         {p.label}
                       </option>
                     ))}
+                    <option value="DOCENTE">Personale Docente (Insegnante)</option>
                   </select>
                 </FormField>
               )}
 
+              {draft.kind === 'qualification' && (
+                <QualificationPresetSelector
+                  initialTitle={draft.title}
+                  initialAmount={draft.amount}
+                  initialNotes={draft.notes}
+                  profile={draft.profile || person.profile}
+                  onChange={data => {
+                    setDraft({
+                      ...draft,
+                      title: data.title,
+                      amount: data.amount,
+                      notes: data.notes,
+                      profile: data.profile !== undefined ? data.profile : draft.profile,
+                    });
+                  }}
+                />
+              )}
+
               <FormField
-                label={t('title')}
+                label={getTitleLabel(draft.kind)}
                 tip={draft.kind === 'service' ? t('tipServiceTitle') : undefined}
                 status={getFieldStatus('title')}
                 errorMessage={t('requiredField')}
@@ -278,12 +325,34 @@ export function Records({
                   maxLength={160}
                   value={draft.title}
                   onChange={event => setDraft({ ...draft, title: event.target.value })}
-                  placeholder={draft.kind === 'service' ? 'es. Contratto 30 giugno / supplenza' : ''}
+                  placeholder={getTitlePlaceholder(draft.kind)}
                 />
               </FormField>
 
+              {draft.kind === 'qualification' && (
+                <FormField
+                  label="Punteggio Titolo (in decimi)"
+                  tip="Punteggio ministeriale attribuito al titolo (es. 8.00 per voto 80/100, 1.00 per Dattilografia, 0 per CIAD)."
+                >
+                  <input
+                    type="number"
+                    step="0.01"
+                    min={0}
+                    max={100}
+                    value={draft.amount ?? ''}
+                    onChange={event =>
+                      setDraft({
+                        ...draft,
+                        amount: event.target.value ? parseFloat(event.target.value) : null,
+                      })
+                    }
+                    placeholder="es. 8.00"
+                  />
+                </FormField>
+              )}
+
               <FormField
-                label={t('start')}
+                label={getStartLabel(draft.kind)}
                 tip={draft.kind === 'service' ? t('tipServiceStart') : undefined}
                 status={getFieldStatus('start')}
               >
@@ -368,102 +437,37 @@ export function Records({
         {entries.length === 0 ? (
           <p className="muted">{t('noRecords')}</p>
         ) : (
-          entries.map(record => {
-            const parsed = parseNotes(record.notes);
-            const isLinked = !!parsed.linkedPersonId;
-
-            return (
-              <article className="entry" key={record.id}>
-                <div>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: 4 }}>
-                    <span className="badge">{t(record.kind)}</span>
-                    {record.kind === 'service' && record.profile && (
-                      <span
-                        className="badge"
-                        style={{
-                          background: '#eaf4f1',
-                          color: '#166e61',
-                          borderColor: '#c4e3dc',
-                          fontWeight: 600,
-                        }}
-                      >
-                        <Briefcase
-                          size={12}
-                          style={{ display: 'inline', marginRight: 4, verticalAlign: '-1px' }}
-                        />
-                        {record.profile} · {PROFILE_LABELS[record.profile] || record.profile}
-                      </span>
-                    )}
-                    {record.kind === 'service' && parsed.sector && (
-                      <span className="badge">
-                        {t(
-                          parsed.sector === 'statale_ata'
-                            ? 'sectorStataleAta'
-                            : parsed.sector === 'statale_docente'
-                            ? 'sectorStataleDocente'
-                            : parsed.sector === 'paritaria_ata'
-                            ? 'sectorParitariaAta'
-                            : 'sectorParitariaDocente'
-                        )}
-                      </span>
-                    )}
-                    {isLinked && (
-                      <span
-                        className="badge"
-                        style={{
-                          background: '#eff6ff',
-                          color: '#1d4ed8',
-                          borderColor: '#bfdbfe',
-                          fontWeight: 600,
-                        }}
-                      >
-                        <Link2 size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: '-1px' }} />
-                        {t('linkedPerson')}
-                      </span>
-                    )}
-                  </div>
-                  <h3>{record.title}</h3>
-                  <p>
-                    {record.start}
-                    {record.end ? ` → ${record.end}` : ''}
-                  </p>
-                  {record.school && (
-                    <p className="muted" style={{ fontSize: '12px', marginTop: 2 }}>
-                      {record.school.code} · {record.school.name} ({record.school.municipality} - {record.school.province})
-                    </p>
-                  )}
-                  {parsed.text && (
-                    <p className="muted">{parsed.text}</p>
-                  )}
-                </div>
-                <div className="actions">
-                  <button
-                    className="icon secondary"
-                    aria-label={t('edit')}
-                    disabled={busy || pending || draft !== null}
-                    onClick={() => {
-                      setFamilySource('manual');
-                      setDraft(record);
-                    }}
-                  >
-                    <Pencil size={17} />
-                  </button>
-                  <button
-                    className="icon secondary"
-                    aria-label={t('remove')}
-                    disabled={busy || pending || draft !== null}
-                    onClick={() => {
-                      if (window.confirm(t('deleteRecord'))) void persist(record, true);
-                    }}
-                  >
-                    <Trash2 size={17} />
-                  </button>
-                </div>
-              </article>
-            );
-          })
+          entries.map(record => (
+            <RecordItemCard
+              key={record.id}
+              record={record}
+              busy={busy}
+              pending={pending}
+              isDrafting={draft !== null}
+              onEdit={rec => {
+                setFamilySource('manual');
+                setDraft(rec);
+              }}
+              onRemove={rec => {
+                if (window.confirm(t('deleteRecord'))) void persist(rec, true);
+              }}
+            />
+          ))
         )}
       </div>
+
+      {showImportModal && (
+        <IstanzeOnlineImportModal
+          currentPerson={person}
+          onImportComplete={(updatedPerson, updatedArchive) => {
+            context.saved(updatedArchive);
+            save(updatedPerson);
+            setShowImportModal(false);
+          }}
+          onClose={() => setShowImportModal(false)}
+          busy={busy || pending}
+        />
+      )}
     </section>
   );
 }

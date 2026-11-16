@@ -4,6 +4,8 @@ import { ProfileScore } from './scoring';
 export interface FirstTierEligibility {
   profileCode: string;
   specificDays: number;
+  otherAtaDays: number;
+  docenteDays: number;
   totalDays: number;
   targetDays: number;
   percentCompleted: number;
@@ -79,21 +81,32 @@ export function computeFirstTierEligibility(
   const services = (person.records || []).filter(r => r.kind === 'service');
 
   let specificDays = 0;
-  let otherDays = 0;
+  let otherAtaDays = 0;
+  let docenteDays = 0;
 
   for (const s of services) {
     const isParitaria = (s.title + ' ' + (s.notes || '')).toLowerCase().includes('paritaria');
     if (isParitaria) continue;
 
     const days = calculateDaysBetween(s.start, s.end);
+    const isDocente =
+      s.profile === 'DOCENTE' ||
+      (s.title + ' ' + (s.notes || '')).toLowerCase().includes('docente') ||
+      (s.title + ' ' + (s.notes || '')).toLowerCase().includes('insegnante');
+
+    if (isDocente) {
+      docenteDays += days;
+      continue;
+    }
+
     if (s.profile === profileCode) {
       specificDays += days;
     } else {
-      otherDays += days;
+      otherAtaDays += days;
     }
   }
 
-  const totalDays = specificDays + otherDays;
+  const totalDays = specificDays + otherAtaDays;
   const isEligible = totalDays >= STATUTORY_TARGET_DAYS;
   const remainingDays = Math.max(0, STATUTORY_TARGET_DAYS - totalDays);
   const remainingMonths = Math.ceil(remainingDays / 30);
@@ -113,6 +126,8 @@ export function computeFirstTierEligibility(
   return {
     profileCode,
     specificDays,
+    otherAtaDays,
+    docenteDays,
     totalDays,
     targetDays: STATUTORY_TARGET_DAYS,
     percentCompleted,
