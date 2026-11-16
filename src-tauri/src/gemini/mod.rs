@@ -216,9 +216,7 @@ fn get_ollama_candidates(endpoint: Option<String>) -> Result<Vec<String>> {
 }
 
 #[tauri::command]
-pub async fn ollama_models(
-    endpoint: Option<String>,
-) -> Result<Vec<String>> {
+pub async fn ollama_models(endpoint: Option<String>) -> Result<Vec<String>> {
     let candidates = get_ollama_candidates(endpoint)?;
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
