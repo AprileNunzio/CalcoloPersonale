@@ -1,6 +1,9 @@
-import { useState } from 'react';
-import { Entry, Person } from '../../shared/types';
+import { useState, useContext } from 'react';
+import { Entry, Person, Archive } from '../../shared/types';
 import { useT } from '../../shared/i18n';
+import { call, getRevision } from '../../shared/api';
+import { flush } from '../autosave/store';
+import { AutoSaveContext } from '../autosave/AutoSave';
 import { Plus, Edit2, Trash2, Calendar, FileText, School, MapPin } from 'lucide-react';
 import { Icon3dDocument, ProfileBadge3d } from '../../shared/icons3d';
 import { ApplicationForm } from './ApplicationForm';
@@ -13,47 +16,91 @@ export function Applications({
   busy,
 }: {
   person: Person;
-  save: (p: Person) => void;
+  save?: (p: Person) => void;
   busy: boolean;
 }) {
   const t = useT();
+  const context = useContext(AutoSaveContext);
   const [editing, setEditing] = useState<Entry | null>(null);
   const [creating, setCreating] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
 
   const applications = (person.records || []).filter(r => r.kind === 'application');
 
-  const handleSave = (record: Entry) => {
-    const existingIndex = person.records.findIndex(r => r.id === record.id);
-    let nextRecords: Entry[];
-    if (existingIndex >= 0) {
-      nextRecords = person.records.map((r, i) => (i === existingIndex ? record : r));
-    } else {
-      nextRecords = [record, ...person.records];
+  const handleSave = async (record: Entry) => {
+    setPending(true);
+    setError('');
+    try {
+      await flush();
+      const updatedArchive = await call<Archive>('save_record', {
+        personId: person.id,
+        entryId: record.id,
+        entry: record,
+        revision: getRevision(),
+      });
+      if (context) {
+        context.saved(updatedArchive);
+      } else if (save) {
+        const existingIndex = person.records.findIndex(r => r.id === record.id);
+        const nextRecords = existingIndex >= 0
+          ? person.records.map((r, i) => (i === existingIndex ? record : r))
+          : [record, ...person.records];
+        save({ ...person, records: nextRecords });
+      }
+      setCreating(false);
+      setEditing(null);
+    } catch (err) {
+      setError(typeof err === 'string' ? err : 'error');
+    } finally {
+      setPending(false);
     }
-    save({ ...person, records: nextRecords });
-    setCreating(false);
-    setEditing(null);
   };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm(t('deleteRecord'))) {
-      const nextRecords = person.records.filter(r => r.id !== id);
-      save({ ...person, records: nextRecords });
+  const handleDelete = async (id: string) => {
+    if (!window.confirm(t('deleteRecord'))) return;
+    setPending(true);
+    setError('');
+    try {
+      await flush();
+      const updatedArchive = await call<Archive>('delete_record', {
+        personId: person.id,
+        entryId: id,
+        revision: getRevision(),
+      });
+      if (context) {
+        context.saved(updatedArchive);
+      } else if (save) {
+        const nextRecords = person.records.filter(r => r.id !== id);
+        save({ ...person, records: nextRecords });
+      }
+    } catch (err) {
+      setError(typeof err === 'string' ? err : 'error');
+    } finally {
+      setPending(false);
     }
   };
 
   if (creating || editing) {
     return (
-      <ApplicationForm
-        person={person}
-        entry={editing ?? undefined}
-        onSave={handleSave}
-        onCancel={() => {
-          setCreating(false);
-          setEditing(null);
-        }}
-        busy={busy}
-      />
+      <div className="applications-container">
+        {error && (
+          <div className="error" style={{ marginBottom: 16 }}>
+            {t(error)}
+          </div>
+        )}
+        <ApplicationForm
+          person={person}
+          entry={editing ?? undefined}
+          onSave={handleSave}
+          onCancel={() => {
+            setCreating(false);
+            setEditing(null);
+            setError('');
+          }}
+          busy={busy || pending}
+        />
+      </div>
     );
   }
 
@@ -69,6 +116,12 @@ export function Applications({
           {t('newApplication')}
         </button>
       </div>
+
+      {error && (
+        <div className="error" style={{ marginBottom: 16 }}>
+          {t(error)}
+        </div>
+      )}
 
       {applications.length === 0 ? (
         <div className="panel empty-app-card">

@@ -43,6 +43,13 @@ pub fn text_valid(value: &str, max: usize) -> bool {
     value.chars().count() <= max && !value.chars().any(|c| c.is_control())
 }
 
+pub fn notes_valid(value: &str, max: usize) -> bool {
+    value.chars().count() <= max
+        && !value
+            .chars()
+            .any(|c| c.is_control() && c != '\n' && c != '\r' && c != '\t')
+}
+
 impl Person {
     pub fn validate(&self) -> Result<()> {
         if self.first_name.trim().is_empty()
@@ -51,7 +58,7 @@ impl Person {
             || !text_valid(&self.last_name, 80)
             || !["female", "male", "other"].contains(&self.gender.as_str())
             || (!self.profile.is_empty()
-                && !["AA", "AT", "CS", "CO", "IF", "GA", "OS"].contains(&self.profile.as_str()))
+                && !["AA", "AT", "CS", "CO", "IF", "GA", "OS", "CR"].contains(&self.profile.as_str()))
             || self
                 .birth_place
                 .as_deref()
@@ -90,11 +97,11 @@ impl Person {
                 .contains(&record.kind.as_str())
                 || record.title.trim().is_empty()
                 || !text_valid(&record.title, 160)
-                || !text_valid(&record.notes, 2000)
+                || !notes_valid(&record.notes, 64000)
                 || record
                     .profile
                     .as_deref()
-                    .is_some_and(|p| !["AA", "AT", "CS", "CO", "IF", "GA", "OS"].contains(&p))
+                    .is_some_and(|p| !["AA", "AT", "CS", "CO", "IF", "GA", "OS", "CR"].contains(&p))
                 || record.end.is_some_and(|d| d < record.start)
                 || record
                     .amount
