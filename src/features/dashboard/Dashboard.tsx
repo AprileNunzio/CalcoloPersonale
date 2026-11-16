@@ -92,13 +92,17 @@ export function Dashboard({
             </div>
 
             {bestScore && (
-              <div className="dash-stat-badge" title="Punteggio Migliore Calcolato">
-                <div className="dash-stat-icon">
-                  <Award size={18} />
+              <div className="dash-stat-badge" title={bestScore.useValidatedScore ? 'Punteggio Ufficiale Convalidato dalla Scuola' : 'Punteggio Migliore Calcolato'}>
+                <div className={`dash-stat-icon ${bestScore.useValidatedScore ? 'success' : ''}`}>
+                  {bestScore.useValidatedScore ? <ShieldCheck size={18} /> : <Award size={18} />}
                 </div>
                 <div className="dash-stat-content">
-                  <span className="dash-stat-num">{bestScore.totalScore} pt ({bestScore.code})</span>
-                  <span className="dash-stat-label">Punteggio di Punta</span>
+                  <span className="dash-stat-num">
+                    {bestScore.effectiveScore.toFixed(2)} pt ({bestScore.code})
+                  </span>
+                  <span className="dash-stat-label">
+                    {bestScore.useValidatedScore ? '✓ Convalidato Scuola' : 'Punteggio di Punta'}
+                  </span>
                 </div>
               </div>
             )}
@@ -202,11 +206,18 @@ export function Dashboard({
                       <ProfileBadge3d code={score.code} size={30} />
                       <div className="compact-card-title-col">
                         <h4>{score.label}</h4>
-                        <span className="compact-code-tag">{score.code}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span className="compact-code-tag">{score.code}</span>
+                          {score.useValidatedScore && (
+                            <span style={{ fontSize: 10, background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', padding: '1px 5px', borderRadius: 4, fontWeight: 700 }}>
+                              ✓ Convalidato
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <div className="compact-score-number">
-                        <strong>{score.totalScore.toFixed(2)}</strong>
-                        <small>{t('points')}</small>
+                        <strong>{score.effectiveScore.toFixed(2)}</strong>
+                        <small>{score.useValidatedScore ? 'ufficiale' : t('points')}</small>
                       </div>
                     </div>
                     <div className="compact-breakdown-row">

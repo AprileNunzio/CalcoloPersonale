@@ -222,17 +222,21 @@ export function PeopleGrid({
                     <span>Punteggio ATA</span>
                   </div>
                   <div className="tile-number">
-                    {topScore && topScore.totalScore > 0 ? (
+                    {topScore && (topScore.effectiveScore > 0 || topScore.totalScore > 0) ? (
                       <>
-                        <span className="number-bold">{topScore.totalScore.toFixed(2)}</span>
-                        <span className="number-unit">pt ({topScore.code})</span>
+                        <span className="number-bold">{topScore.effectiveScore.toFixed(2)}</span>
+                        <span className="number-unit">
+                          pt ({topScore.code}){topScore.useValidatedScore ? ' ✓' : ''}
+                        </span>
                       </>
                     ) : (
                       <span className="number-muted">Da calcolare</span>
                     )}
                   </div>
                   <div className="tile-foot">
-                    {topScore && topScore.totalScore > 0
+                    {topScore?.useValidatedScore
+                      ? `✓ Convalidato da Decreto Scuola`
+                      : topScore && topScore.totalScore > 0
                       ? `${topScore.baseAccessScore.toFixed(1)} tit. + ${(topScore.specificServiceScore + topScore.otherServiceScore).toFixed(1)} serv.`
                       : 'Nessun titolo registrato'}
                   </div>

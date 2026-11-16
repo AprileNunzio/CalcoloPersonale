@@ -4,11 +4,12 @@ import { useT } from '../../shared/i18n';
 import { call, getRevision } from '../../shared/api';
 import { flush } from '../autosave/store';
 import { AutoSaveContext } from '../autosave/AutoSave';
-import { Plus, Edit2, Trash2, Calendar, FileText, School, MapPin, TrendingUp, Building2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Calendar, FileText, School, MapPin, TrendingUp, Building2, ShieldCheck } from 'lucide-react';
 import { Icon3dDocument, ProfileBadge3d } from '../../shared/icons3d';
 import { ApplicationForm } from './ApplicationForm';
 import { ApplicationData } from './types';
 import { WorkProbabilityPane } from '../probability/WorkProbabilityPane';
+import { ScoreValidationPane } from '../convalidation/ScoreValidationPane';
 import './styles.css';
 
 export function Applications({
@@ -22,7 +23,7 @@ export function Applications({
 }) {
   const t = useT();
   const context = useContext(AutoSaveContext);
-  const [viewMode, setViewMode] = useState<'applications' | 'probability'>('applications');
+  const [viewMode, setViewMode] = useState<'applications' | 'convalidation' | 'probability'>('applications');
   const [selectedApp, setSelectedApp] = useState<ApplicationData | null>(null);
   const [editing, setEditing] = useState<Entry | null>(null);
   const [creating, setCreating] = useState(false);
@@ -111,9 +112,19 @@ export function Applications({
     <div className="applications-container">
       <div className="section-heading">
         <div>
-          <h2>{viewMode === 'applications' ? t('applications') : t('workProbability')}</h2>
+          <h2>
+            {viewMode === 'applications'
+              ? t('applications')
+              : viewMode === 'convalidation'
+              ? 'Convalida Punteggi & Normative ATA'
+              : t('workProbability')}
+          </h2>
           <p className="muted">
-            {viewMode === 'applications' ? t('addApplicationHelp') : t('workProbabilitySubtitle')}
+            {viewMode === 'applications'
+              ? t('addApplicationHelp')
+              : viewMode === 'convalidation'
+              ? 'Verifica e convalida ufficiale dei titoli e servizi secondo i D.M. 89/2024, 50/2021 e 640/2017 con tetto annuale di 6 punti.'
+              : t('workProbabilitySubtitle')}
           </p>
         </div>
         <div className="app-heading-actions">
@@ -125,6 +136,14 @@ export function Applications({
             >
               <FileText size={15} />
               <span>{t('applications')}</span>
+            </button>
+            <button
+              type="button"
+              className={`app-mode-tab-btn ${viewMode === 'convalidation' ? 'active' : ''}`}
+              onClick={() => setViewMode('convalidation')}
+            >
+              <ShieldCheck size={15} />
+              <span>Convalida & Normative</span>
             </button>
             <button
               type="button"
@@ -150,7 +169,9 @@ export function Applications({
         </div>
       )}
 
-      {viewMode === 'probability' ? (
+      {viewMode === 'convalidation' ? (
+        <ScoreValidationPane person={person} busy={busy || pending} />
+      ) : viewMode === 'probability' ? (
         <WorkProbabilityPane person={person} selectedApplication={selectedApp} />
       ) : applications.length === 0 ? (
         <div className="panel empty-app-card">
