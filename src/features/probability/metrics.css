@@ -1,0 +1,182 @@
+.prob-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.prob-metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.prob-metric-card.highlight-annual {
+  border-color: #86efac;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.prob-metric-card.highlight-short {
+  border-color: #93c5fd;
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+}
+
+.prob-metric-card.highlight-sub {
+  border-color: #fde047;
+  background: linear-gradient(180deg, #fefce8 0%, #ffffff 100%);
+}
+
+.prob-metric-card.highlight-rank {
+  border-color: #cbd5e1;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.metric-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-annual { color: #16a34a; }
+.icon-short { color: #2563eb; }
+.icon-sub { color: #ca8a04; }
+.icon-rank { color: #64748b; }
+
+.metric-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.metric-value-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.metric-large-num {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.prob-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.prob-badge.high {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.prob-badge.medium {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.prob-badge.low {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.prob-badge.rank-badge {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.metric-caption {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.dossier-stats-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+
+.dossier-stats-banner strong {
+  font-size: 13px;
+  color: #065f46;
+}
+
+.dossier-stats-banner p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #047857;
+}
+
+.retirements-banner-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+  padding: 16px 20px;
+  flex-wrap: wrap;
+}
+
+.retirements-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.flame-icon {
+  color: #ea580c;
+  flex-shrink: 0;
+}
+
+.retirements-banner-left strong {
+  font-size: 14px;
+  color: #9a3412;
+}
+
+.retirements-banner-left p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #c2410c;
+}
+
+.retirements-stats-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ret-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.ret-stat-item small {
+  font-size: 11px;
+  color: #9a3412;
+}
+
+.ret-stat-item strong {
+  font-size: 15px;
+  color: #7c2d12;
+}
+
+.ret-divider {
+  width: 1px;
+  height: 28px;
+  background: #fdba74;
+}

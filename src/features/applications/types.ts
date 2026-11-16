@@ -8,6 +8,7 @@ export interface ApplicationData {
   protocol: string;
   province: string;
   headSchool?: DirectoryEntry | null;
+  chosenSchools?: DirectoryEntry[];
   declaredAccess: string;
   declaredCultural: string;
   declaredServices: string;

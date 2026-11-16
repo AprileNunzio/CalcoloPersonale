@@ -4,10 +4,11 @@ import { useT } from '../../shared/i18n';
 import { call, getRevision } from '../../shared/api';
 import { flush } from '../autosave/store';
 import { AutoSaveContext } from '../autosave/AutoSave';
-import { Plus, Edit2, Trash2, Calendar, FileText, School, MapPin } from 'lucide-react';
+import { Plus, Edit2, Trash2, Calendar, FileText, School, MapPin, TrendingUp, Building2 } from 'lucide-react';
 import { Icon3dDocument, ProfileBadge3d } from '../../shared/icons3d';
 import { ApplicationForm } from './ApplicationForm';
 import { ApplicationData } from './types';
+import { WorkProbabilityPane } from '../probability/WorkProbabilityPane';
 import './styles.css';
 
 export function Applications({
@@ -21,6 +22,8 @@ export function Applications({
 }) {
   const t = useT();
   const context = useContext(AutoSaveContext);
+  const [viewMode, setViewMode] = useState<'applications' | 'probability'>('applications');
+  const [selectedApp, setSelectedApp] = useState<ApplicationData | null>(null);
   const [editing, setEditing] = useState<Entry | null>(null);
   const [creating, setCreating] = useState(false);
   const [pending, setPending] = useState(false);
@@ -108,13 +111,37 @@ export function Applications({
     <div className="applications-container">
       <div className="section-heading">
         <div>
-          <h2>{t('applications')}</h2>
-          <p className="muted">{t('addApplicationHelp')}</p>
+          <h2>{viewMode === 'applications' ? t('applications') : t('workProbability')}</h2>
+          <p className="muted">
+            {viewMode === 'applications' ? t('addApplicationHelp') : t('workProbabilitySubtitle')}
+          </p>
         </div>
-        <button onClick={() => setCreating(true)}>
-          <Plus size={18} />
-          {t('newApplication')}
-        </button>
+        <div className="app-heading-actions">
+          <div className="app-mode-tabs">
+            <button
+              type="button"
+              className={`app-mode-tab-btn ${viewMode === 'applications' ? 'active' : ''}`}
+              onClick={() => setViewMode('applications')}
+            >
+              <FileText size={15} />
+              <span>{t('applications')}</span>
+            </button>
+            <button
+              type="button"
+              className={`app-mode-tab-btn ${viewMode === 'probability' ? 'active' : ''}`}
+              onClick={() => setViewMode('probability')}
+            >
+              <TrendingUp size={15} />
+              <span>{t('workProbability')}</span>
+            </button>
+          </div>
+          {viewMode === 'applications' && (
+            <button onClick={() => setCreating(true)}>
+              <Plus size={18} />
+              {t('newApplication')}
+            </button>
+          )}
+        </div>
       </div>
 
       {error && (
@@ -123,7 +150,9 @@ export function Applications({
         </div>
       )}
 
-      {applications.length === 0 ? (
+      {viewMode === 'probability' ? (
+        <WorkProbabilityPane person={person} selectedApplication={selectedApp} />
+      ) : applications.length === 0 ? (
         <div className="panel empty-app-card">
           <Icon3dDocument size={64} />
           <h3>{t('noApplications')}</h3>
@@ -213,6 +242,12 @@ export function Applications({
                       <span>{(data.headSchool || app.school)?.name} ({data.headSchool?.code || app.school?.code})</span>
                     </div>
                   )}
+                  {data.chosenSchools && data.chosenSchools.length > 0 && (
+                    <div className="app-detail-item wide highlight-schools">
+                      <Building2 size={14} />
+                      <span><strong>{data.chosenSchools.length} / 30</strong> {t('schoolsSelected')}</span>
+                    </div>
+                  )}
                 </div>
 
                 {(data.declaredAccess || data.declaredCultural || data.declaredServices) && (
@@ -237,6 +272,20 @@ export function Applications({
                     )}
                   </div>
                 )}
+
+                <div className="app-card-footer">
+                  <button
+                    type="button"
+                    className="app-card-prob-btn"
+                    onClick={() => {
+                      setSelectedApp(data as ApplicationData);
+                      setViewMode('probability');
+                    }}
+                  >
+                    <TrendingUp size={14} />
+                    <span>{t('workProbability')}</span>
+                  </button>
+                </div>
               </div>
             );
           })}

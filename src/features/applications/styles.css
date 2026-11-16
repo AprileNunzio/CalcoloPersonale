@@ -235,3 +235,215 @@
     grid-template-columns: 1fr;
   }
 }
+
+.chosen-schools-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.chosen-schools-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field-hint-text {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.chosen-count-pill {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.chosen-count-pill.limit-reached {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.chosen-schools-picker-box {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.max-schools-alert {
+  padding: 10px 14px;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  color: #b45309;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chosen-schools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chosen-school-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.chosen-school-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.chosen-school-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chosen-school-meta strong {
+  font-size: 12px;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chosen-school-meta small {
+  font-size: 11px;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chosen-school-del-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.chosen-school-del-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+@media (max-width: 640px) {
+  .chosen-schools-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.app-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-mode-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.app-mode-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.app-mode-tab-btn:hover {
+  color: #0f172a;
+}
+
+.app-mode-tab-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.highlight-schools {
+  background: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+  color: #166534 !important;
+}
+
+.app-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.app-card-prob-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.app-card-prob-btn:hover {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+

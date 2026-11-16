@@ -1,0 +1,113 @@
+@import './metrics.css';
+@import './schools.css';
+
+.work-probability-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.prob-header-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.prob-header-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.prob-icon-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #16a34a;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.25);
+  flex-shrink: 0;
+}
+
+.prob-header-info h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.prob-subtitle {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: #475569;
+}
+
+.prob-controls-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.prob-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.prob-control-group label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #475569;
+}
+
+.prob-control-group select,
+.prob-control-group input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 13px;
+  color: #0f172a;
+  outline: none;
+}
+
+.prob-recalc-btn {
+  padding: 9px 18px;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.prob-recalc-btn:hover {
+  background: #334155;
+}
+
+@media (max-width: 768px) {
+  .prob-controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

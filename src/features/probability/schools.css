@@ -1,0 +1,253 @@
+.schools-breakdown-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section-title-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.section-title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title-left h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.schools-counter-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.schools-filter-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  min-width: 240px;
+}
+
+.schools-filter-box .search-icon {
+  color: #94a3b8;
+}
+
+.schools-filter-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 12px;
+  color: #0f172a;
+  width: 100%;
+}
+
+.prob-schools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.prob-school-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.school-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.school-index-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  flex-shrink: 0;
+}
+
+.school-name-block {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.school-name-block strong {
+  font-size: 13px;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.school-name-block small {
+  font-size: 11px;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opportunity-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.opportunity-chip small {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #166534;
+}
+
+.opportunity-chip strong {
+  font-size: 13px;
+  color: #15803d;
+}
+
+.dossier-school-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.school-metrics-matrix {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 8px 10px;
+  border: 1px solid #f1f5f9;
+}
+
+.matrix-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.matrix-label {
+  font-size: 10px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.matrix-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.matrix-val small {
+  font-size: 10px;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.matrix-val.text-accent {
+  color: #ea580c;
+}
+
+.school-prob-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.bar-row small {
+  width: 90px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.bar-fill.annual {
+  height: 100%;
+  background: #16a34a;
+  border-radius: 3px;
+}
+
+.bar-fill.sub {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 3px;
+}
+
+.bar-row span {
+  font-weight: 700;
+  width: 38px;
+  text-align: right;
+  color: #334155;
+}
+
+@media (max-width: 768px) {
+  .prob-schools-grid {
+    grid-template-columns: 1fr;
+  }
+  .school-metrics-matrix {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .schools-filter-box {
+    width: 100%;
+  }
+}

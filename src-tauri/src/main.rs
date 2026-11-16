@@ -4,6 +4,7 @@ mod directory;
 mod gemini;
 mod ota;
 mod people;
+mod probability;
 mod shared;
 mod vault;
 use shared::{Error, Result};
@@ -159,7 +160,8 @@ fn main() {
             gemini::ollama_models,
             gemini::ask_ollama,
             ota_check,
-            ota_apply
+            ota_apply,
+            probability::calculate_work_probability
         ])
         .run(tauri::generate_context!())
         .expect("Application initialization failed");

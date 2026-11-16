@@ -13,6 +13,7 @@ import {
   FileCheck,
   Radio,
 } from 'lucide-react';
+import { APP_VERSION } from '../../shared/types';
 import { useT } from '../../shared/i18n';
 import { useOta } from '../ota/useOta';
 import { useNativeUpdater } from './UpdatesBoundary';
@@ -82,12 +83,12 @@ export function UpdatesPage() {
           <div className="version-info-strip">
             <div className="version-metric">
               <small>{t('currentInstalledVersion')}</small>
-              <strong>{ota.status?.currentVersion || 'v0.1.2'}</strong>
+              <strong>{ota.status?.currentVersion || APP_VERSION}</strong>
             </div>
             <div className="version-divider" />
             <div className="version-metric">
               <small>{t('latestAvailableVersion')}</small>
-              <strong>{ota.status?.latestVersion || ota.status?.currentVersion || 'v0.1.2'}</strong>
+              <strong>{ota.status?.latestVersion || ota.status?.currentVersion || APP_VERSION}</strong>
             </div>
           </div>
 
@@ -168,12 +169,12 @@ export function UpdatesPage() {
           <div className="version-info-strip">
             <div className="version-metric">
               <small>{t('currentInstalledVersion')}</small>
-              <strong>v0.1.2</strong>
+              <strong>{APP_VERSION}</strong>
             </div>
             <div className="version-divider" />
             <div className="version-metric">
               <small>{t('latestAvailableVersion')}</small>
-              <strong>{native.stagedUpdate?.version || 'v0.1.2'}</strong>
+              <strong>{native.stagedUpdate?.version || APP_VERSION}</strong>
             </div>
           </div>
 

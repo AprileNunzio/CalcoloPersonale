@@ -31,6 +31,7 @@ export function ApplicationForm({
     protocol: '',
     province: person.birthProvince || 'RM',
     headSchool: null,
+    chosenSchools: [],
     declaredAccess: '',
     declaredCultural: '',
     declaredServices: '',
@@ -51,6 +52,26 @@ export function ApplicationForm({
   }
 
   const [formData, setFormData] = useState<ApplicationData>(initialData);
+
+  const addChosenSchool = (school: DirectoryEntry) => {
+    setFormData(prev => {
+      const current = prev.chosenSchools || [];
+      if (current.some(s => s.code === school.code)) {
+        return prev;
+      }
+      if (current.length >= 30) {
+        return prev;
+      }
+      return { ...prev, chosenSchools: [...current, school] };
+    });
+  };
+
+  const removeChosenSchool = (code: string) => {
+    setFormData(prev => ({
+      ...prev,
+      chosenSchools: (prev.chosenSchools || []).filter(s => s.code !== code),
+    }));
+  };
 
   const toggleProfile = (code: string) => {
     setFormData(prev => {
@@ -230,6 +251,54 @@ export function ApplicationForm({
                 setFormData({ ...formData, headSchool: school })
               }
             />
+          )}
+        </div>
+
+        <div className="wide-field chosen-schools-section">
+          <div className="chosen-schools-header">
+            <div>
+              <label className="field-label-text">{t('chosenSchoolsTitle')}</label>
+              <p className="field-hint-text">{t('chosenSchoolsSubtitle')}</p>
+            </div>
+            <span className={`chosen-count-pill ${(formData.chosenSchools?.length || 0) >= 30 ? 'limit-reached' : ''}`}>
+              {formData.chosenSchools?.length || 0} / 30 {t('schoolsSelected')}
+            </span>
+          </div>
+
+          {(formData.chosenSchools?.length || 0) < 30 ? (
+            <div className="chosen-schools-picker-box">
+              <DirectoryPicker
+                kind="school"
+                onSelect={addChosenSchool}
+              />
+            </div>
+          ) : (
+            <div className="max-schools-alert">
+              <span>{t('maxSchoolsReached')}</span>
+            </div>
+          )}
+
+          {formData.chosenSchools && formData.chosenSchools.length > 0 && (
+            <div className="chosen-schools-grid">
+              {formData.chosenSchools.map((school, index) => (
+                <div key={school.code} className="chosen-school-card">
+                  <div className="chosen-school-badge">{index + 1}</div>
+                  <div className="chosen-school-meta">
+                    <strong>{school.name}</strong>
+                    <small>{school.code} · {school.municipality} ({school.province})</small>
+                  </div>
+                  <button
+                    type="button"
+                    className="chosen-school-del-btn"
+                    onClick={() => removeChosenSchool(school.code)}
+                    title={t('removeSchool')}
+                    aria-label={t('removeSchool')}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 

@@ -3,3 +3,4 @@ export type Entry = { id: string; kind: string; school?: DirectoryEntry | null; 
 export type Person = { id: string; firstName: string; lastName: string; gender: string; birthDate: string | null; birthPlace?: string | null; birthProvince?: string | null; fiscalCode: string; profile?: string; municipality?: DirectoryEntry | null; records: Entry[] };
 export type Archive = { revision: number; people: Person[]; drafts: Record<string, unknown> };
 export type Analysis = { schoolYear: number; serviceDays: number; recordedAbsenceDays: number; qualifications: number; score: number | null; children: { name: string; age: number }[]; warnings: string[] };
+export const APP_VERSION = '0.1.3';

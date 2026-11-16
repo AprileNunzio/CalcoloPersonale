@@ -51,9 +51,9 @@ impl OtaManager {
         if marker.exists() {
             fs::read_to_string(marker)
                 .map(|s| s.trim().to_string())
-                .unwrap_or_else(|_| "embedded".into())
+                .unwrap_or_else(|_| env!("CARGO_PKG_VERSION").into())
         } else {
-            "embedded".into()
+            env!("CARGO_PKG_VERSION").into()
         }
     }
 
