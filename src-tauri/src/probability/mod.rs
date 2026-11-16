@@ -3,9 +3,7 @@ pub mod dossier_stats;
 pub mod engine;
 pub mod firenze;
 
-pub use domain::{
-    InstitutionBenchmark, ProbabilityAnalysisResult, ProbabilityRequest, SchoolProbability,
-};
+pub use domain::{ProbabilityAnalysisResult, ProbabilityRequest};
 
 use crate::shared::{Error, Result};
 use tauri::State;

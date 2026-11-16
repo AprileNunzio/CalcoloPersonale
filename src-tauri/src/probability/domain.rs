@@ -55,6 +55,7 @@ pub struct ProbabilityAnalysisResult {
     pub dossier_distinct_workers: u32,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy)]
 pub struct ProfileDistribution {
     pub total_candidates: u32,
@@ -74,6 +75,7 @@ pub struct ProfileDistribution {
     pub substitute_cutoff_estimate: f64,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct InstitutionBenchmark {
     pub code: &'static str,
