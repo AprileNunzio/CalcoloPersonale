@@ -14,6 +14,7 @@ import {
   AlertCircle,
   FileText,
   Target,
+  TrendingUp,
 } from 'lucide-react';
 import { calculateProfileScores } from '../../shared/scoring';
 import { ProfileBadge3d } from '../../shared/icons3d';
@@ -26,6 +27,7 @@ import { calculateEntitlements, ContractType } from '../../shared/entitlements';
 import { computeCareerIntelligence } from '../../shared/careerPrediction';
 import { CareerIntelligencePane } from './CareerIntelligencePane';
 import { FamilyLeavePane } from './FamilyLeavePane';
+import { WorkProbabilityPane } from '../probability/WorkProbabilityPane';
 import './Dashboard.css';
 import './DashboardModern.css';
 import './entitlements.css';
@@ -44,7 +46,7 @@ export function Dashboard({
   const t = useT();
   const context = useContext(AutoSaveContext);
   const allPeople = context?.archive.people || [];
-  const [activeStep, setActiveStep] = useState<'scores' | 'career' | 'services' | 'family' | 'entitlements' | 'all'>('scores');
+  const [activeStep, setActiveStep] = useState<'scores' | 'probability' | 'career' | 'services' | 'family' | 'entitlements' | 'all'>('scores');
   const [contractOverride, setContractOverride] = useState<ContractType | undefined>(undefined);
 
   const profileScores = person ? calculateProfileScores(person) : [];
@@ -106,6 +108,25 @@ export function Dashboard({
                 </div>
               </div>
             )}
+
+            {careerIntelligence.length > 0 && (
+              <div
+                className="dash-stat-badge"
+                title="Probabilità di Chiamata (Fascia e Percentile)"
+                style={{ cursor: 'pointer' }}
+                onClick={() => setActiveStep('probability')}
+              >
+                <div className="dash-stat-icon" style={{ background: '#fef3c7', color: '#d97706' }}>
+                  <TrendingUp size={18} />
+                </div>
+                <div className="dash-stat-content">
+                  <span className="dash-stat-num">
+                    {careerIntelligence[0].callOdds.percentEstimate}% ({careerIntelligence[0].callOdds.band.toUpperCase()})
+                  </span>
+                  <span className="dash-stat-label">Probabilità Lavoro</span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="dash-year-selector">
@@ -135,6 +156,17 @@ export function Dashboard({
             <Award size={15} />
             <span>{t('stepScores')}</span>
             {profileScores.length > 0 && <span className="dash-tab-counter">{profileScores.length}</span>}
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeStep === 'probability'}
+            className={`dash-tab-item ${activeStep === 'probability' ? 'active' : ''}`}
+            onClick={() => setActiveStep('probability')}
+          >
+            <TrendingUp size={15} />
+            <span>Probabilità Lavoro</span>
           </button>
 
           <button
@@ -243,6 +275,12 @@ export function Dashboard({
                 <p className="muted">{t('noActiveProfilesHelp')}</p>
               </div>
             )}
+          </div>
+        )}
+
+        {(activeStep === 'probability' || activeStep === 'all') && person && (
+          <div className="step-pane step-probability-pane" style={{ marginTop: 12 }}>
+            <WorkProbabilityPane person={person} />
           </div>
         )}
 
