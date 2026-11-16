@@ -58,7 +58,8 @@ impl Person {
             || !text_valid(&self.last_name, 80)
             || !["female", "male", "other"].contains(&self.gender.as_str())
             || (!self.profile.is_empty()
-                && !["AA", "AT", "CS", "CO", "IF", "GA", "OS", "CR"].contains(&self.profile.as_str()))
+                && !["AA", "AT", "CS", "CO", "IF", "GA", "OS", "CR"]
+                    .contains(&self.profile.as_str()))
             || self
                 .birth_place
                 .as_deref()
