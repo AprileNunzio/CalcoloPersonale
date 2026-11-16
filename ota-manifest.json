@@ -1,6 +1,6 @@
 {
-  "version": "0.1.3-a8934256",
-  "commit": "a89342563c28fdce69c2e1ece504224af4c1133e",
-  "sha256": "e98791328cb714e5dbc5f0f03a6d57fdb0108c7f567c311d2615c70b9c196623",
+  "version": "0.1.3-35ebf1f6",
+  "commit": "35ebf1f65e9bf546f617f51e4c96f7fa4c104721",
+  "sha256": "8380a0992139fcc7ca5dc78a0d51fda4f47392140c08abd069bf05b3c2ca03fd",
   "url": "https://raw.githubusercontent.com/AprileNunzio/CalcoloPersonale/main/dist.tar.gz"
 }
