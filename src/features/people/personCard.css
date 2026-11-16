@@ -1,0 +1,327 @@
+/* Person Card Modern */
+.person-card-modern {
+  background: #ffffff;
+  border: 1px solid #dce8e4;
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(17, 107, 98, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+  text-align: left;
+}
+
+.person-card-modern:hover {
+  transform: translateY(-4px);
+  border-color: #92cdc0;
+  box-shadow: 0 14px 32px rgba(17, 107, 98, 0.12);
+}
+
+.card-header-modern {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.avatar-section {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef5f3;
+  color: #3b5f59;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.avatar-circle.female {
+  background: linear-gradient(135deg, #fdf2f4 0%, #fce7eb 100%);
+  color: #be185d;
+}
+
+.avatar-circle.male {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #1d4ed8;
+}
+
+.profile-badge-overlay {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  display: flex;
+}
+
+.person-identity-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.identity-tags-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.profile-chip-active {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #e6f4f1;
+  color: #116b62;
+  border: 1px solid #b8dfd6;
+}
+
+.profile-chip-empty {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.cf-code-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: #334155;
+  letter-spacing: 0.3px;
+}
+
+.person-card-fullname {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 750;
+  color: #112825;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.person-sub-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #6b827e;
+}
+
+/* Card KPI Grid */
+.card-kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.card-kpi-tile {
+  background: #f6faf9;
+  border: 1px solid #e3eee9;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.person-card-modern:hover .card-kpi-tile {
+  background: #f1f7f5;
+}
+
+.tile-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #55726c;
+  letter-spacing: 0.3px;
+}
+
+.tile-number {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.number-bold {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f2723;
+  line-height: 1.1;
+}
+
+.number-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: #647d77;
+}
+
+.number-muted {
+  font-size: 13px;
+  font-weight: 600;
+  color: #92a4a0;
+}
+
+.tile-foot {
+  font-size: 10.5px;
+  color: #6d8580;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-24m-ok {
+  color: #059669;
+  font-weight: 700;
+}
+
+/* Card Badges Strip */
+.card-badges-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.detail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.detail-tag.ciad-verified {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+/* Card Footer */
+.card-footer-modern {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #edf4f1;
+  padding-top: 12px;
+  margin-top: 2px;
+}
+
+.footer-action-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: #116b62;
+  transition: color 0.15s ease;
+}
+
+.person-card-modern:hover .footer-action-text {
+  color: #0a4f47;
+}
+
+.footer-arrow-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #eef6f3;
+  color: #116b62;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.person-card-modern:hover .footer-arrow-circle {
+  background: #116b62;
+  color: #ffffff;
+  transform: translate(2px, -2px);
+}
+
+/* Add Card Modern */
+.add-card-modern {
+  border: 2px dashed #b5cec6;
+  background: linear-gradient(135deg, #f6faf8 0%, #edf6f3 100%);
+  color: #2b6156;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: 18px;
+  padding: 30px 20px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 240px;
+}
+
+.add-card-modern:hover {
+  background: #e4f2ed;
+  border-color: #116b62;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(17, 107, 98, 0.1);
+}
+
+.add-icon-circle-modern {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #116b62;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(17, 107, 98, 0.12);
+  transition: transform 0.2s ease;
+}
+
+.add-card-modern:hover .add-icon-circle-modern {
+  transform: scale(1.1);
+  background: #116b62;
+  color: #ffffff;
+}
+
+.add-card-text h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 750;
+  color: #14352f;
+}
+
+.add-card-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #55726c;
+  max-width: 220px;
+}
