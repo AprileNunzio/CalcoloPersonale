@@ -127,8 +127,7 @@ impl OtaManager {
 
         let destination = self.base_dir.join("versions").join(&manifest.version);
         if destination.exists() {
-            fs::remove_dir_all(&destination)
-                .map_err(|_| Error::Storage(std::io::Error::last_os_error()))?;
+            let _ = fs::remove_dir_all(&destination);
         }
         fs::create_dir_all(&destination).map_err(Error::Storage)?;
 
@@ -178,7 +177,14 @@ impl OtaManager {
         let path = if clean.is_empty() || clean == "index.html" {
             base.join("index.html")
         } else {
-            base.join(clean)
+            let mut sub = PathBuf::new();
+            for seg in clean.split('/') {
+                if seg == ".." || seg.is_empty() {
+                    continue;
+                }
+                sub.push(seg);
+            }
+            base.join(sub)
         };
 
         if !path.exists() || !path.starts_with(&base) {

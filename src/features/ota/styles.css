@@ -28,6 +28,28 @@
   }
 }
 
+.ota-banner-error {
+  border-left-color: #ef4444;
+  border-color: #fecaca;
+}
+
+.ota-error-icon {
+  color: #ef4444;
+}
+
+.ota-spin {
+  animation: otaSpin 1s linear infinite;
+}
+
+@keyframes otaSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .ota-banner-info {
   display: flex;
   align-items: center;

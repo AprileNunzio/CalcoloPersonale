@@ -30,6 +30,21 @@ export function parseFamilyMember(entry: Entry): FamilyMemberData {
     }
   }
 
+  // If relation was not explicitly stored in JSON, deduce smartly from notes or age
+  if (relation === 'child') {
+    const combined = `${entry.title || ''} ${notesText || ''}`.toLowerCase();
+    if (combined.includes('moglie') || combined.includes('marito') || combined.includes('coniuge') || combined.includes('spouse') || combined.includes('partner')) {
+      relation = 'spouse';
+    } else if (combined.includes('madre') || combined.includes('padre') || combined.includes('genitore')) {
+      relation = 'parent';
+    } else if (entry.start) {
+      const age = calculateAge(entry.start);
+      if (age && age.years >= 18) {
+        relation = 'spouse';
+      }
+    }
+  }
+
   return {
     id: entry.id,
     relation,

@@ -132,11 +132,16 @@ fn main() {
                 .on_web_resource_request(move |req, res| {
                     let path = req.uri().path();
                     if let Some((bytes, mime)) = ota_resolver.resolve_asset(path) {
+                        *res.status_mut() = http::StatusCode::OK;
+                        let len = bytes.len();
                         *res.body_mut() = std::borrow::Cow::Owned(bytes);
                         res.headers_mut().insert(
                             http::header::CONTENT_TYPE,
                             http::HeaderValue::from_static(mime),
                         );
+                        if let Ok(val) = http::HeaderValue::from_str(&len.to_string()) {
+                            res.headers_mut().insert(http::header::CONTENT_LENGTH, val);
+                        }
                     }
                 })
                 .build()?;

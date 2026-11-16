@@ -1,4 +1,4 @@
-import { Plus, Search, ArrowUpRight, UserRound } from 'lucide-react';
+import { Plus, Search, ArrowUpRight, UserRound, Sparkles } from 'lucide-react';
 import { Venus, Mars } from './GenderIcons';
 import { Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
@@ -12,12 +12,14 @@ export function PeopleGrid({
   onSearchChange,
   onSelect,
   onCreate,
+  onStartWizard,
 }: {
   people: Person[];
   search: string;
   onSearchChange: (val: string) => void;
   onSelect: (id: string) => void;
   onCreate: () => void;
+  onStartWizard: () => void;
 }) {
   const t = useT();
 
@@ -35,10 +37,16 @@ export function PeopleGrid({
           <h1>{t('welcome')}</h1>
           <p className="muted">{t('intro')}</p>
         </div>
-        <button onClick={onCreate}>
-          <Plus size={18} />
-          {t('add')}
-        </button>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <button className="wizard-btn-primary" onClick={onStartWizard}>
+            <Sparkles size={17} />
+            <span>Configurazione a Step</span>
+          </button>
+          <button className="secondary" onClick={onCreate}>
+            <Plus size={18} />
+            {t('add')}
+          </button>
+        </div>
       </div>
 
       <div className="collection-heading">
@@ -122,9 +130,18 @@ export function PeopleGrid({
       </div>
 
       {!people.length && (
-        <div className="empty">
-          <h3>{t('empty')}</h3>
-          <p>{t('emptyHelp')}</p>
+        <div className="panel" style={{ textAlign: 'center', padding: '44px 24px', border: '2px dashed #b8d5cc', borderRadius: 20, marginTop: 24, background: '#fafdfc' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 20, background: '#e6f4f1', color: '#116b62', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', boxShadow: '0 4px 16px rgba(17, 107, 98, 0.12)' }}>
+            <Sparkles size={32} />
+          </div>
+          <h3 style={{ fontSize: 20, marginBottom: 8, color: '#142e28' }}>Nessun fascicolo presente in archivio</h3>
+          <p className="muted" style={{ maxWidth: 560, margin: '0 auto 22px', lineHeight: 1.6, fontSize: 14 }}>
+            Inizia subito con la <strong>Configurazione Guidata a Step</strong>: ti aiuteremo passo dopo passo nella compilazione di anagrafica, titolo di studio d’accesso, certificazioni informatiche CIAD e servizi scolastici con spiegazioni dettagliate dalla A alla Z!
+          </p>
+          <button className="wizard-btn-primary" onClick={onStartWizard} style={{ padding: '12px 26px', fontSize: 15 }}>
+            <Sparkles size={18} />
+            <span>Avvia Prima Configurazione a Step</span>
+          </button>
         </div>
       )}
     </>

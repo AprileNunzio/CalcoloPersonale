@@ -129,9 +129,10 @@ header > div {
 }
 
 .content {
-  max-width: 1400px;
-  margin: auto;
-  padding: 36px 40px;
+  width: 95%;
+  max-width: 95vw;
+  margin: 0 auto;
+  padding: 24px 20px;
 }
 
 .page-heading {

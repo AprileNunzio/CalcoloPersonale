@@ -18,11 +18,16 @@ import {
 import { calculateProfileScores } from '../../shared/scoring';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { AutoSaveContext } from '../autosave/AutoSave';
-import { computeSharedFamilyLeave } from '../../shared/familyLeave';
+import {
+  computeComprehensiveFamilyOverview,
+  computeSharedFamilyLeave,
+} from '../../shared/familyLeave';
 import { calculateEntitlements, ContractType } from '../../shared/entitlements';
 import { computeCareerIntelligence } from '../../shared/careerPrediction';
 import { CareerIntelligencePane } from './CareerIntelligencePane';
+import { FamilyLeavePane } from './FamilyLeavePane';
 import './Dashboard.css';
+import './DashboardModern.css';
 import './entitlements.css';
 
 export function Dashboard({
@@ -44,104 +49,146 @@ export function Dashboard({
 
   const profileScores = person ? calculateProfileScores(person) : [];
   const careerIntelligence = person ? computeCareerIntelligence(person, profileScores) : [];
-  const sharedLeaves = person ? computeSharedFamilyLeave(person, allPeople) : [];
+  const familyOverview = person ? computeComprehensiveFamilyOverview(person, allPeople) : null;
+  const sharedLeaves = familyOverview ? familyOverview.childrenLeaves : [];
   const entitlements = person ? calculateEntitlements(person, contractOverride) : null;
+  const bestScore = profileScores.length > 0 ? profileScores[0] : null;
+
+  const totalFamilyCount = (familyOverview?.childrenLeaves.length || 0) + (familyOverview?.spouses.length || 0) + (familyOverview?.others.length || 0);
 
   return (
-    <div className="dashboard-compact-root">
-      <div className="dashboard-top-toolbar">
-        <div className="metrics-pill-strip">
-          <div className="metric-pill" title={t('serviceDays')}>
-            <CalendarDays size={14} />
-            <strong>{data?.serviceDays ?? 0}</strong>
-            <small>{t('days')}</small>
+    <div className="dashboard-modern-root">
+      <div className="dash-command-deck">
+        <div className="dash-stats-row">
+          <div className="dash-stats-grid">
+            <div className="dash-stat-badge" title={t('serviceDays')}>
+              <div className="dash-stat-icon">
+                <CalendarDays size={18} />
+              </div>
+              <div className="dash-stat-content">
+                <span className="dash-stat-num">{data?.serviceDays ?? 0} {t('days')}</span>
+                <span className="dash-stat-label">Servizio Riconosciuto</span>
+              </div>
+            </div>
+
+            <div className="dash-stat-badge" title={t('absenceDays')}>
+              <div className="dash-stat-icon warning">
+                <Clock3 size={18} />
+              </div>
+              <div className="dash-stat-content">
+                <span className="dash-stat-num">{data?.recordedAbsenceDays ?? 0} {t('days')}</span>
+                <span className="dash-stat-label">Assenze e Congedi</span>
+              </div>
+            </div>
+
+            <div className="dash-stat-badge" title={t('qualifications')}>
+              <div className="dash-stat-icon info">
+                <GraduationCap size={18} />
+              </div>
+              <div className="dash-stat-content">
+                <span className="dash-stat-num">{data?.qualifications ?? 0}</span>
+                <span className="dash-stat-label">Titoli e Attestati</span>
+              </div>
+            </div>
+
+            {bestScore && (
+              <div className="dash-stat-badge" title="Punteggio Migliore Calcolato">
+                <div className="dash-stat-icon">
+                  <Award size={18} />
+                </div>
+                <div className="dash-stat-content">
+                  <span className="dash-stat-num">{bestScore.totalScore} pt ({bestScore.code})</span>
+                  <span className="dash-stat-label">Punteggio di Punta</span>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="metric-pill" title={t('absenceDays')}>
-            <Clock3 size={14} />
-            <strong>{data?.recordedAbsenceDays ?? 0}</strong>
-            <small>{t('absences')}</small>
-          </div>
-          <div className="metric-pill" title={t('qualifications')}>
-            <GraduationCap size={14} />
-            <strong>{data?.qualifications ?? 0}</strong>
-            <small>{t('qualification')}</small>
+
+          <div className="dash-year-selector">
+            <label htmlFor="dash-year-select">Anno Scolastico:</label>
+            <select
+              id="dash-year-select"
+              value={year}
+              onChange={e => setYear(Number(e.target.value))}
+            >
+              {Array.from({ length: 30 }, (_, i) => new Date().getFullYear() + 1 - i).map(y => (
+                <option key={y} value={y}>
+                  A.S. {y}/{y + 1}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        <div className="step-segmented-control" role="tablist">
+        <nav className="dash-tabs-bar" role="tablist" aria-label="Navigazione Sezioni">
           <button
             type="button"
             role="tab"
             aria-selected={activeStep === 'scores'}
-            className={`step-tab-btn ${activeStep === 'scores' ? 'active' : ''}`}
+            className={`dash-tab-item ${activeStep === 'scores' ? 'active' : ''}`}
             onClick={() => setActiveStep('scores')}
           >
-            <Award size={14} />
+            <Award size={15} />
             <span>{t('stepScores')}</span>
-            {profileScores.length > 0 && <span className="step-counter">{profileScores.length}</span>}
+            {profileScores.length > 0 && <span className="dash-tab-counter">{profileScores.length}</span>}
           </button>
+
           <button
             type="button"
             role="tab"
             aria-selected={activeStep === 'career'}
-            className={`step-tab-btn ${activeStep === 'career' ? 'active' : ''}`}
+            className={`dash-tab-item ${activeStep === 'career' ? 'active' : ''}`}
             onClick={() => setActiveStep('career')}
           >
-            <Target size={14} />
+            <Target size={15} />
             <span>{t('stepCareer')}</span>
           </button>
+
           <button
             type="button"
             role="tab"
             aria-selected={activeStep === 'services'}
-            className={`step-tab-btn ${activeStep === 'services' ? 'active' : ''}`}
+            className={`dash-tab-item ${activeStep === 'services' ? 'active' : ''}`}
             onClick={() => setActiveStep('services')}
           >
-            <ShieldCheck size={14} />
+            <ShieldCheck size={15} />
             <span>{t('stepServices')}</span>
           </button>
+
           <button
             type="button"
             role="tab"
             aria-selected={activeStep === 'family'}
-            className={`step-tab-btn ${activeStep === 'family' ? 'active' : ''}`}
+            className={`dash-tab-item ${activeStep === 'family' ? 'active' : ''}`}
             onClick={() => setActiveStep('family')}
           >
-            <Users2 size={14} />
+            <Users2 size={15} />
             <span>{t('stepFamily')}</span>
-            {sharedLeaves.length > 0 && <span className="step-counter">{sharedLeaves.length}</span>}
+            {totalFamilyCount > 0 && <span className="dash-tab-counter">{totalFamilyCount}</span>}
           </button>
+
           <button
             type="button"
             role="tab"
             aria-selected={activeStep === 'entitlements'}
-            className={`step-tab-btn ${activeStep === 'entitlements' ? 'active' : ''}`}
+            className={`dash-tab-item ${activeStep === 'entitlements' ? 'active' : ''}`}
             onClick={() => setActiveStep('entitlements')}
           >
-            <Activity size={14} />
+            <Activity size={15} />
             <span>{t('stepEntitlements')}</span>
           </button>
+
           <button
             type="button"
             role="tab"
             aria-selected={activeStep === 'all'}
-            className={`step-tab-btn ${activeStep === 'all' ? 'active' : ''}`}
+            className={`dash-tab-item ${activeStep === 'all' ? 'active' : ''}`}
             onClick={() => setActiveStep('all')}
           >
-            <Layers size={14} />
+            <Layers size={15} />
             <span>{t('stepAll')}</span>
           </button>
-        </div>
-
-        <label className="school-year-compact">
-          <select value={year} onChange={e => setYear(Number(e.target.value))}>
-            {Array.from({ length: 30 }, (_, i) => new Date().getFullYear() + 1 - i).map(y => (
-              <option key={y} value={y}>
-                A.S. {y}/{y + 1}
-              </option>
-            ))}
-          </select>
-        </label>
+        </nav>
       </div>
 
       <div className="step-content-viewport">
@@ -213,52 +260,7 @@ export function Dashboard({
 
         {(activeStep === 'family' || activeStep === 'all') && (
           <div className="step-pane step-family-pane">
-            {sharedLeaves.length > 0 ? (
-              <div className="shared-leave-cards-grid">
-                {sharedLeaves.map((sl, idx) => (
-                  <div className="panel shared-leave-card" key={idx}>
-                    <div className="shared-leave-header">
-                      <div>
-                        <h4>{sl.childName}</h4>
-                        {sl.birthDate && <small>{sl.birthDate}</small>}
-                      </div>
-                      {sl.hasOtherParent ? (
-                        <span className="badge linked-badge">
-                          <Link2 size={12} />
-                          {sl.otherParentName}
-                        </span>
-                      ) : (
-                        <span className="badge muted">{t('manualEntry')}</span>
-                      )}
-                    </div>
-
-                    <div className="shared-leave-metrics">
-                      <div className="sl-metric-item">
-                        <span className="sl-lbl">{t('parentDays')}</span>
-                        <strong className="sl-val">{sl.parentADays} {t('days')}</strong>
-                      </div>
-                      <div className="sl-metric-item">
-                        <span className="sl-lbl">{t('otherParentDays')}</span>
-                        <strong className="sl-val">{sl.parentBDays} {t('days')}</strong>
-                      </div>
-                      <div className="sl-metric-item highlight">
-                        <span className="sl-lbl">{t('sharedCapRemaining')}</span>
-                        <strong className="sl-val">{sl.remainingDays} {t('days')}</strong>
-                      </div>
-                      <div className="sl-metric-item">
-                        <span className="sl-lbl">{t('maxLimit')}</span>
-                        <strong className="sl-val">{sl.maxSharedDays} {t('days')}</strong>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="panel empty-step-card">
-                <Users2 size={32} />
-                <p className="muted">{t('noRecords')}</p>
-              </div>
-            )}
+            <FamilyLeavePane familyOverview={familyOverview} />
           </div>
         )}
 

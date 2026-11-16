@@ -12,6 +12,7 @@ import {
   RefreshCw,
   FileText,
   Bot,
+  Sparkles,
 } from 'lucide-react';
 import { Venus, Mars } from '../people/GenderIcons';
 import { Archive, Analysis, Person } from '../../shared/types';
@@ -34,6 +35,7 @@ import { ProfileBadge3d } from '../../shared/icons3d';
 import { OtaBanner } from '../ota/OtaBanner';
 import { VaultScreen } from './VaultScreen';
 import { UpdatesPage } from '../updates/UpdatesPage';
+import { FirstSetupWizard } from '../wizard/FirstSetupWizard';
 
 export default function App() {
   const [locale, setLocale] = useState<Locale>('it');
@@ -60,6 +62,7 @@ function Workspace({
   const [selected, setSelected] = useState<string | null>(null);
   const [section, setSection] = useState('overview');
   const [creating, setCreating] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -240,6 +243,14 @@ function Workspace({
             {t('people')}
             <span>{archive.people.length}</span>
           </button>
+          <button
+            className="nav"
+            onClick={() => setShowWizard(true)}
+            style={{ color: '#116b62', fontWeight: 650 }}
+          >
+            <Sparkles size={17} />
+            <span>Configurazione a Step</span>
+          </button>
           {person && (
             <>
               <div className="side-label">
@@ -351,6 +362,15 @@ function Workspace({
                       <span className="badge">{t('noServices')}</span>
                     )}
                   </div>
+                  <button
+                    type="button"
+                    className="wizard-btn-primary"
+                    style={{ marginLeft: 'auto', padding: '7px 14px', fontSize: 12 }}
+                    onClick={() => setShowWizard(true)}
+                  >
+                    <Sparkles size={14} />
+                    <span>Configurazione Guidata</span>
+                  </button>
                 </div>
 
                 {section === 'overview' ? (
@@ -419,6 +439,7 @@ function Workspace({
                   setSection('overview');
                 }}
                 onCreate={() => setCreating(true)}
+                onStartWizard={() => setShowWizard(true)}
               />
             )}
           </main>
@@ -428,6 +449,19 @@ function Workspace({
           currentSection={section}
           archive={archive}
         />
+        {showWizard && (
+          <FirstSetupWizard
+            person={person}
+            allPeople={archive.people}
+            busy={busy}
+            onCancel={() => setShowWizard(false)}
+            onComplete={(savedPerson, nextArchive) => {
+              setArchive(nextArchive);
+              setSelected(savedPerson.id);
+              setShowWizard(false);
+            }}
+          />
+        )}
       </div>
     </AutoSaveContext.Provider>
   );
