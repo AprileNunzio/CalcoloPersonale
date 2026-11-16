@@ -2,12 +2,19 @@ use crate::{
     shared::{Error, Result},
     vault::Vault,
 };
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::sync::Arc;
 use tauri::State;
 use zeroize::Zeroizing;
 
 pub struct GeminiState(pub Arc<tokio::sync::Semaphore>);
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct ImagePayload {
+    pub mime_type: String,
+    pub data: String,
+}
 
 fn require_unlock(vault: &Vault) -> Result<()> {
     if vault.session.lock().map_err(|_| Error::Locked)?.is_none() {
@@ -126,13 +133,14 @@ pub async fn ask_gemini(
     prompt: String,
     model: String,
     consent: bool,
+    images: Option<Vec<ImagePayload>>,
     vault: State<'_, Vault>,
     state: State<'_, GeminiState>,
 ) -> Result<String> {
     require_unlock(&vault)?;
     if !consent
         || prompt.trim().is_empty()
-        || prompt.len() > 32000
+        || prompt.len() > 64000
         || model.is_empty()
         || model.len() > 100
         || !model
@@ -152,10 +160,31 @@ pub async fn ask_gemini(
         .redirect(reqwest::redirect::Policy::none())
         .build()
         .map_err(|_| Error::Remote)?;
-    let response = client.post(format!("https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"))
+    let mut parts: Vec<Value> = vec![json!({"text": prompt})];
+    if let Some(imgs) = images {
+        for img in imgs {
+            if !img.data.is_empty() && img.data.len() <= 20_000_000 {
+                parts.push(json!({
+                    "inline_data": {
+                        "mime_type": img.mime_type,
+                        "data": img.data
+                    }
+                }));
+            }
+        }
+    }
+    let response = client
+        .post(format!(
+            "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        ))
         .header("x-goog-api-key", key.as_str())
-        .json(&json!({"contents":[{"role":"user","parts":[{"text":prompt}]}],"generationConfig":{"maxOutputTokens":8192}}))
-        .send().await.map_err(|_| Error::Remote)?;
+        .json(&json!({
+            "contents": [{"role": "user", "parts": parts}],
+            "generationConfig": {"maxOutputTokens": 8192}
+        }))
+        .send()
+        .await
+        .map_err(|_| Error::Remote)?;
     let body = response_json(response).await?;
     let parts = body["candidates"][0]["content"]["parts"]
         .as_array()
@@ -169,4 +198,83 @@ pub async fn ask_gemini(
         return Err(Error::Remote);
     }
     Ok(answer)
+}
+
+#[tauri::command]
+pub async fn ollama_models(
+    endpoint: Option<String>,
+    vault: State<'_, Vault>,
+) -> Result<Vec<String>> {
+    require_unlock(&vault)?;
+    let url = endpoint.unwrap_or_else(|| "http://127.0.0.1:11434".into());
+    let url = url.trim_end_matches('/');
+    if !url.starts_with("http://") && !url.starts_with("https://") {
+        return Err(Error::Invalid);
+    }
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .build()
+        .map_err(|_| Error::Remote)?;
+    let response = client
+        .get(format!("{url}/api/tags"))
+        .send()
+        .await
+        .map_err(|_| Error::Remote)?;
+    let body = response_json(response).await?;
+    let models = body["models"].as_array().ok_or(Error::Remote)?;
+    Ok(models
+        .iter()
+        .filter_map(|m| m["name"].as_str().map(str::to_string))
+        .collect())
+}
+
+#[tauri::command]
+pub async fn ask_ollama(
+    endpoint: Option<String>,
+    model: String,
+    prompt: String,
+    images: Option<Vec<String>>,
+    vault: State<'_, Vault>,
+    state: State<'_, GeminiState>,
+) -> Result<String> {
+    require_unlock(&vault)?;
+    if prompt.trim().is_empty() || model.is_empty() || model.len() > 100 {
+        return Err(Error::Invalid);
+    }
+    let _permit = state
+        .0
+        .clone()
+        .try_acquire_owned()
+        .map_err(|_| Error::Busy)?;
+    let url = endpoint.unwrap_or_else(|| "http://127.0.0.1:11434".into());
+    let url = url.trim_end_matches('/');
+    if !url.starts_with("http://") && !url.starts_with("https://") {
+        return Err(Error::Invalid);
+    }
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(180))
+        .build()
+        .map_err(|_| Error::Remote)?;
+    let mut payload = json!({
+        "model": model,
+        "prompt": prompt,
+        "stream": false
+    });
+    if let Some(imgs) = images {
+        if !imgs.is_empty() {
+            payload["images"] = json!(imgs);
+        }
+    }
+    let response = client
+        .post(format!("{url}/api/generate"))
+        .json(&payload)
+        .send()
+        .await
+        .map_err(|_| Error::Remote)?;
+    let body = response_json(response).await?;
+    let answer = body["response"].as_str().ok_or(Error::Remote)?;
+    if answer.is_empty() {
+        return Err(Error::Remote);
+    }
+    Ok(answer.to_string())
 }

@@ -156,6 +156,8 @@ fn main() {
             gemini::remove_gemini_key,
             gemini::gemini_models,
             gemini::ask_gemini,
+            gemini::ollama_models,
+            gemini::ask_ollama,
             ota_check,
             ota_apply
         ])

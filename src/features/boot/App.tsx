@@ -14,6 +14,7 @@ import {
   Languages,
   RefreshCw,
   FileText,
+  Bot,
 } from 'lucide-react';
 import { Venus, Mars } from '../people/GenderIcons';
 import { Archive, Analysis, Person } from '../../shared/types';
@@ -25,7 +26,7 @@ import { flush } from '../autosave/store';
 import { call, getRevision } from '../../shared/api';
 import { PersonForm } from '../people/PersonForm';
 import { Records } from '../records/Records';
-import { GeminiPanel } from '../gemini/GeminiPanel';
+import { AiAssistantPage } from '../ai/AiAssistantPage';
 import { Dashboard } from '../dashboard/Dashboard';
 import { Applications } from '../applications/Applications';
 import { getPersonCurrentProfile } from '../../shared/personUtils';
@@ -240,7 +241,15 @@ function Workspace({
             </>
           )}
           <div className="sidebar-bottom">
-            <button className="nav" onClick={() => setSection('assistant')}>
+            <button
+              className={`nav ${section === 'assistant' ? 'active' : ''}`}
+              onClick={() => {
+                setSelected(null);
+                setCreating(false);
+                setSection('assistant');
+              }}
+            >
+              <Bot size={17} />
               {t('assistant')}
             </button>
             <div className="secure-label">
@@ -282,7 +291,7 @@ function Workspace({
           <main className="content">
             {banner}
             {section === 'assistant' ? (
-              <GeminiPanel />
+              <AiAssistantPage />
             ) : section === 'updates' ? (
               <UpdatesPage />
             ) : creating ? (
