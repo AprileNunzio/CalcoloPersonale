@@ -42,7 +42,7 @@ jobs:
       - run: cargo clippy --locked --manifest-path src-tauri/Cargo.toml -- -D warnings
   release:
     needs: validate
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
     runs-on: windows-latest
