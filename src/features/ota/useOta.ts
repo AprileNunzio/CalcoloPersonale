@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { call } from '../../shared/api';
+import { flush } from '../autosave/store';
 import { OtaPhase, OtaStatus } from './types';
 
 export function useOta() {
@@ -24,6 +25,7 @@ export function useOta() {
     setPhase('applying');
     setError(null);
     try {
+      await flush();
       const applied = await call<boolean>('ota_apply');
       if (applied) {
         window.location.reload();

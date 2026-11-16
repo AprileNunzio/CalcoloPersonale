@@ -32,6 +32,7 @@ import { getPersonCurrentProfile } from '../../shared/personUtils';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { OtaBanner } from '../ota/OtaBanner';
 import { VaultScreen } from './VaultScreen';
+import { UpdatesPage } from '../updates/UpdatesPage';
 
 export default function App() {
   const [locale, setLocale] = useState<Locale>('it');
@@ -249,7 +250,14 @@ function Workspace({
                 <small>{t('local')}</small>
               </div>
             </div>
-            <button className="nav" onClick={requestUpdate}>
+            <button
+              className={`nav ${section === 'updates' ? 'active' : ''}`}
+              onClick={() => {
+                setSelected(null);
+                setCreating(false);
+                setSection('updates');
+              }}
+            >
               <RefreshCw size={17} />
               {t('update')}
             </button>
@@ -263,7 +271,7 @@ function Workspace({
         <div className="workspace">
           <header>
             <AutoSaveStatus />
-            <span>{t(person ? section : 'people')}</span>
+            <span>{section === 'updates' ? t('systemUpdates') : t(person ? section : 'people')}</span>
             <div>
               {busy && <span role="status">{t('loading')}</span>}
               {language}
@@ -275,16 +283,18 @@ function Workspace({
             {banner}
             {section === 'assistant' ? (
               <GeminiPanel />
+            ) : section === 'updates' ? (
+              <UpdatesPage />
             ) : creating ? (
               <PersonForm busy={busy} onSave={save} onCancel={() => setCreating(false)} />
             ) : person ? (
               <>
-                <button className="back" onClick={() => setSelected(null)}>
-                  <ArrowLeft size={16} />
-                  {t('back')}
-                </button>
-                <div className="person-heading">
-                  <div className={`avatar ${person.gender}`}>
+                <div className="person-compact-bar">
+                  <button className="back-btn-compact" onClick={() => setSelected(null)} title={t('back')}>
+                    <ArrowLeft size={16} />
+                    <span>{t('back')}</span>
+                  </button>
+                  <div className={`avatar-compact ${person.gender}`}>
                     {person.gender === 'female' ? (
                       <Venus />
                     ) : person.gender === 'male' ? (
@@ -293,13 +303,13 @@ function Workspace({
                       <UserRound />
                     )}
                   </div>
-                  <div>
-                    <h1>
+                  <div className="person-compact-info">
+                    <h2>
                       {person.lastName} {person.firstName}
-                    </h1>
+                    </h2>
                     {currentProfile && currentProfile.code !== '—' ? (
                       <div className="person-profile-badge-row">
-                        <ProfileBadge3d code={currentProfile.code} size={28} />
+                        <ProfileBadge3d code={currentProfile.code} size={24} />
                         <span className="badge" title={currentProfile.isDerived ? t('profileDerived') : undefined}>
                           {currentProfile.code} · {currentProfile.label}
                         </span>

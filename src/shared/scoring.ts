@@ -32,17 +32,20 @@ function normalizeGrade(val: number): number {
   if (val > 10 && val <= 60) return Math.round(((val / 60) * 10) * 100) / 100;
   if (val > 60 && val <= 100) return Math.round((val / 10) * 100) / 100;
   if (val <= 10) return Math.round(val * 100) / 100;
-  return 6.0;
+  return 0.0;
 }
 
 function computeAccessScore(records: Entry[], profileCode: string): number {
   const qual = records.find(
-    r => r.kind === 'qualification' && (r.profile === profileCode || !r.profile) && r.amount,
+    r => r.kind === 'qualification' && (r.profile === profileCode || !r.profile),
   );
-  if (qual && qual.amount) {
-    return normalizeGrade(qual.amount);
+  if (qual) {
+    if (qual.amount && qual.amount > 0) {
+      return normalizeGrade(qual.amount);
+    }
+    return 0.0;
   }
-  return 6.0;
+  return 0.0;
 }
 
 function computeCulturalScore(records: Entry[], profileCode: string): number {
@@ -74,9 +77,46 @@ function computeCulturalScore(records: Entry[], profileCode: string): number {
   return Math.round(score * 100) / 100;
 }
 
-export function calculateProfileScores(person: Person): ProfileScore[] {
+export function getActiveProfiles(person: Person): string[] {
+  const activeSet = new Set<string>();
+  const records = person.records || [];
+
+  for (const r of records) {
+    if (r.kind === 'application') {
+      try {
+        if (r.notes && r.notes.startsWith('{')) {
+          const data = JSON.parse(r.notes);
+          if (Array.isArray(data.profiles)) {
+            data.profiles.forEach((p: string) => activeSet.add(p));
+          }
+        }
+      } catch {
+        if (r.profile) activeSet.add(r.profile);
+      }
+      if (r.profile) activeSet.add(r.profile);
+    } else if (r.kind === 'service' && r.profile) {
+      activeSet.add(r.profile);
+    }
+  }
+
+  if (activeSet.size === 0 && person.profile && person.profile in PROFILE_LABELS) {
+    activeSet.add(person.profile);
+  }
+
+  return Array.from(activeSet);
+}
+
+export function calculateProfileScores(person: Person, onlyActive = true): ProfileScore[] {
+  const activeCodes = getActiveProfiles(person);
+  if (onlyActive && activeCodes.length === 0) {
+    return [];
+  }
+  const profilesToEvaluate = onlyActive
+    ? ATA_PROFILES.filter(p => activeCodes.includes(p.code))
+    : ATA_PROFILES;
+
   const services = (person.records || []).filter(r => r.kind === 'service');
-  return ATA_PROFILES.map(prof => {
+  return profilesToEvaluate.map(prof => {
     let specificDays = 0;
     let otherDays = 0;
     for (const s of services) {

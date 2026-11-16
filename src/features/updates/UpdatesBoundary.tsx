@@ -2,30 +2,29 @@ import { ReactNode, useEffect, useState } from 'react';
 import { isTauri } from '@tauri-apps/api/core';
 import { check, type Update } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
-import { ArrowUpRight, CheckCircle2, RefreshCw, X } from 'lucide-react';
+import { CheckCircle2, RefreshCw } from 'lucide-react';
 import { flush } from '../autosave/store';
 import { useT } from '../../shared/i18n';
 import './styles.css';
 
-type Status = {
+export type NativeStatus = {
   phase: 'idle' | 'checking' | 'downloading' | 'updateReady' | 'installing' | 'upToDate' | 'failed';
   received?: number;
   total?: number;
   message?: string;
 };
 
-const listeners = new Set<(status: Status) => void>();
-let current: Status = { phase: 'idle' };
+const listeners = new Set<(status: NativeStatus) => void>();
+let current: NativeStatus = { phase: 'idle' };
 let stagedUpdate: Update | null = null;
 let runningCheck = false;
 let autoChecked = false;
 
-function publish(status: Status) {
+function publish(status: NativeStatus) {
   current = status;
   listeners.forEach(listener => listener(status));
 }
 
-// Background silent updater
 export async function backgroundCheckUpdate(isManual = false) {
   if (!isTauri() || runningCheck) return;
   runningCheck = true;
@@ -43,7 +42,6 @@ export async function backgroundCheckUpdate(isManual = false) {
       return;
     }
 
-    // Update found! Download in background silently
     publish({ phase: 'downloading', received: 0 });
     await update.download(event => {
       if (event.event === 'Started') {
@@ -57,7 +55,6 @@ export async function backgroundCheckUpdate(isManual = false) {
       }
     });
 
-    // Successfully downloaded! Ready for user restart
     stagedUpdate = update;
     publish({ phase: 'updateReady' });
   } catch (err) {
@@ -92,15 +89,32 @@ export async function applyUpdateAndRestart() {
   }
 }
 
+export function useNativeUpdater() {
+  const [status, setStatus] = useState<NativeStatus>(current);
+
+  useEffect(() => {
+    listeners.add(setStatus);
+    return () => {
+      listeners.delete(setStatus);
+    };
+  }, []);
+
+  return {
+    status,
+    checkUpdate: (isManual = true) => backgroundCheckUpdate(isManual),
+    applyUpdate: applyUpdateAndRestart,
+    stagedUpdate,
+  };
+}
+
 export function UpdatesBoundary({ children }: { children: ReactNode }) {
   const t = useT();
-  const [status, setStatus] = useState<Status>(current);
+  const [status, setStatus] = useState<NativeStatus>(current);
 
   useEffect(() => {
     listeners.add(setStatus);
     if (isTauri() && !autoChecked) {
       autoChecked = true;
-      // Start background update check silently after short delay
       const timer = setTimeout(() => {
         void backgroundCheckUpdate(false);
       }, 2500);
@@ -118,7 +132,6 @@ export function UpdatesBoundary({ children }: { children: ReactNode }) {
     <>
       {children}
 
-      {/* Non-modal single-page update notification bar */}
       {status.phase === 'updateReady' && (
         <aside className="update-banner" role="status" aria-live="polite">
           <div className="update-banner-content">
@@ -144,7 +157,6 @@ export function UpdatesBoundary({ children }: { children: ReactNode }) {
         </aside>
       )}
 
-      {/* Temporary toast for manual check notifications */}
       {status.phase === 'checking' && (
         <div className="update-toast" role="status">
           <RefreshCw size={15} className="spin" />

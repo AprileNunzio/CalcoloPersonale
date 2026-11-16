@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Plus, Trash2, Pencil, Briefcase } from 'lucide-react';
+import { Plus, Trash2, Pencil, Briefcase, Users, UserPlus, Link2 } from 'lucide-react';
 import { Archive, Entry, Person } from '../../shared/types';
 import { call, getRevision } from '../../shared/api';
 import { useT } from '../../shared/i18n';
@@ -11,14 +11,27 @@ import { ATA_PROFILES, PROFILE_LABELS } from '../../shared/personUtils';
 
 const absenceKinds = ['sickness', 'parental', 'holiday', 'festivity', 'bereavement', 'blood', 'other'];
 
-export function Records({ person, section, busy }: { person: Person; section: string; save: (p: Person) => void; busy: boolean }) {
+export function Records({
+  person,
+  section,
+  busy,
+}: {
+  person: Person;
+  section: string;
+  save: (p: Person) => void;
+  busy: boolean;
+}) {
   const t = useT();
   const context = useContext(AutoSaveContext)!;
   const [draft, setDraft] = useAutoDraft<Entry | null>(`entry:${person.id}:${section}`, null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
+  const [familySource, setFamilySource] = useState<'manual' | 'archive'>('manual');
+  const [selectedLinkedId, setSelectedLinkedId] = useState('');
+
   const kinds = section === 'absences' ? absenceKinds : [section];
   const entries = person.records.filter(record => kinds.includes(record.kind));
+  const otherPeople = (context.archive.people || []).filter(p => p.id !== person.id);
 
   async function persist(entry: Entry, remove = false) {
     setPending(true);
@@ -30,7 +43,7 @@ export function Records({ person, section, busy }: { person: Person; section: st
         entryId: entry.id,
         entry: {
           ...entry,
-          profile: entry.kind === 'service' ? (entry.profile || 'CS') : null,
+          profile: entry.kind === 'service' ? entry.profile || 'CS' : null,
         },
         revision: getRevision(),
       });
@@ -42,6 +55,20 @@ export function Records({ person, section, busy }: { person: Person; section: st
       setPending(false);
     }
   }
+
+  const handlePickArchivePerson = (targetId: string) => {
+    setSelectedLinkedId(targetId);
+    const chosen = otherPeople.find(p => p.id === targetId);
+    if (chosen && draft) {
+      const payload = { linkedPersonId: chosen.id, role: 'family' };
+      setDraft({
+        ...draft,
+        title: `${chosen.lastName} ${chosen.firstName}`,
+        start: chosen.birthDate || draft.start || '',
+        notes: JSON.stringify(payload),
+      });
+    }
+  };
 
   const getFieldStatus = (field: keyof Entry): FieldStatus => {
     if (!draft) return 'idle';
@@ -70,7 +97,9 @@ export function Records({ person, section, busy }: { person: Person; section: st
         <h2>{t(section)}</h2>
         <button
           disabled={busy || pending || draft !== null}
-          onClick={() =>
+          onClick={() => {
+            setFamilySource('manual');
+            setSelectedLinkedId('');
             setDraft({
               id: crypto.randomUUID(),
               kind: kinds[0],
@@ -80,15 +109,19 @@ export function Records({ person, section, busy }: { person: Person; section: st
               amount: null,
               notes: '',
               profile: kinds[0] === 'service' ? 'CS' : null,
-            })
-          }
+            });
+          }}
         >
           <Plus size={18} />
           {t('addRecord')}
         </button>
       </div>
 
-      {error && <p role="alert" className="error">{t(error)}</p>}
+      {error && (
+        <p role="alert" className="error">
+          {t(error)}
+        </p>
+      )}
 
       {draft && (
         <form
@@ -105,6 +138,50 @@ export function Records({ person, section, busy }: { person: Person; section: st
               </div>
               <AutoSaveStatus />
             </div>
+
+            {draft.kind === 'child' && otherPeople.length > 0 && (
+              <div style={{ marginBottom: 18 }}>
+                <label className="field-label-text">{t('familyMemberSource')}</label>
+                <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
+                  <button
+                    type="button"
+                    className={familySource === 'archive' ? '' : 'secondary'}
+                    onClick={() => setFamilySource('archive')}
+                  >
+                    <Users size={16} />
+                    {t('chooseFromArchive')}
+                  </button>
+                  <button
+                    type="button"
+                    className={familySource === 'manual' ? '' : 'secondary'}
+                    onClick={() => {
+                      setFamilySource('manual');
+                      setSelectedLinkedId('');
+                    }}
+                  >
+                    <UserPlus size={16} />
+                    {t('manualEntry')}
+                  </button>
+                </div>
+                {familySource === 'archive' && (
+                  <div style={{ marginTop: 12 }}>
+                    <FormField label={t('selectPerson')}>
+                      <select
+                        value={selectedLinkedId}
+                        onChange={e => handlePickArchivePerson(e.target.value)}
+                      >
+                        <option value="">-- {t('selectPerson')} --</option>
+                        {otherPeople.map(p => (
+                          <option key={p.id} value={p.id}>
+                            {p.lastName} {p.firstName} {p.birthDate ? `(${p.birthDate})` : ''}
+                          </option>
+                        ))}
+                      </select>
+                    </FormField>
+                  </div>
+                )}
+              </div>
+            )}
 
             {draft.kind === 'service' && (
               <div style={{ marginBottom: 20 }}>
@@ -129,9 +206,15 @@ export function Records({ person, section, busy }: { person: Person; section: st
 
             {draft.school && (
               <div className="school-summary" style={{ marginBottom: 18 }}>
-                <strong>{draft.school.code} · {draft.school.name}</strong>
-                <p>{draft.school.address} · {draft.school.postalCode} · {draft.school.municipality} · {draft.school.province}</p>
-                <p>{draft.school.email} · {draft.school.pec} · {draft.school.website}</p>
+                <strong>
+                  {draft.school.code} · {draft.school.name}
+                </strong>
+                <p>
+                  {draft.school.address} · {draft.school.postalCode} · {draft.school.municipality} · {draft.school.province}
+                </p>
+                <p>
+                  {draft.school.email} · {draft.school.pec} · {draft.school.website}
+                </p>
               </div>
             )}
 
@@ -143,7 +226,9 @@ export function Records({ person, section, busy }: { person: Person; section: st
                     onChange={event => setDraft({ ...draft, kind: event.target.value })}
                   >
                     {kinds.map(kind => (
-                      <option key={kind} value={kind}>{t(kind)}</option>
+                      <option key={kind} value={kind}>
+                        {t(kind)}
+                      </option>
                     ))}
                   </select>
                 </FormField>
@@ -172,7 +257,7 @@ export function Records({ person, section, busy }: { person: Person; section: st
                 label={t('title')}
                 tip={draft.kind === 'service' ? t('tipServiceTitle') : undefined}
                 status={getFieldStatus('title')}
-                errorMessage="Il titolo/descrizione è obbligatorio"
+                errorMessage={t('requiredField')}
               >
                 <input
                   required
@@ -201,7 +286,7 @@ export function Records({ person, section, busy }: { person: Person; section: st
                   label={t('end')}
                   tip={draft.kind === 'service' ? t('tipServiceEnd') : undefined}
                   status={getFieldStatus('end')}
-                  errorMessage="La data di fine non può precedere la data di inizio"
+                  errorMessage={t('invalidField')}
                 >
                   <input
                     type="date"
@@ -247,52 +332,94 @@ export function Records({ person, section, busy }: { person: Person; section: st
         {entries.length === 0 ? (
           <p className="muted">{t('noRecords')}</p>
         ) : (
-          entries.map(record => (
-            <article className="entry" key={record.id}>
-              <div>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: 4 }}>
-                  <span className="badge">{t(record.kind)}</span>
-                  {record.kind === 'service' && record.profile && (
-                    <span className="badge" style={{ background: '#eaf4f1', color: '#166e61', borderColor: '#c4e3dc', fontWeight: 600 }}>
-                      <Briefcase size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: '-1px' }} />
-                      {record.profile} · {PROFILE_LABELS[record.profile] || record.profile}
-                    </span>
+          entries.map(record => {
+            let isLinked = false;
+            try {
+              if (record.notes && record.notes.startsWith('{')) {
+                const parsed = JSON.parse(record.notes);
+                isLinked = !!parsed.linkedPersonId;
+              }
+            } catch {
+              isLinked = false;
+            }
+
+            return (
+              <article className="entry" key={record.id}>
+                <div>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: 4 }}>
+                    <span className="badge">{t(record.kind)}</span>
+                    {record.kind === 'service' && record.profile && (
+                      <span
+                        className="badge"
+                        style={{
+                          background: '#eaf4f1',
+                          color: '#166e61',
+                          borderColor: '#c4e3dc',
+                          fontWeight: 600,
+                        }}
+                      >
+                        <Briefcase
+                          size={12}
+                          style={{ display: 'inline', marginRight: 4, verticalAlign: '-1px' }}
+                        />
+                        {record.profile} · {PROFILE_LABELS[record.profile] || record.profile}
+                      </span>
+                    )}
+                    {isLinked && (
+                      <span
+                        className="badge"
+                        style={{
+                          background: '#eff6ff',
+                          color: '#1d4ed8',
+                          borderColor: '#bfdbfe',
+                          fontWeight: 600,
+                        }}
+                      >
+                        <Link2 size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: '-1px' }} />
+                        {t('linkedPerson')}
+                      </span>
+                    )}
+                  </div>
+                  <h3>{record.title}</h3>
+                  <p>
+                    {record.start}
+                    {record.end ? ` → ${record.end}` : ''}
+                  </p>
+                  {record.school && (
+                    <p className="muted" style={{ fontSize: '12px', marginTop: 2 }}>
+                      {record.school.code} · {record.school.name} ({record.school.municipality} - {record.school.province})
+                    </p>
+                  )}
+                  {record.notes && !record.notes.startsWith('{') && (
+                    <p className="muted">{record.notes}</p>
                   )}
                 </div>
-                <h3>{record.title}</h3>
-                <p>
-                  {record.start}
-                  {record.end ? ` → ${record.end}` : ''}
-                </p>
-                {record.school && (
-                  <p className="muted" style={{ fontSize: '12px', marginTop: 2 }}>
-                    {record.school.code} · {record.school.name} ({record.school.municipality} - {record.school.province})
-                  </p>
-                )}
-                {record.notes && <p className="muted">{record.notes}</p>}
-              </div>
-              <div className="actions">
-                <button
-                  className="icon secondary"
-                  aria-label={t('edit')}
-                  disabled={busy || pending || draft !== null}
-                  onClick={() => setDraft(record)}
-                >
-                  <Pencil size={17} />
-                </button>
-                <button
-                  className="icon secondary"
-                  aria-label={t('remove')}
-                  disabled={busy || pending || draft !== null}
-                  onClick={() => {
-                    if (window.confirm(t('deleteRecord'))) void persist(record, true);
-                  }}
-                >
-                  <Trash2 size={17} />
-                </button>
-              </div>
-            </article>
-          ))
+                <div className="actions">
+                  <button
+                    className="icon secondary"
+                    aria-label={t('edit')}
+                    disabled={busy || pending || draft !== null}
+                    onClick={() => {
+                      setFamilySource('manual');
+                      setDraft(record);
+                    }}
+                  >
+                    <Pencil size={17} />
+                  </button>
+                  <button
+                    className="icon secondary"
+                    aria-label={t('remove')}
+                    disabled={busy || pending || draft !== null}
+                    onClick={() => {
+                      if (window.confirm(t('deleteRecord'))) void persist(record, true);
+                    }}
+                  >
+                    <Trash2 size={17} />
+                  </button>
+                </div>
+              </article>
+            );
+          })
         )}
       </div>
     </section>
