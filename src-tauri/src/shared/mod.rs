@@ -22,6 +22,8 @@ pub enum Error {
     Remote,
     #[error("requestBusy")]
     Busy,
+    #[error("otaError")]
+    Ota,
 }
 
 impl Serialize for Error {

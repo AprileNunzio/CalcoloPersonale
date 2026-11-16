@@ -13,9 +13,10 @@ import { Records } from '../records/Records';
 import { GeminiPanel } from '../gemini/GeminiPanel';
 import { Dashboard } from '../dashboard/Dashboard';
 import { getPersonCurrentProfile } from '../../shared/personUtils';
+import { OtaBanner } from '../ota/OtaBanner';
 export default function App() {
  const [locale,setLocale]=useState<Locale>('it');
- return <LocaleContext.Provider value={locale}><UpdatesBoundary><Workspace locale={locale} setLocale={setLocale}/></UpdatesBoundary></LocaleContext.Provider>;
+ return <LocaleContext.Provider value={locale}><UpdatesBoundary><Workspace locale={locale} setLocale={setLocale}/><OtaBanner /></UpdatesBoundary></LocaleContext.Provider>;
 }
 function Workspace({locale,setLocale}:{locale:Locale;setLocale:(l:Locale)=>void}) {
  useCloseGuard();

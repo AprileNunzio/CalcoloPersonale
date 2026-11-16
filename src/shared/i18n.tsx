@@ -20,6 +20,11 @@ const it = {
   tipServiceStart: 'Data di presa di servizio o inizio contratto.',
   tipServiceEnd: 'Data di termine del contratto (se a termine).',
   tipServiceNotes: 'Eventuali annotazioni su orario, supplenza o note contrattuali.',
+  otaUpdateAvailable: 'Aggiornamento rapido interfaccia disponibile',
+  otaUpdatePrompt: 'È disponibile una nuova versione dell’interfaccia. Ricaricare ora per applicare le modifiche?',
+  otaReloadNow: 'Ricarica interfaccia',
+  otaChecking: 'Verifica aggiornamenti rapidi…',
+  otaUpdated: 'Interfaccia aggiornata con successo.',
 };
 const en: typeof it = {
   assistant: 'Gemini assistant', geminiDescription: 'On-demand assistance. The key is stored in Windows credentials; records are never sent automatically.', apiKey: 'Gemini API key', saveKey: 'Store key', removeKey: 'Remove key', loadModels: 'Load available models', model: 'Model', chooseModel: 'Select a model', question: 'Request to send', askAssistant: 'Send to Gemini', answer: 'Answer', geminiConsent: 'I authorize sending only the visible request text to Google under the API service terms.', aiLimit: 'Verify this generated answer: it does not modify records or replace statutory calculations.', credentialError: 'Credential unavailable or could not be stored.', remoteError: 'Remote request failed: check key, model, quota and connectivity.', requestBusy: 'Another request is running.', credentialSaved: 'Key stored in Windows credentials.', credentialRemoved: 'Key removed.',
@@ -42,6 +47,11 @@ const en: typeof it = {
   tipServiceStart: 'Start date of the contract.',
   tipServiceEnd: 'End date of the contract.',
   tipServiceNotes: 'Optional notes regarding working hours or contract.',
+  otaUpdateAvailable: 'Fast UI update available',
+  otaUpdatePrompt: 'A new interface version is available. Reload now to apply?',
+  otaReloadNow: 'Reload interface',
+  otaChecking: 'Checking for fast updates…',
+  otaUpdated: 'Interface updated successfully.',
 };
 export type Key = keyof typeof it;
 export type Locale = 'it' | 'en';

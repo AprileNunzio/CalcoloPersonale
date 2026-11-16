@@ -2,11 +2,13 @@
 mod analysis;
 mod directory;
 mod gemini;
+mod ota;
 mod people;
 mod shared;
 mod vault;
 use shared::{Error, Result};
-use tauri::{Manager, State};
+use std::sync::Arc;
+use tauri::{Manager, State, WebviewUrl, WebviewWindowBuilder};
 use vault::{Archive, Vault};
 
 #[tauri::command]
@@ -79,17 +81,37 @@ fn analyze(
     )
 }
 
+#[tauri::command]
+async fn ota_check(ota: State<'_, Arc<ota::OtaManager>>) -> Result<ota::OtaStatus> {
+    let manifest = ota.check().await?;
+    let current_version = ota.current_version();
+    let has_update = manifest.is_some();
+    let latest_version = manifest.map(|m| m.version);
+    Ok(ota::OtaStatus {
+        current_version,
+        latest_version,
+        has_update,
+    })
+}
+
+#[tauri::command]
+async fn ota_apply(ota: State<'_, Arc<ota::OtaManager>>) -> Result<bool> {
+    if let Some(manifest) = ota.check().await? {
+        ota.download_and_apply(&manifest).await?;
+        Ok(true)
+    } else {
+        Ok(false)
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|_, _, _| {}))
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
-            let path = app
-                .path()
-                .document_dir()?
-                .join("Calcolo Personale")
-                .join("archivio.cpa");
+            let doc_dir = app.path().document_dir()?.join("Calcolo Personale");
+            let path = doc_dir.join("archivio.cpa");
             app.manage(Vault {
                 path,
                 session: std::sync::Mutex::new(None),
@@ -97,6 +119,27 @@ fn main() {
             app.manage(gemini::GeminiState(std::sync::Arc::new(
                 tokio::sync::Semaphore::new(1),
             )));
+            let ota_manager = Arc::new(ota::OtaManager::new(doc_dir));
+            app.manage(ota_manager.clone());
+
+            let ota_resolver = ota_manager.clone();
+            WebviewWindowBuilder::new(app, "main", WebviewUrl::App("index.html".into()))
+                .title("Calcolo Personale")
+                .inner_size(1440.0, 960.0)
+                .min_inner_size(360.0, 640.0)
+                .maximized(true)
+                .on_web_resource_request(move |req, res| {
+                    let path = req.uri().path();
+                    if let Some((bytes, mime)) = ota_resolver.resolve_asset(path) {
+                        *res.body_mut() = std::borrow::Cow::Owned(bytes);
+                        res.headers_mut().insert(
+                            http::header::CONTENT_TYPE,
+                            http::HeaderValue::from_static(mime),
+                        );
+                    }
+                })
+                .build()?;
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -112,7 +155,9 @@ fn main() {
             gemini::configure_gemini,
             gemini::remove_gemini_key,
             gemini::gemini_models,
-            gemini::ask_gemini
+            gemini::ask_gemini,
+            ota_check,
+            ota_apply
         ])
         .run(tauri::generate_context!())
         .expect("Application initialization failed");

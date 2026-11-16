@@ -1,0 +1,48 @@
+name: OTA Frontend Bundle Update
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+permissions:
+  contents: write
+concurrency:
+  group: ota-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build
+      - name: Package OTA bundle and compute hash
+        id: ota
+        run: |
+          tar -czf dist.tar.gz -C dist .
+          CHECKSUM=$(sha256sum dist.tar.gz | cut -d' ' -f1)
+          VERSION=$(node -p "require('./package.json').version")
+          COMMIT=${{ github.sha }}
+          cat <<EOF > ota-manifest.json
+          {
+            "version": "${VERSION}-${COMMIT::8}",
+            "commit": "${COMMIT}",
+            "sha256": "${CHECKSUM}",
+            "url": "https://raw.githubusercontent.com/${{ github.repository }}/main/dist.tar.gz"
+          }
+          EOF
+      - name: Publish OTA bundle to repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dist.tar.gz ota-manifest.json
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(ota): publish live frontend bundle [skip ci]"
+            git push origin HEAD:main
+          fi
