@@ -42,12 +42,14 @@ jobs:
       - run: cargo clippy --locked --manifest-path src-tauri/Cargo.toml -- -D warnings
   release:
     needs: validate
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     permissions:
       contents: write
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -55,7 +57,12 @@ jobs:
         with:
           python-version: '3.12'
       - uses: dtolnay/rust-toolchain@stable
-      - run: python scripts/check-project.py --release
+      - name: Prepare automatic release version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/auto-bump-version.py
+      - name: Verify project files
+        run: python scripts/check-project.py --release
       - run: npm ci
       - name: Configure trusted updater
         env:
@@ -67,8 +74,8 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: Calcolo Personale ${{ github.ref_name }}
+          tagName: ${{ env.RELEASE_TAG }}
+          releaseName: Calcolo Personale ${{ env.RELEASE_TAG }}
           releaseBody: Installer Windows, aggiornamenti firmati e note disponibili nel CHANGELOG.md della versione.
           releaseDraft: true
           prerelease: false

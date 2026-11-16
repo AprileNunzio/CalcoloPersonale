@@ -3,7 +3,7 @@ import os
 import subprocess
 
 repository = os.environ["GITHUB_REPOSITORY"]
-tag = os.environ["GITHUB_REF_NAME"]
+tag = os.environ.get("RELEASE_TAG") or os.environ["GITHUB_REF_NAME"]
 output = subprocess.check_output(
     ["gh", "release", "view", tag, "--repo", repository, "--json", "assets,isDraft"],
     text=True,
