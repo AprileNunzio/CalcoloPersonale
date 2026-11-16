@@ -25,7 +25,7 @@ jobs:
       - name: Package OTA bundle and compute hash
         id: ota
         run: |
-          tar -czf dist.tar.gz -C dist .
+          (cd dist && tar -czf ../dist.tar.gz *)
           CHECKSUM=$(sha256sum dist.tar.gz | cut -d' ' -f1)
           VERSION=$(node -p "require('./package.json').version")
           COMMIT=${{ github.sha }}

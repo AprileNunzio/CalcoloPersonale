@@ -138,12 +138,26 @@ impl OtaManager {
         for entry in archive.entries().map_err(|_| Error::Ota)? {
             let mut entry = entry.map_err(|_| Error::Ota)?;
             let path = entry.path().map_err(|_| Error::Ota)?.into_owned();
-
-            if !path.components().all(|c| matches!(c, Component::Normal(_))) {
+            if path.components().any(|c| {
+                matches!(
+                    c,
+                    Component::ParentDir | Component::RootDir | Component::Prefix(_)
+                )
+            }) {
                 return Err(Error::Ota);
             }
 
-            let full_path = destination.join(path);
+            let clean_path = path.strip_prefix(".").unwrap_or(&path);
+            if clean_path.as_os_str().is_empty() {
+                continue;
+            }
+
+            let full_path = destination.join(clean_path);
+            if entry.header().entry_type().is_dir() {
+                fs::create_dir_all(&full_path).map_err(Error::Storage)?;
+                continue;
+            }
+
             if let Some(parent) = full_path.parent() {
                 fs::create_dir_all(parent).map_err(Error::Storage)?;
             }

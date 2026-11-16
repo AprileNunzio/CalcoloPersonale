@@ -158,6 +158,7 @@ export const en: typeof it = {
   otaReloadNow: 'Reload interface',
   otaChecking: 'Checking for fast updates…',
   otaUpdated: 'Interface updated successfully.',
+  otaError: 'Unable to complete fast update. Please try again in a few moments.',
   triennium: 'Validity triennium',
   profilesChosen: 'Chosen ATA profiles',
   applicationType: 'Application type',

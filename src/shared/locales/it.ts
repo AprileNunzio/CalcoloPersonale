@@ -156,6 +156,7 @@ export const it = {
   otaReloadNow: 'Ricarica interfaccia',
   otaChecking: 'Verifica aggiornamenti rapidi…',
   otaUpdated: 'Interfaccia aggiornata con successo.',
+  otaError: 'Impossibile completare l’aggiornamento rapido. Riprova tra qualche istante.',
   triennium: 'Triennio di validità',
   profilesChosen: 'Profili ATA scelti',
   applicationType: 'Tipo domanda',
