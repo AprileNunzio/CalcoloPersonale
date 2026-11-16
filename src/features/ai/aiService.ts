@@ -7,7 +7,36 @@ export async function fetchGeminiModels(): Promise<string[]> {
 }
 
 export async function fetchOllamaModels(endpoint?: string): Promise<string[]> {
-  return call<string[]>('ollama_models', { endpoint: endpoint || 'http://127.0.0.1:11434' });
+  const base = (endpoint || 'http://127.0.0.1:11434').replace(/\/+$/, '');
+  
+  try {
+    const list = await call<string[]>('ollama_models', { endpoint: base });
+    if (Array.isArray(list) && list.length > 0) return list;
+  } catch {}
+
+  const candidates = [base];
+  if (base.includes('127.0.0.1')) {
+    candidates.push(base.replace('127.0.0.1', 'localhost'));
+  } else if (base.includes('localhost')) {
+    candidates.push(base.replace('localhost', '127.0.0.1'));
+  }
+
+  for (const target of candidates) {
+    try {
+      const response = await fetch(`${target}/api/tags`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+      });
+      if (response.ok) {
+        const body = await response.json();
+        if (Array.isArray(body.models)) {
+          return body.models.map((m: any) => m.name || m.model).filter(Boolean);
+        }
+      }
+    } catch {}
+  }
+
+  throw new Error('ollamaConnectionFailed');
 }
 
 export async function saveGeminiApiKey(key: string): Promise<void> {
@@ -30,12 +59,44 @@ export async function executeAiQuery(
       .filter(att => att.type.startsWith('image/'))
       .map(att => att.base64.replace(/^data:image\/[a-z]+;base64,/, ''));
 
-    return call<string>('ask_ollama', {
-      endpoint: config.ollamaEndpoint || 'http://127.0.0.1:11434',
-      model: config.ollamaModel,
-      prompt: fullPrompt,
-      images: images.length > 0 ? images : null,
-    });
+    const endpoint = config.ollamaEndpoint || 'http://127.0.0.1:11434';
+
+    try {
+      return await call<string>('ask_ollama', {
+        endpoint,
+        model: config.ollamaModel,
+        prompt: fullPrompt,
+        images: images.length > 0 ? images : null,
+      });
+    } catch {
+      const base = endpoint.replace(/\/+$/, '');
+      const candidates = [base];
+      if (base.includes('127.0.0.1')) candidates.push(base.replace('127.0.0.1', 'localhost'));
+      else if (base.includes('localhost')) candidates.push(base.replace('localhost', '127.0.0.1'));
+
+      for (const target of candidates) {
+        try {
+          const payload: any = {
+            model: config.ollamaModel,
+            prompt: fullPrompt,
+            stream: false,
+          };
+          if (images.length > 0) {
+            payload.images = images;
+          }
+          const response = await fetch(`${target}/api/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (response.ok) {
+            const body = await response.json();
+            if (body.response) return body.response;
+          }
+        } catch {}
+      }
+      throw new Error('ollamaConnectionFailed');
+    }
   }
 
   const geminiImages = attachments

@@ -243,21 +243,13 @@ export function AiSettingsModal({
             <div className="config-form-field">
               <label>{t('localModel')}</label>
               <div style={{ display: 'flex', gap: 8 }}>
-                <select
+                <input
+                  type="text"
                   value={ollamaModel}
                   onChange={e => setOllamaModel(e.target.value)}
+                  placeholder="llama3:latest"
                   style={{ flex: 1 }}
-                >
-                  {ollamaModels.length === 0 ? (
-                    <option value="">{t('noOllamaModelsFound')}</option>
-                  ) : (
-                    ollamaModels.map(m => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))
-                  )}
-                </select>
+                />
                 <button
                   type="button"
                   className="secondary"
@@ -268,6 +260,20 @@ export function AiSettingsModal({
                   <RefreshCw size={14} className={busy ? 'spinning' : ''} />
                   {t('testConnection')}
                 </button>
+              </div>
+
+              <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                {(ollamaModels.length > 0 ? ollamaModels : ['llama3:latest', 'llama3.2:latest', 'mistral:latest', 'qwen2.5:latest', 'llava:latest']).map(m => (
+                  <button
+                    key={m}
+                    type="button"
+                    className={`mini-btn ${ollamaModel === m ? '' : 'secondary'}`}
+                    style={{ fontSize: '11px', padding: '3px 8px', borderRadius: '12px' }}
+                    onClick={() => setOllamaModel(m)}
+                  >
+                    {m}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
