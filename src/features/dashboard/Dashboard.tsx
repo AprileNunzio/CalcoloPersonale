@@ -13,12 +13,15 @@ import {
   Activity,
   AlertCircle,
   FileText,
+  Target,
 } from 'lucide-react';
 import { calculateProfileScores } from '../../shared/scoring';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { AutoSaveContext } from '../autosave/AutoSave';
 import { computeSharedFamilyLeave } from '../../shared/familyLeave';
 import { calculateEntitlements, ContractType } from '../../shared/entitlements';
+import { computeCareerIntelligence } from '../../shared/careerPrediction';
+import { CareerIntelligencePane } from './CareerIntelligencePane';
 import './Dashboard.css';
 import './entitlements.css';
 
@@ -36,10 +39,11 @@ export function Dashboard({
   const t = useT();
   const context = useContext(AutoSaveContext);
   const allPeople = context?.archive.people || [];
-  const [activeStep, setActiveStep] = useState<'scores' | 'services' | 'family' | 'entitlements' | 'all'>('scores');
+  const [activeStep, setActiveStep] = useState<'scores' | 'career' | 'services' | 'family' | 'entitlements' | 'all'>('scores');
   const [contractOverride, setContractOverride] = useState<ContractType | undefined>(undefined);
 
   const profileScores = person ? calculateProfileScores(person) : [];
+  const careerIntelligence = person ? computeCareerIntelligence(person, profileScores) : [];
   const sharedLeaves = person ? computeSharedFamilyLeave(person, allPeople) : [];
   const entitlements = person ? calculateEntitlements(person, contractOverride) : null;
 
@@ -75,6 +79,16 @@ export function Dashboard({
             <Award size={14} />
             <span>{t('stepScores')}</span>
             {profileScores.length > 0 && <span className="step-counter">{profileScores.length}</span>}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeStep === 'career'}
+            className={`step-tab-btn ${activeStep === 'career' ? 'active' : ''}`}
+            onClick={() => setActiveStep('career')}
+          >
+            <Target size={14} />
+            <span>{t('stepCareer')}</span>
           </button>
           <button
             type="button"
@@ -172,6 +186,13 @@ export function Dashboard({
               </div>
             )}
           </div>
+        )}
+
+        {(activeStep === 'career' || activeStep === 'all') && (
+          <CareerIntelligencePane
+            careerIntelligence={careerIntelligence}
+            profileScores={profileScores}
+          />
         )}
 
         {(activeStep === 'services' || activeStep === 'all') && (
