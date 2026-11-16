@@ -1,5 +1,22 @@
 # Registro delle modifiche
 
+## 0.1.1
+
+### Anagrafica e Profilo ATA
+
+- Riorganizzazione dei dati anagrafici base: Cognome, Nome, Data di Nascita, Luogo di Nascita, Provincia di Nascita, Codice Fiscale, Genere.
+- Rimozione del campo ambiguo ISTAT dal modulo principale e integrazione come suggerimento automatico per il Luogo di Nascita.
+- Rimozione del profilo ATA statico dalla scheda anagrafica: il profilo attuale del lavoratore viene ora dedotto dinamicamente dall'ultimo servizio registrato.
+- Selezione del profilo ATA ricoperto per ciascun contratto di servizio prestato.
+- Campi universali con feedback visivo: contorno verde per dati salvati e validi, contorno rosso in caso di errore.
+- Descrizioni e suggerimenti informativi visibili al passaggio del mouse sui titoli dei campi.
+
+### Interfaccia e Aggiornamenti
+
+- Apertura predefinita dell'applicazione a tutto schermo (massimizzata).
+- Design rigorosamente Single Page Application (SPA), privo di popup e barre di scorrimento superflue.
+- Verifica aggiornamenti silenziosa in background: download automatico in sottofondo e notifica non modale con richiesta di riavvio al termine.
+
 ## 0.1.0
 
 
