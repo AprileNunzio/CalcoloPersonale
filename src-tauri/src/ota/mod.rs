@@ -5,9 +5,8 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::{
     fs::{self, File},
-    io::{Cursor, Read, Write},
-    path::{Component, Path, PathBuf},
-    sync::Arc,
+    io::{Cursor, Write},
+    path::{Component, PathBuf},
 };
 use tar::Archive;
 

@@ -459,6 +459,7 @@ dependencies = [
  "argon2",
  "chrono",
  "flate2",
+ "http",
  "keyring",
  "rand 0.8.8",
  "reqwest 0.12.28",
