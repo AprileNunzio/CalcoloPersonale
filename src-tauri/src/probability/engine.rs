@@ -137,13 +137,7 @@ fn evaluate_schools(
                     "AT" => 4,
                     _ => 20,
                 };
-                (
-                    code.clone(),
-                    "FIRENZE".to_string(),
-                    default_staff,
-                    1,
-                    1,
-                )
+                (code.clone(), "FIRENZE".to_string(), default_staff, 1, 1)
             };
 
         let school_candidates = match req.fascia {
@@ -172,7 +166,8 @@ fn evaluate_schools(
         let base_sub = logistic(req.score, dist.substitute_cutoff_estimate, 1.05);
 
         let school_annual = (base_annual + retirement_boost).clamp(0.0, 99.0);
-        let school_short = (base_short + retirement_boost * 1.5 + empirical_boost * 0.5).clamp(0.0, 99.5);
+        let school_short =
+            (base_short + retirement_boost * 1.5 + empirical_boost * 0.5).clamp(0.0, 99.5);
         let school_sub = (base_sub + retirement_boost * 2.0 + empirical_boost).clamp(0.0, 99.9);
 
         let opportunity_index = ((staff as f64 * 1.5
