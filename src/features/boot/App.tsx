@@ -15,6 +15,7 @@ import {
   Banknote,
   School,
   FileCheck,
+  Download,
 } from 'lucide-react';
 import { Venus, Mars } from '../people/GenderIcons';
 import { Archive, Analysis, Person } from '../../shared/types';
@@ -44,6 +45,10 @@ import { VaultScreen } from './VaultScreen';
 import { UpdatesPage } from '../updates/UpdatesPage';
 import { FirstSetupWizard } from '../wizard/FirstSetupWizard';
 import { SidebarNav } from './SidebarNav';
+import { exportPersonToFile } from '../sync/personExport';
+import { parsePersonExportFile, calculatePersonDiff } from '../sync/personDiff';
+import { ImportConflictModal } from '../sync/ImportConflictModal';
+import type { PersonSyncDiff } from '../sync/exportImportTypes';
 
 export default function App() {
   const [locale, setLocale] = useState<Locale>('it');
@@ -76,6 +81,7 @@ function Workspace({
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
   const [data, setData] = useState<Analysis | null>(null);
+  const [pendingSync, setPendingSync] = useState<{ diff: PersonSyncDiff; importedPerson: Person } | null>(null);
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear() - (now.getMonth() < 8 ? 1 : 0));
 
@@ -167,6 +173,23 @@ function Workspace({
       setSelected(p.id);
       setCreating(false);
     });
+
+  const handleImportPersonFile = (content: string) => {
+    if (!archive) return;
+    const parsed = parsePersonExportFile(content);
+    if (!parsed.ok) {
+      setError(parsed.error);
+      return;
+    }
+    const diff = calculatePersonDiff(parsed.person, archive.people);
+    setPendingSync({ diff, importedPerson: parsed.person });
+  };
+
+  const handleSyncConfirm = (merged: Person) => {
+    setPendingSync(null);
+    save(merged);
+    setNotice('syncSuccess');
+  };
 
 
 
@@ -299,8 +322,18 @@ function Workspace({
                   </div>
                   <button
                     type="button"
+                    className="export-person-header-btn"
+                    style={{ marginLeft: 'auto' }}
+                    onClick={() => exportPersonToFile(person)}
+                    title="Esporta fascicolo su file singolo (.json)"
+                  >
+                    <Download size={14} />
+                    <span>{t('exportPerson')}</span>
+                  </button>
+                  <button
+                    type="button"
                     className="wizard-btn-primary"
-                    style={{ marginLeft: 'auto', padding: '7px 14px', fontSize: 12 }}
+                    style={{ padding: '7px 14px', fontSize: 12 }}
                     onClick={() => setShowWizard(true)}
                   >
                     <Sparkles size={14} />
@@ -383,6 +416,7 @@ function Workspace({
                 }}
                 onCreate={() => setCreating(true)}
                 onStartWizard={() => setShowWizard(true)}
+                onImportFile={handleImportPersonFile}
               />
             )}
           </main>
@@ -403,6 +437,14 @@ function Workspace({
               setSelected(savedPerson.id);
               setShowWizard(false);
             }}
+          />
+        )}
+        {pendingSync && (
+          <ImportConflictModal
+            diff={pendingSync.diff}
+            importedPerson={pendingSync.importedPerson}
+            onClose={() => setPendingSync(null)}
+            onConfirm={handleSyncConfirm}
           />
         )}
       </div>

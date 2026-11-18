@@ -12,6 +12,8 @@ import {
   Calendar,
   CreditCard,
   ShieldCheck,
+  Upload,
+  Download,
 } from 'lucide-react';
 import { Venus, Mars } from './GenderIcons';
 import { Person } from '../../shared/types';
@@ -19,6 +21,7 @@ import { useT } from '../../shared/i18n';
 import { getPersonCurrentProfile } from '../../shared/personUtils';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { calculateProfileScores } from '../../shared/scoring';
+import { exportPersonToFile } from '../sync/personExport';
 import './peopleGrid.css';
 
 export function PeopleGrid({
@@ -28,6 +31,7 @@ export function PeopleGrid({
   onSelect,
   onCreate,
   onStartWizard,
+  onImportFile,
 }: {
   people: Person[];
   search: string;
@@ -35,6 +39,7 @@ export function PeopleGrid({
   onSelect: (id: string) => void;
   onCreate: () => void;
   onStartWizard: () => void;
+  onImportFile?: (content: string) => void;
 }) {
   const t = useT();
 
@@ -93,6 +98,29 @@ export function PeopleGrid({
             <Plus size={18} />
             <span>{t('newPerson')}</span>
           </button>
+          <label className="import-person-btn" title="Importa fascicolo esportato (.json)">
+            <Upload size={18} />
+            <span>{t('importPerson')}</span>
+            <input
+              type="file"
+              accept=".json,.calcolopersonale"
+              style={{ display: 'none' }}
+              onChange={e => {
+                const file = e.target.files?.[0];
+                if (file && onImportFile) {
+                  const reader = new FileReader();
+                  reader.onload = ev => {
+                    const content = ev.target?.result;
+                    if (typeof content === 'string') {
+                      onImportFile(content);
+                    }
+                  };
+                  reader.readAsText(file);
+                }
+                e.target.value = '';
+              }}
+            />
+          </label>
         </div>
       </div>
 
@@ -293,9 +321,23 @@ export function PeopleGrid({
 
               {/* Card Footer Action */}
               <div className="card-footer-modern">
-                <span className="footer-action-text">{t('open')}</span>
-                <div className="footer-arrow-circle">
-                  <ArrowUpRight size={15} />
+                <button
+                  type="button"
+                  className="card-export-btn"
+                  title="Esporta fascicolo su file singolo (.json)"
+                  onClick={e => {
+                    e.stopPropagation();
+                    exportPersonToFile(p);
+                  }}
+                >
+                  <Download size={12} />
+                  <span>{t('exportPerson')}</span>
+                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: 'auto' }}>
+                  <span className="footer-action-text">{t('open')}</span>
+                  <div className="footer-arrow-circle">
+                    <ArrowUpRight size={15} />
+                  </div>
                 </div>
               </div>
             </div>
