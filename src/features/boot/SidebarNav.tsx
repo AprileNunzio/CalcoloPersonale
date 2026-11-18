@@ -13,8 +13,8 @@ import {
   Banknote,
   School,
   FileCheck,
-  ChevronLeft,
-  ChevronRight,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { Person, Archive } from '../../shared/types';
 import { useT } from '../../shared/i18n';
@@ -56,7 +56,7 @@ export function SidebarNav({
           title={collapsed ? 'Espandi barra laterale' : 'Riduci a solo icone'}
           onClick={() => setCollapsed(!collapsed)}
         >
-          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
         </button>
       </div>
       {!collapsed && <div className="side-label">{t('all')}</div>}

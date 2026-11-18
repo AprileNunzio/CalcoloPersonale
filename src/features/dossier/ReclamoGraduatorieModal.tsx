@@ -107,7 +107,11 @@ Firma del Ricorrente: _________________________________________
     a.href = url;
     a.download = `Reclamo_Graduatoria_${person.lastName}_${person.firstName}_${profiloScelto}.txt`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => {
+      try {
+        URL.revokeObjectURL(url);
+      } catch {}
+    }, 30000);
   };
 
   return (

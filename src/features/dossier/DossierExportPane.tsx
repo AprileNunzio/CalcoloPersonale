@@ -76,7 +76,11 @@ export function DossierExportPane({ person }: { person: Person }) {
       a.href = url;
       a.download = `backup_calcolo_personale_${isEncrypted ? 'cifrato_' : ''}${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch {}
+      }, 30000);
       setFeedbackMsg(
         isEncrypted
           ? 'Backup cifrato con successo con AES-256-GCM!'
