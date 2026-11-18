@@ -61,7 +61,7 @@ export function SidebarNav({
       </div>
       {!collapsed && <div className="side-label">{t('all')}</div>}
       <button
-        className={!person ? 'nav active' : 'nav'}
+        className={!person && section === 'overview' ? 'nav active' : 'nav'}
         title={t('people')}
         onClick={() => {
           onSelectPerson(null);

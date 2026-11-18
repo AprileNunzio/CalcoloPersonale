@@ -102,10 +102,17 @@ header {
   z-index: 20;
 }
 
-header > span {
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-title {
   font-size: var(--font-title-medium);
   font-weight: 700;
   color: var(--on-surface);
+  letter-spacing: -0.01em;
 }
 
 header > div {

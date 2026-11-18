@@ -1,6 +1,6 @@
 /* ==========================================================================
    MD3 EXPRESSIVE - DYNAMIC PALETTES: CORE & CAREER SECTIONS
-   Each section has a dedicated semantic theme with tinted surface tones
+   Each section has a dedicated semantic theme with crisp luminous surfaces
    ========================================================================== */
 
 /* 1. Default & Dashboard: Indaco Elettrico */
@@ -22,13 +22,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f1f5f9;
-  --surface-container: #e8edf5;
-  --surface-container-high: #dfe6f0;
-  --surface-container-highest: #d4dfea;
+  --surface-container: #ffffff;
+  --surface-container-high: #f1f5f9;
+  --surface-container-highest: #e2e8f0;
   --on-surface: #0f172a;
   --on-surface-variant: #475569;
   --outline: #94a3b8;
-  --outline-variant: #cbd5e1;
+  --outline-variant: #e2e8f0;
   --shadow: rgba(37, 99, 235, 0.08);
 }
 
@@ -51,13 +51,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #edf5f1;
-  --surface-container: #e2ede7;
-  --surface-container-high: #d6e5dd;
-  --surface-container-highest: #cadcd2;
+  --surface-container: #ffffff;
+  --surface-container-high: #edf7f2;
+  --surface-container-highest: #dcf0e6;
   --on-surface: #06281e;
   --on-surface-variant: #3d5950;
   --outline: #709489;
-  --outline-variant: #b8cec6;
+  --outline-variant: #d5e8de;
   --shadow: rgba(5, 150, 105, 0.08);
 }
 
@@ -80,13 +80,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #eaf3f5;
-  --surface-container: #deebee;
-  --surface-container-high: #d2e3e7;
-  --surface-container-highest: #c6dbe0;
+  --surface-container: #ffffff;
+  --surface-container-high: #edf7fa;
+  --surface-container-highest: #daf0f5;
   --on-surface: #08232c;
   --on-surface-variant: #3b5a64;
   --outline: #68909c;
-  --outline-variant: #b3ccd4;
+  --outline-variant: #d0e6ed;
   --shadow: rgba(8, 145, 178, 0.08);
 }
 
@@ -109,13 +109,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #ecf1f9;
-  --surface-container: #e1e9f4;
-  --surface-container-high: #d4e0ee;
-  --surface-container-highest: #c7d7e8;
+  --surface-container: #ffffff;
+  --surface-container-high: #f0f5fc;
+  --surface-container-highest: #dce7f7;
   --on-surface: #0b1a33;
   --on-surface-variant: #41536d;
   --outline: #778ca7;
-  --outline-variant: #bcc8d8;
+  --outline-variant: #d3dfed;
   --shadow: rgba(29, 78, 216, 0.08);
 }
 
@@ -138,13 +138,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f7f2e9;
-  --surface-container: #ede5d8;
-  --surface-container-high: #e2d7c5;
-  --surface-container-highest: #d6c8b1;
+  --surface-container: #ffffff;
+  --surface-container-high: #fbf5eb;
+  --surface-container-highest: #f5e9d5;
   --on-surface: #291e0a;
   --on-surface-variant: #63553e;
   --outline: #9b8b70;
-  --outline-variant: #d4c8b2;
+  --outline-variant: #eddcc4;
   --shadow: rgba(217, 119, 6, 0.08);
 }
 
@@ -167,13 +167,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f6ebed;
-  --surface-container: #ecdedf;
-  --surface-container-high: #dfcecf;
-  --surface-container-highest: #d1bdbf;
+  --surface-container: #ffffff;
+  --surface-container-high: #fdf2f4;
+  --surface-container-highest: #fae1e6;
   --on-surface: #2a0c14;
   --on-surface-variant: #634349;
   --outline: #9e757c;
-  --outline-variant: #d7bfc3;
+  --outline-variant: #f2d4da;
   --shadow: rgba(225, 29, 72, 0.08);
 }
 
@@ -196,13 +196,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f2edf8;
-  --surface-container: #e8e0f2;
-  --surface-container-high: #ddd2e9;
-  --surface-container-highest: #d1c3e0;
+  --surface-container: #ffffff;
+  --surface-container-high: #f6f2fa;
+  --surface-container-highest: #ede4f7;
   --on-surface: #1d122e;
   --on-surface-variant: #544865;
   --outline: #8a7b9f;
-  --outline-variant: #cec4dc;
+  --outline-variant: #e2d7f0;
   --shadow: rgba(139, 92, 246, 0.08);
 }
 
@@ -225,12 +225,12 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #eaf5f0;
-  --surface-container: #ddede5;
-  --surface-container-high: #cfe4da;
-  --surface-container-highest: #bfdacd;
+  --surface-container: #ffffff;
+  --surface-container-high: #edf7f2;
+  --surface-container-highest: #d9f0e4;
   --on-surface: #07271c;
   --on-surface-variant: #3d594d;
   --outline: #709183;
-  --outline-variant: #b7cec3;
+  --outline-variant: #cfebd9;
   --shadow: rgba(4, 120, 87, 0.08);
 }

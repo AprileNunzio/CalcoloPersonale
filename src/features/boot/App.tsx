@@ -264,20 +264,22 @@ function Workspace({
 
         <div className="workspace">
           <header>
-            <AutoSaveStatus />
-            <span>
-              {section === 'updates'
-                ? t('systemUpdates')
-                : section === 'salary'
-                ? 'Simulatore Busta Paga NoiPA & TFR'
-                : section === 'naspi'
-                ? 'Simulatore Disoccupazione NASpI per Supplenti ATA'
-                : section === 'schools30'
-                ? 'Scelta Strategica 30 Scuole & Convocazioni'
-                : section === 'dossier'
-                ? 'Scheda Fascicolo Sindacati & Backup'
-                : t(person ? section : 'people')}
-            </span>
+            <div className="header-left-group">
+              <span className="header-title">
+                {section === 'updates'
+                  ? t('systemUpdates')
+                  : section === 'salary'
+                  ? 'Simulatore Busta Paga NoiPA & TFR'
+                  : section === 'naspi'
+                  ? 'Simulatore Disoccupazione NASpI per Supplenti ATA'
+                  : section === 'schools30'
+                  ? 'Scelta Strategica 30 Scuole & Convocazioni'
+                  : section === 'dossier'
+                  ? 'Scheda Fascicolo Sindacati & Backup'
+                  : t(person ? section : 'people')}
+              </span>
+              <AutoSaveStatus />
+            </div>
             <div>
               {busy && <span role="status">{t('loading')}</span>}
               <span className="user-mark">CP</span>

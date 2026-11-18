@@ -64,9 +64,20 @@
   color: var(--on-secondary-container);
 }
 
+.channel-tag.hot {
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+}
+
 .channel-tag.native {
   background: var(--primary-container);
   color: var(--on-primary-container);
+}
+
+.channel-tag.native-tag-sub {
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  border: 1px solid var(--outline-variant);
 }
 
 .channel-title-group p {
@@ -307,6 +318,31 @@
 
 .ota-reset-inline-btn:hover {
   background: var(--error-container);
+}
+
+.desktop-channel-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 550;
+  color: var(--on-surface-variant);
+}
+
+.desktop-info-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.desktop-arch-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-full);
+  padding: 2px 8px;
+  text-transform: uppercase;
 }
 
 .ready-buttons-row {

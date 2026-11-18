@@ -21,13 +21,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f5ece8;
-  --surface-container: #ebdcd6;
-  --surface-container-high: #e0cdc6;
-  --surface-container-highest: #d4bdb5;
+  --surface-container: #ffffff;
+  --surface-container-high: #fbf1ec;
+  --surface-container-highest: #f4e1d7;
   --on-surface: #2b140b;
   --on-surface-variant: #63483f;
   --outline: #9a786e;
-  --outline-variant: #d4bfb8;
+  --outline-variant: #edd5cb;
   --shadow: rgba(234, 88, 12, 0.08);
 }
 
@@ -50,13 +50,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #e9f4f4;
-  --surface-container: #dbeeee;
-  --surface-container-high: #cee7e7;
-  --surface-container-highest: #c0dfdf;
+  --surface-container: #ffffff;
+  --surface-container-high: #eef7f7;
+  --surface-container-highest: #dbeeed;
   --on-surface: #092523;
   --on-surface-variant: #3d5957;
   --outline: #709290;
-  --outline-variant: #b8cfce;
+  --outline-variant: #cce4e3;
   --shadow: rgba(15, 118, 110, 0.08);
 }
 
@@ -79,13 +79,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f2ebf5;
-  --surface-container: #e8dde0;
-  --surface-container-high: #decfe2;
-  --surface-container-highest: #d2bfd8;
+  --surface-container: #ffffff;
+  --surface-container-high: #f6edf8;
+  --surface-container-highest: #ecdcf0;
   --on-surface: #230c2c;
   --on-surface-variant: #57435e;
   --outline: #8d7796;
-  --outline-variant: #cfc2d5;
+  --outline-variant: #e0d0e6;
   --shadow: rgba(126, 34, 206, 0.08);
 }
 
@@ -108,13 +108,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #edf1f7;
-  --surface-container: #e1e7f2;
-  --surface-container-high: #d5ddeb;
-  --surface-container-highest: #c7d2e4;
+  --surface-container: #ffffff;
+  --surface-container-high: #f0f4fa;
+  --surface-container-highest: #dce5f5;
   --on-surface: #0e192c;
   --on-surface-variant: #445169;
   --outline: #7a8aa3;
-  --outline-variant: #bec8d7;
+  --outline-variant: #d0dbee;
   --shadow: rgba(37, 99, 235, 0.08);
 }
 
@@ -137,43 +137,43 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f3ecf8;
-  --surface-container: #ebdfef;
-  --surface-container-high: #dfcfe5;
-  --surface-container-highest: #d2bfdc;
+  --surface-container: #ffffff;
+  --surface-container-high: #f7eff9;
+  --surface-container-highest: #eeddf2;
   --on-surface: #220d2d;
   --on-surface-variant: #584462;
   --outline: #8f789a;
-  --outline-variant: #d1c3d9;
+  --outline-variant: #e4d2ea;
   --shadow: rgba(147, 51, 234, 0.08);
 }
 
-/* 14. Aggiornamenti: Titanio & Zinco */
+/* 14. Aggiornamenti & Sicurezza: Ciano Hi-Tech & Smeraldo Crittografico */
 [data-theme="aggiornamenti"] {
-  --primary: #475569;
+  --primary: #0284c7;
   --on-primary: #ffffff;
-  --primary-container: #e2e8f0;
-  --on-primary-container: #1e293b;
-  --secondary: #0f766e;
+  --primary-container: #e0f2fe;
+  --on-primary-container: #0369a1;
+  --secondary: #059669;
   --on-secondary: #ffffff;
-  --secondary-container: #ccfbf1;
-  --on-secondary-container: #115e59;
-  --tertiary: #2563eb;
+  --secondary-container: #d1fae5;
+  --on-secondary-container: #065f46;
+  --tertiary: #4f46e5;
   --on-tertiary: #ffffff;
-  --tertiary-container: #dbeafe;
-  --on-tertiary-container: #1e40af;
+  --tertiary-container: #e0e7ff;
+  --on-tertiary-container: #3730a3;
   --surface: #f8fafc;
   --surface-dim: #e2e8f0;
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f1f5f9;
-  --surface-container: #e2e8f0;
-  --surface-container-high: #cbd5e1;
-  --surface-container-highest: #94a3b8;
+  --surface-container: #ffffff;
+  --surface-container-high: #f0f7fb;
+  --surface-container-highest: #e0eaf2;
   --on-surface: #0f172a;
   --on-surface-variant: #475569;
   --outline: #64748b;
-  --outline-variant: #cbd5e1;
-  --shadow: rgba(71, 85, 105, 0.08);
+  --outline-variant: #e2e8f0;
+  --shadow: rgba(2, 132, 199, 0.08);
 }
 
 /* 15. Vault / Blindato: Smeraldo Lock */
@@ -195,13 +195,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #edf3f1;
-  --surface-container: #e2edea;
-  --surface-container-high: #d6e5e1;
-  --surface-container-highest: #cadcd7;
+  --surface-container: #ffffff;
+  --surface-container-high: #eef6f4;
+  --surface-container-highest: #dcece8;
   --on-surface: #0d2420;
   --on-surface-variant: #425a54;
   --outline: #74928b;
-  --outline-variant: #b8cec8;
+  --outline-variant: #cce4de;
   --shadow: rgba(13, 148, 136, 0.08);
 }
 
@@ -224,13 +224,13 @@
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #edf5f1;
-  --surface-container: #e2ede7;
-  --surface-container-high: #d6e5dd;
-  --surface-container-highest: #cadcd2;
+  --surface-container: #ffffff;
+  --surface-container-high: #eef7f3;
+  --surface-container-highest: #dbeee5;
   --on-surface: #06281e;
   --on-surface-variant: #3d5950;
   --outline: #709489;
-  --outline-variant: #b8cec6;
+  --outline-variant: #cbe6da;
   --shadow: rgba(5, 150, 105, 0.08);
 }
 
