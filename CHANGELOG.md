@@ -1,5 +1,16 @@
 # Registro delle modifiche
 
+## 0.1.4
+
+### Servizi, Scuole Storiche e Formattazione Date
+
+- Supporto completo ai codici meccanografici storici e deprecati (es. `FIMM290003` e scuole soppresse/accorpate antecedenti agli open data correnti), con inserimento manuale, modifica e badge identificativo dedicato ("Storica").
+- Autocompilazione automatica della denominazione del servizio alla selezione dell'istituzione scolastica.
+- Formattazione estesa di tutte le date in lingua italiana naturale (es. `"Mercoledì 18 novembre 2026"`) con chip di anteprima live e scorciatoie per anno scolastico intero (31 agosto) e termine attività (30 giugno).
+- Correzione del bug di apertura automatica della bozza vuota all'ingresso nella sezione Servizi e visualizzazione errori solo dopo interazione utente.
+- Ottimizzazione ultra-responsiva per tutti i formati di schermo: supporto monitor 2K, 4K, 8K e barra laterale collassabile in modalità solo icone su risoluzioni ridotte o tablet.
+- Testi pulsanti contestuali corretti per ciascuna sezione applicativa ("Nuovo servizio", "Nuovo titolo", "Nuova assenza", "Nuova persona").
+
 ## 0.1.1
 
 ### Anagrafica e Profilo ATA

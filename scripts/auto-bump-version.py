@@ -47,6 +47,7 @@ def main():
     tauri_conf_path = root / "src-tauri/tauri.conf.json"
     cargo_toml_path = root / "src-tauri/Cargo.toml"
     cargo_lock_path = root / "src-tauri/Cargo.lock"
+    types_path = root / "src/shared/types.ts"
 
     pkg_data = json.loads(package_json_path.read_text(encoding="utf-8"))
     current_ver = pkg_data.get("version", "0.1.0")
@@ -101,6 +102,15 @@ def main():
             )
             cargo_lock_path.write_text(cargo_lock_content, encoding="utf-8")
 
+        if types_path.exists():
+            types_content = types_path.read_text(encoding="utf-8")
+            types_content = re.sub(
+                r"export const APP_VERSION = '[^']+';",
+                f"export const APP_VERSION = '{target_version}';",
+                types_content,
+            )
+            types_path.write_text(types_content, encoding="utf-8")
+
     # Set GITHUB_ENV and GITHUB_OUTPUT
     github_env = os.environ.get("GITHUB_ENV")
     if github_env:
@@ -129,6 +139,7 @@ def main():
                     "src-tauri/tauri.conf.json",
                     "src-tauri/Cargo.toml",
                     "src-tauri/Cargo.lock",
+                    "src/shared/types.ts",
                 ],
                 check=True,
             )
