@@ -76,6 +76,7 @@ export function SidebarNav({
             { k: 'overview', icon: LayoutDashboard, lbl: t('overview') },
             { k: 'identity', icon: FolderHeart, lbl: t('identity') },
             { k: 'salary', icon: Banknote, lbl: 'Busta Paga & TFR' },
+            { k: 'naspi', icon: Banknote, lbl: 'Simulatore NASpI ATA' },
             { k: 'schools30', icon: School, lbl: '30 Scuole & Convocazioni' },
             { k: 'dossier', icon: FileCheck, lbl: 'Scheda Sindacati & Backup' },
             { k: 'applications', icon: FileText, lbl: t('applications') },

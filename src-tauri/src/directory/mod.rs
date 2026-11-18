@@ -78,7 +78,11 @@ pub fn search_directory(kind: String, query: String) -> Result<Vec<DirectoryEntr
                 7
             } else if prov_up == needle || prov_up.starts_with(&needle) {
                 8
-            } else if e.details.values().any(|v| v.to_uppercase().contains(&needle)) {
+            } else if e
+                .details
+                .values()
+                .any(|v| v.to_uppercase().contains(&needle))
+            {
                 9
             } else {
                 return None;
@@ -87,9 +91,11 @@ pub fn search_directory(kind: String, query: String) -> Result<Vec<DirectoryEntr
         })
         .collect();
 
-    scored.sort_by(|a, b| {
-        a.0.cmp(&b.0).then_with(|| a.1.name.cmp(&b.1.name))
-    });
+    scored.sort_by(|a, b| a.0.cmp(&b.0).then_with(|| a.1.name.cmp(&b.1.name)));
 
-    Ok(scored.into_iter().take(50).map(|(_, e)| e.clone()).collect())
+    Ok(scored
+        .into_iter()
+        .take(50)
+        .map(|(_, e)| e.clone())
+        .collect())
 }

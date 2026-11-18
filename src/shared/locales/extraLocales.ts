@@ -11,6 +11,8 @@ export const extraLocalesIt = {
   applicationsDescription: 'Genera e archivia le domande di inserimento o aggiornamento graduatorie ATA e i modelli di reclamo.',
   assistantDescription: 'Assistente intelligente per normative CCNL, analisi documenti di servizio e chiarimenti contrattuali.',
   updatesDescription: 'Verifica e installa gli aggiornamenti continui dell’applicazione e delle tabelle retributive.',
+  naspi: 'Disoccupazione NASpI',
+  naspiDescription: 'Simulatore indennità di disoccupazione NASpI per supplenti ATA, décalage 3%, scadenze e verifica bonifici INPS.',
   apiKeyConfigured: 'Chiave API configurata',
   apiKeyRemoved: 'Chiave API rimossa con successo dalle credenziali protette',
   apiKeySaved: 'Chiave API memorizzata nel vault protetto',

@@ -35,6 +35,8 @@ import { FamilyPage } from '../family/FamilyPage';
 import { SalarySimulatorPane } from '../salary/SalarySimulatorPane';
 import { StrategicSchoolsPane } from '../schools30/StrategicSchoolsPane';
 import { DossierExportPane } from '../dossier/DossierExportPane';
+import { NaspiPage } from '../naspi/NaspiPage';
+import { CareerStatusBadge } from '../people/CareerStatusBadge';
 import { getPersonCurrentProfile } from '../../shared/personUtils';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { OtaBanner } from '../ota/OtaBanner';
@@ -238,6 +240,8 @@ function Workspace({
                 ? t('systemUpdates')
                 : section === 'salary'
                 ? 'Simulatore Busta Paga NoiPA & TFR'
+                : section === 'naspi'
+                ? 'Simulatore Disoccupazione NASpI per Supplenti ATA'
                 : section === 'schools30'
                 ? 'Scelta Strategica 30 Scuole & Convocazioni'
                 : section === 'dossier'
@@ -284,9 +288,13 @@ function Workspace({
                         <span className="badge" title={currentProfile.isDerived ? t('profileDerived') : undefined}>
                           {currentProfile.code} · {currentProfile.label}
                         </span>
+                        <CareerStatusBadge person={person} />
                       </div>
                     ) : (
-                      <span className="badge">{t('noServices')}</span>
+                      <div className="person-profile-badge-row">
+                        <span className="badge">{t('noServices')}</span>
+                        <CareerStatusBadge person={person} />
+                      </div>
                     )}
                   </div>
                   <button
@@ -334,6 +342,8 @@ function Workspace({
                   </>
                 ) : section === 'salary' ? (
                   <SalarySimulatorPane person={person} />
+                ) : section === 'naspi' ? (
+                  <NaspiPage person={person} save={save} busy={busy} />
                 ) : section === 'schools30' ? (
                   <StrategicSchoolsPane person={person} />
                 ) : section === 'dossier' ? (

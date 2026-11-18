@@ -17,6 +17,8 @@ import {
   ServiceContractType,
   evaluateDetailedService,
 } from './serviceCalculations';
+import { RuoloDetailFields } from './RuoloDetailFields';
+import { RuoloDetailsPayload } from './ruoloTypes';
 
 interface ServiceDetailFieldsProps {
   start: string;
@@ -29,6 +31,7 @@ interface ServiceDetailFieldsProps {
   onChangeSector: (s: ServiceSector) => void;
   onChangeWeeklyHours: (hours: number) => void;
   onChangeContractType: (ct: ServiceContractType) => void;
+  onChangeRuoloDetails?: (updated: Partial<RuoloDetailsPayload>) => void;
 }
 
 export function ServiceDetailFields({
@@ -42,6 +45,7 @@ export function ServiceDetailFields({
   onChangeSector,
   onChangeWeeklyHours,
   onChangeContractType,
+  onChangeRuoloDetails,
 }: ServiceDetailFieldsProps) {
   const t = useT();
   const evaluation = evaluateDetailedService(
@@ -186,6 +190,20 @@ export function ServiceDetailFields({
             </div>
           </div>
         </div>
+      )}
+
+      {contractType === 'permanent' && onChangeRuoloDetails && (
+        <RuoloDetailFields
+          payload={(() => {
+            try {
+              if (notes && notes.startsWith('{')) return JSON.parse(notes);
+            } catch {
+              return {};
+            }
+            return {};
+          })()}
+          onChange={onChangeRuoloDetails}
+        />
       )}
     </div>
   );

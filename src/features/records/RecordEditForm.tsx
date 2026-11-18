@@ -83,7 +83,21 @@ export function RecordEditForm({
   };
 
   const handleContractTypeChange = (contractType: ServiceContractType) => {
-    const updated = { ...parsedDraftNotes, contractType };
+    const updated = {
+      ...parsedDraftNotes,
+      contractType,
+      isRuolo: contractType === 'permanent',
+    };
+    setDraft({ ...draft, notes: JSON.stringify(updated) });
+  };
+
+  const handleRuoloDetailsChange = (ruoloData: Record<string, unknown>) => {
+    const updated = {
+      ...parsedDraftNotes,
+      ...ruoloData,
+      isRuolo: true,
+      contractType: 'permanent' as ServiceContractType,
+    };
     setDraft({ ...draft, notes: JSON.stringify(updated) });
   };
 
@@ -333,6 +347,7 @@ export function RecordEditForm({
                 onChangeSector={handleSectorChange}
                 onChangeWeeklyHours={handleWeeklyHoursChange}
                 onChangeContractType={handleContractTypeChange}
+                onChangeRuoloDetails={handleRuoloDetailsChange}
               />
             </div>
           )}
