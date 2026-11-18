@@ -10,6 +10,7 @@ import {
 import { Person } from '../../shared/types';
 import { parseDays } from '../../shared/scoring';
 import { computeCareerStatus } from '../../shared/careerStatus';
+import { AranCompliancePanel } from './AranCompliancePanel';
 import './absences.css';
 
 interface AbsenceComportoPanelProps {
@@ -149,6 +150,8 @@ export function AbsenceComportoPanel({ person }: Person extends { records: infer
             : 'CCNL Art. 19: Per i contratti fino al 30/06 o 31/08 il comporto è di 9 mesi nel triennio (1° mese 100%, 2°-3° mese 50%). Per supplenze brevi: max 30 gg/anno al 50%.'}
         </small>
       </div>
+
+      <AranCompliancePanel person={person} />
     </div>
   );
 }

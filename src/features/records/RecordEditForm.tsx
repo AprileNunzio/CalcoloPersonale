@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Briefcase, Award, HeartPulse, X, Check, Edit3, Calendar } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Briefcase, Award, HeartPulse, X, Check, Edit3, Calendar, AlertOctagon } from 'lucide-react';
 import { Entry, Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
 import { formatDateItalian } from '../../shared/dateUtils';
 import { AutoSaveStatus } from '../autosave/AutoSave';
 import { FormField, FieldStatus } from '../../shared/FormField';
-import { DirectoryPicker } from '../directory/DirectoryPicker';
 import { ATA_PROFILES } from '../../shared/personUtils';
 import { AbsenceInfoCard } from './AbsenceInfoCard';
 import { ServiceDetailFields } from './ServiceDetailFields';
@@ -14,8 +13,9 @@ import { FamilyMemberPicker } from './FamilyMemberPicker';
 import { detectContractType } from '../../shared/entitlements';
 import { QualificationPresetSelector } from './QualificationPresetSelector';
 import { ManualSchoolModal } from './ManualSchoolModal';
-import { SelectedSchoolCard } from './SelectedSchoolCard';
+import { ServiceSchoolSelector } from './ServiceSchoolSelector';
 import { getTitleLabel, getTitlePlaceholder, getStartLabel } from './recordFormLabels';
+import { analyzeAranAbsenceSequences } from '../absences/aranRules';
 import './recordEditForm.css';
 
 export interface RecordEditFormProps {
@@ -58,6 +58,15 @@ export function RecordEditForm({
   const [submitted, setSubmitted] = useState(false);
   const [showManualSchoolModal, setShowManualSchoolModal] = useState(false);
   const parsedDraftNotes = parseNotes(draft.notes);
+
+  const aranAlerts = useMemo(() => {
+    if (section !== 'absences' || !draft.start) return [];
+    const simulated = [
+      ...person.records.filter(r => r.id !== draft.id),
+      { ...draft, id: draft.id || 'simulated-new' },
+    ];
+    return analyzeAranAbsenceSequences(simulated, { daysPerWeek: 5 });
+  }, [section, draft, person.records]);
 
   const getFieldStatus = (field: 'title' | 'start' | 'end' | 'notes' | 'profile'): FieldStatus => {
     if (field === 'title') {
@@ -181,62 +190,12 @@ export function RecordEditForm({
           />
         )}
 
-        {draft.kind === 'service' && !draft.school && (
-          <div style={{ marginBottom: 16 }}>
-            <FormField
-              label={t('schoolSearch')}
-              tip={t('tipServiceSchool')}
-              className="wide"
-            >
-              <DirectoryPicker
-                kind="school"
-                value=""
-                onOpenManual={() => setShowManualSchoolModal(true)}
-                onSelect={school => {
-                  const isParitaria = school.category === 'SCUANAGRAFEPA';
-                  const autoSector: ServiceSector = isParitaria ? 'paritaria_ata' : 'statale_ata';
-                  const updatedNotes = {
-                    ...parsedDraftNotes,
-                    sector: autoSector,
-                    schoolCode: school.code,
-                    schoolMunicipality: school.municipality,
-                    schoolProvince: school.province,
-                  };
-                  setDraft({
-                    ...draft,
-                    school,
-                    title: draft.title.trim() ? draft.title : school.name,
-                    notes: JSON.stringify(updatedNotes),
-                  });
-                }}
-              />
-            </FormField>
-            <div style={{ marginTop: 6, display: 'flex', justifyContent: 'flex-end' }}>
-              <button
-                type="button"
-                className="link-style-btn"
-                style={{
-                  fontSize: 12,
-                  color: '#0d9488',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  fontWeight: 600,
-                }}
-                onClick={() => setShowManualSchoolModal(true)}
-              >
-                + Non trovi la scuola? Inserisci scuola storica o codice manuale (es. FIMM290003)
-              </button>
-            </div>
-          </div>
-        )}
-
-        {draft.school && (
-          <SelectedSchoolCard
-            school={draft.school}
-            onEdit={() => setShowManualSchoolModal(true)}
-            onRemove={() => setDraft({ ...draft, school: undefined })}
+        {draft.kind === 'service' && (
+          <ServiceSchoolSelector
+            draft={draft}
+            setDraft={setDraft}
+            parsedDraftNotes={parsedDraftNotes}
+            onOpenManualModal={() => setShowManualSchoolModal(true)}
           />
         )}
 
@@ -442,6 +401,21 @@ export function RecordEditForm({
             />
           </FormField>
         </div>
+
+        {section === 'absences' && aranAlerts.length > 0 && (
+          <div className="aran-inline-warning-box">
+            <AlertOctagon size={24} color="#ef4444" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div>
+              <div style={{ fontWeight: 800, color: '#fca5a5', textTransform: 'uppercase', marginBottom: 2 }}>
+                ⚠️ {aranAlerts[0].ruleCode}: {aranAlerts[0].title}
+              </div>
+              <div style={{ fontSize: '0.8rem', color: '#f1f5f9' }}>{aranAlerts[0].summary}</div>
+              <div style={{ marginTop: 4, fontWeight: 700, color: '#fecaca', fontSize: '0.82rem' }}>
+                {aranAlerts[0].consequence}
+              </div>
+            </div>
+          </div>
+        )}
 
         {section === 'absences' && (
           <div style={{ marginTop: 16, marginBottom: 8 }}>
