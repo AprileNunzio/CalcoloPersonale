@@ -16,6 +16,8 @@ import { ManualSchoolModal } from './ManualSchoolModal';
 import { ServiceSchoolSelector } from './ServiceSchoolSelector';
 import { getTitleLabel, getTitlePlaceholder, getStartLabel } from './recordFormLabels';
 import { analyzeAranAbsenceSequences } from '../absences/aranRules';
+import { analyzeServiceAranRules } from '../services/serviceAranRules';
+import { AranInlineAlert } from './AranInlineAlert';
 import './recordEditForm.css';
 
 export interface RecordEditFormProps {
@@ -66,6 +68,11 @@ export function RecordEditForm({
       { ...draft, id: draft.id || 'simulated-new' },
     ];
     return analyzeAranAbsenceSequences(simulated, { daysPerWeek: 5 });
+  }, [section, draft, person.records]);
+
+  const serviceAranAlerts = useMemo(() => {
+    if (section !== 'service' || !draft.start) return [];
+    return analyzeServiceAranRules(draft, person.records);
   }, [section, draft, person.records]);
 
   const getFieldStatus = (field: 'title' | 'start' | 'end' | 'notes' | 'profile'): FieldStatus => {
@@ -402,20 +409,7 @@ export function RecordEditForm({
           </FormField>
         </div>
 
-        {section === 'absences' && aranAlerts.length > 0 && (
-          <div className="aran-inline-warning-box">
-            <AlertOctagon size={24} color="#ef4444" style={{ flexShrink: 0, marginTop: 2 }} />
-            <div>
-              <div style={{ fontWeight: 800, color: '#fca5a5', textTransform: 'uppercase', marginBottom: 2 }}>
-                ⚠️ {aranAlerts[0].ruleCode}: {aranAlerts[0].title}
-              </div>
-              <div style={{ fontSize: '0.8rem', color: '#f1f5f9' }}>{aranAlerts[0].summary}</div>
-              <div style={{ marginTop: 4, fontWeight: 700, color: '#fecaca', fontSize: '0.82rem' }}>
-                {aranAlerts[0].consequence}
-              </div>
-            </div>
-          </div>
-        )}
+        <AranInlineAlert alerts={[...aranAlerts, ...serviceAranAlerts]} />
 
         {section === 'absences' && (
           <div style={{ marginTop: 16, marginBottom: 8 }}>
