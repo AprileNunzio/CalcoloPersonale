@@ -4,7 +4,7 @@
 .work-probability-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: clamp(14px, 1.5vw, 22px);
   width: 100%;
 }
 
@@ -12,10 +12,11 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
-  border: 1px solid #bbf7d0;
-  border-radius: 16px;
-  padding: 20px;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: clamp(16px, 1.8vw, 24px);
+  box-shadow: 0 4px 16px var(--shadow-ambient);
 }
 
 .prob-header-info {
@@ -30,23 +31,23 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  border-radius: 14px;
-  background: #16a34a;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.25);
+  border-radius: var(--shape-full);
+  background: var(--secondary);
+  color: var(--on-secondary);
+  box-shadow: 0 4px 14px var(--secondary-container);
   flex-shrink: 0;
 }
 
 .prob-header-info h3 {
   margin: 0;
-  font-size: 20px;
-  color: #0f172a;
+  font-size: clamp(1.1rem, 1.3vw, 1.4rem);
+  color: var(--on-surface);
 }
 
 .prob-subtitle {
   margin: 3px 0 0;
-  font-size: 13px;
-  color: #475569;
+  font-size: 0.82rem;
+  color: var(--on-surface-variant);
 }
 
 .prob-controls-bar {
@@ -54,11 +55,10 @@
   align-items: flex-end;
   gap: 14px;
   flex-wrap: wrap;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
+  background: var(--surface-container-high);
   padding: 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--shape-lg);
+  border: 1px solid var(--outline-variant);
 }
 
 .prob-control-group {
@@ -70,39 +70,40 @@
 }
 
 .prob-control-group label {
-  font-size: 11px;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #475569;
+  color: var(--on-surface-variant);
 }
 
 .prob-control-group select,
 .prob-control-group input {
   padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  font-size: 13px;
-  color: #0f172a;
+  border-radius: var(--shape-md);
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-highest);
+  font-size: 0.82rem;
+  color: var(--on-surface);
   outline: none;
+  font-family: inherit;
 }
 
 .prob-recalc-btn {
-  padding: 9px 18px;
-  border-radius: 8px;
-  background: #0f172a;
-  color: #ffffff;
-  font-size: 13px;
+  padding: 9px 20px;
+  border-radius: var(--shape-full);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 0.82rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .prob-recalc-btn:hover {
-  background: #334155;
+  filter: brightness(1.1);
 }
 
 @media (max-width: 768px) {

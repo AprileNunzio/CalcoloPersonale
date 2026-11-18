@@ -1,68 +1,69 @@
 .record-card-modern {
   position: relative;
-  border-radius: 12px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  padding: 16px 18px;
+  border-radius: var(--shape-lg);
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  padding: clamp(12px, 1.2vw, 18px) clamp(14px, 1.4vw, 22px);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 8px var(--shadow-ambient);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: clamp(12px, 1.2vw, 18px);
   margin-bottom: 12px;
 }
 
 .record-card-modern:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
-  border-color: #cbd5e1;
+  box-shadow: 0 8px 24px var(--shadow-ambient);
+  border-color: var(--primary);
+  background: var(--surface-container-high);
 }
 
 .record-card-modern.is-ruolo {
-  background: linear-gradient(135deg, #fdfaff 0%, #f6eeff 100%);
-  border-color: #d8b4fe;
-  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.08);
+  background: var(--surface-container-high);
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px var(--shadow-ambient);
 }
 
 .record-card-modern.is-ruolo:hover {
-  border-color: #c084fc;
-  box-shadow: 0 10px 28px rgba(168, 85, 247, 0.14);
+  border-color: var(--primary);
+  box-shadow: 0 10px 28px var(--shadow-ambient);
 }
 
 .record-card-modern.is-annual {
-  border-left: 4.5px solid #059669;
+  border-left: 4.5px solid var(--secondary);
 }
 
 .record-card-modern.is-term {
-  border-left: 4.5px solid #0284c7;
+  border-left: 4.5px solid var(--primary);
 }
 
 .record-card-modern.is-short {
-  border-left: 4.5px solid #d97706;
+  border-left: 4.5px solid var(--tertiary);
 }
 
 .record-card-modern.is-qualification {
-  border-left: 4.5px solid #0d9488;
+  border-left: 4.5px solid var(--secondary);
 }
 
 .record-card-modern.is-qualification.has-ciad {
-  background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
-  border-color: #99f6e4;
+  background: var(--surface-container-high);
+  border-color: var(--secondary);
 }
 
 .record-card-modern.is-absence {
-  border-left: 4.5px solid #6366f1;
+  border-left: 4.5px solid var(--primary);
 }
 
 .record-card-modern.is-absence.is-sickness {
-  border-left: 4.5px solid #ea580c;
-  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+  border-left: 4.5px solid var(--tertiary);
+  background: var(--surface-container-high);
 }
 
 .record-card-modern.is-absence.is-holiday {
-  border-left: 4.5px solid #059669;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+  border-left: 4.5px solid var(--secondary);
+  background: var(--surface-container-high);
 }
 
 .card-top-badges {
@@ -77,52 +78,52 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
+  padding: 3px 9px;
+  border-radius: var(--shape-full);
   letter-spacing: 0.2px;
 }
 
 .status-chip.ruolo {
-  background: #7e22ce;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .status-chip.annual {
-  background: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border: 1px solid var(--outline-variant);
 }
 
 .status-chip.term {
-  background: #f0f9ff;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: 1px solid var(--outline-variant);
 }
 
 .status-chip.short {
-  background: #fffbeb;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  border: 1px solid var(--outline-variant);
 }
 
 .status-chip.profile {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
 }
 
 .status-chip.statale-ata {
-  background: #eef2ff;
-  color: #4338ca;
-  border: 1px solid #c7d2fe;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: 1px solid var(--outline-variant);
 }
 
 .status-chip.paritaria {
-  background: #fff7ed;
-  color: #c2410c;
-  border: 1px solid #fed7aa;
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  border: 1px solid var(--outline-variant);
 }
 
 .card-title-row {
@@ -131,9 +132,9 @@
 
 .card-title {
   margin: 0;
-  font-size: 15px;
+  font-size: clamp(0.92rem, 0.95vw, 1.1rem);
   font-weight: 750;
-  color: #0f172a;
+  color: var(--on-surface);
   line-height: 1.35;
 }
 
@@ -142,31 +143,32 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  font-size: 12.5px;
-  color: #475569;
+  font-size: clamp(0.76rem, 0.8vw, 0.88rem);
+  color: var(--on-surface-variant);
+  font-variant-numeric: tabular-nums;
   margin-bottom: 6px;
 }
 
 .card-dates-row strong {
-  color: #1e293b;
+  color: var(--on-surface);
 }
 
 .card-school-info {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
-  color: #64748b;
+  font-size: 0.78rem;
+  color: var(--on-surface-variant);
   margin-top: 4px;
 }
 
 .ruolo-highlight-box {
   margin-top: 10px;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid #e9d5ff;
-  border-radius: 8px;
-  font-size: 12px;
+  background: var(--surface-container-highest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  font-size: 0.78rem;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -177,7 +179,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #6b21a8;
+  color: var(--primary);
   font-weight: 600;
 }
 
@@ -188,12 +190,12 @@
 }
 
 .card-action-btn {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #475569;
-  border-radius: 6px;
-  width: 32px;
-  height: 32px;
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+  border-radius: var(--shape-full);
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -202,13 +204,13 @@
 }
 
 .card-action-btn:hover:not(:disabled) {
-  background: #116b62;
-  color: #ffffff;
-  border-color: #116b62;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
 }
 
 .card-action-btn.delete:hover:not(:disabled) {
-  background: #dc2626;
-  color: #ffffff;
-  border-color: #dc2626;
+  background: var(--error);
+  color: var(--on-error);
+  border-color: var(--error);
 }

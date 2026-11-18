@@ -1,38 +1,38 @@
 .prob-summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  gap: clamp(12px, 1.2vw, 18px);
 }
 
 .prob-metric-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: clamp(14px, 1.4vw, 18px);
+  box-shadow: 0 2px 8px var(--shadow-ambient);
 }
 
 .prob-metric-card.highlight-annual {
-  border-color: #86efac;
-  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+  border-color: var(--secondary);
+  background: var(--surface-container-high);
 }
 
 .prob-metric-card.highlight-short {
-  border-color: #93c5fd;
-  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+  border-color: var(--primary);
+  background: var(--surface-container-high);
 }
 
 .prob-metric-card.highlight-sub {
-  border-color: #fde047;
-  background: linear-gradient(180deg, #fefce8 0%, #ffffff 100%);
+  border-color: var(--tertiary);
+  background: var(--surface-container-high);
 }
 
 .prob-metric-card.highlight-rank {
-  border-color: #cbd5e1;
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border-color: var(--outline-variant);
+  background: var(--surface-container-low);
 }
 
 .metric-card-top {
@@ -41,15 +41,15 @@
   gap: 8px;
 }
 
-.icon-annual { color: #16a34a; }
-.icon-short { color: #2563eb; }
-.icon-sub { color: #ca8a04; }
-.icon-rank { color: #64748b; }
+.icon-annual { color: var(--secondary); }
+.icon-short { color: var(--primary); }
+.icon-sub { color: var(--tertiary); }
+.icon-rank { color: var(--on-surface-variant); }
 
 .metric-tag {
-  font-size: 12px;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: #334155;
+  color: var(--on-surface);
 }
 
 .metric-value-row {
@@ -60,42 +60,43 @@
 }
 
 .metric-large-num {
-  font-size: 26px;
+  font-size: clamp(1.4rem, 1.8vw, 2rem);
   font-weight: 800;
-  color: #0f172a;
+  color: var(--on-surface);
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .prob-badge {
-  font-size: 11px;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
+  padding: 3px 10px;
+  border-radius: var(--shape-full);
 }
 
 .prob-badge.high {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
 }
 
 .prob-badge.medium {
-  background: #fef9c3;
-  color: #854d0e;
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
 }
 
 .prob-badge.low {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--error-container);
+  color: var(--on-error-container);
 }
 
 .prob-badge.rank-badge {
-  background: #e2e8f0;
-  color: #334155;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
 }
 
 .metric-caption {
-  font-size: 11px;
-  color: #64748b;
+  font-size: 0.72rem;
+  color: var(--on-surface-variant);
   line-height: 1.3;
 }
 
@@ -103,21 +104,21 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  border-radius: 12px;
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  border-radius: var(--shape-lg);
   padding: 14px 18px;
 }
 
 .dossier-stats-banner strong {
-  font-size: 13px;
-  color: #065f46;
+  font-size: 0.85rem;
+  color: var(--on-secondary-container);
 }
 
 .dossier-stats-banner p {
   margin: 2px 0 0;
-  font-size: 12px;
-  color: #047857;
+  font-size: 0.76rem;
+  color: var(--on-secondary-container);
 }
 
 .retirements-banner-panel {
@@ -125,9 +126,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  border-radius: 14px;
+  background: var(--tertiary-container);
+  border: 1px solid var(--tertiary);
+  border-radius: var(--shape-xl);
   padding: 16px 20px;
   flex-wrap: wrap;
 }
@@ -139,19 +140,19 @@
 }
 
 .flame-icon {
-  color: #ea580c;
+  color: var(--tertiary);
   flex-shrink: 0;
 }
 
 .retirements-banner-left strong {
-  font-size: 14px;
-  color: #9a3412;
+  font-size: 0.92rem;
+  color: var(--on-tertiary-container);
 }
 
 .retirements-banner-left p {
   margin: 2px 0 0;
-  font-size: 12px;
-  color: #c2410c;
+  font-size: 0.78rem;
+  color: var(--on-tertiary-container);
 }
 
 .retirements-stats-group {
@@ -166,17 +167,18 @@
 }
 
 .ret-stat-item small {
-  font-size: 11px;
-  color: #9a3412;
+  font-size: 0.72rem;
+  color: var(--on-tertiary-container);
 }
 
 .ret-stat-item strong {
-  font-size: 15px;
-  color: #7c2d12;
+  font-size: 1rem;
+  color: var(--on-tertiary-container);
+  font-variant-numeric: tabular-nums;
 }
 
 .ret-divider {
   width: 1px;
   height: 28px;
-  background: #fdba74;
+  background: var(--outline-variant);
 }

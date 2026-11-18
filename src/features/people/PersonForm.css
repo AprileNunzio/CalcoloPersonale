@@ -1,25 +1,32 @@
+/* ==========================================================================
+   PERSON FORM / IDENTITÀ - MD3 EXPRESSIVE (Rule 5: Form & Input Expressive)
+   Full width layout up to 8K, tonal containers, zero hardcoded hex
+   ========================================================================== */
+
 .person-form {
-  max-width: 860px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .form-panel-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
-  border-bottom: 1px solid #e7eeec;
-  padding-bottom: 16px;
+  margin-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: var(--space-md);
 }
 
 .form-panel-header h2 {
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xs);
+  color: var(--on-surface);
 }
 
 .person-fields-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px 22px;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 22vw, 440px), 1fr));
+  gap: var(--space-md) var(--space-lg);
 }
 
 .birth-place-container {
@@ -31,12 +38,12 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: #ffffff;
-  border: 1px solid #d2ded9;
-  border-radius: 8px;
-  max-height: 200px;
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  max-height: 220px;
   overflow-y: auto;
-  box-shadow: 0 10px 25px rgba(20, 50, 45, 0.12);
+  box-shadow: 0 10px 25px var(--shadow);
   margin-top: 4px;
   padding: 4px 0;
   list-style: none;
@@ -44,30 +51,31 @@
 }
 
 .istat-suggestions li {
-  padding: 8px 14px;
+  padding: 10px 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #243d36;
+  gap: var(--space-xs);
+  font-size: var(--font-body-medium);
+  color: var(--on-surface);
   transition: background 0.15s ease;
 }
 
 .istat-suggestions li:hover {
-  background: #eef5f2;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
 }
 
 .istat-suggestions .prov-badge {
-  font-weight: 600;
-  color: #176f63;
-  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  font-size: var(--font-label-small);
 }
 
 .istat-suggestions small {
   margin-left: auto;
-  color: #798d87;
-  font-size: 11px;
+  color: var(--on-surface-variant);
+  font-size: var(--font-label-small);
 }
 
 @media (max-width: 720px) {

@@ -14,24 +14,26 @@
   width: 100%;
   padding-left: 36px;
   padding-right: 32px;
-  height: 42px;
-  border: 1.5px solid #d8e3dd;
-  border-radius: 8px;
-  font-size: 14px;
-  background: #ffffff;
+  height: 44px;
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  font-size: 0.85rem;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: inherit;
 }
 
 .directory-picker-input-box input:focus {
-  border-color: #116b62;
-  box-shadow: 0 0 0 3px rgba(17, 107, 98, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-container);
   outline: none;
 }
 
 .directory-icon {
   position: absolute;
   left: 12px;
-  color: #5a7366;
+  color: var(--on-surface-variant);
   pointer-events: none;
 }
 
@@ -40,18 +42,18 @@
   right: 10px;
   background: none;
   border: none;
-  color: #8c9b93;
+  color: var(--on-surface-variant);
   padding: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: var(--shape-full);
 }
 
 .directory-clear-btn:hover {
-  color: #116b62;
-  background: #f0f6f3;
+  color: var(--on-surface);
+  background: var(--surface-container-high);
 }
 
 .directory-dropdown-menu {
@@ -60,10 +62,10 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: #ffffff;
-  border: 1.5px solid #116b62;
-  border-radius: 8px;
-  box-shadow: 0 12px 32px rgba(17, 107, 98, 0.16);
+  background: var(--surface-container-high);
+  border: 1.5px solid var(--primary);
+  border-radius: var(--shape-lg);
+  box-shadow: 0 12px 32px var(--shadow-ambient);
   max-height: 280px;
   overflow-y: auto;
   list-style: none;
@@ -72,15 +74,16 @@
 }
 
 .directory-menu-item {
-  padding: 10px 12px;
+  padding: 10px 14px;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--shape-md);
   transition: background 0.12s ease;
 }
 
 .directory-menu-item:hover,
 .directory-menu-item.selected {
-  background: #e6f4f1;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
 }
 
 .directory-item-header {
@@ -91,31 +94,32 @@
 }
 
 .directory-item-name {
-  font-size: 13.5px;
-  color: #1a2e26;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--on-surface);
 }
 
 .cat-pill {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: var(--shape-full);
   text-transform: uppercase;
 }
 
 .cat-pill.statale {
-  background: #e1f5fe;
-  color: #0277bd;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
 }
 
 .cat-pill.paritaria {
-  background: #fff3e0;
-  color: #ef6c00;
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
 }
 
 .cat-pill.prov {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
 }
 
 .directory-item-sub {
@@ -124,29 +128,29 @@
   align-items: center;
   gap: 6px;
   margin-top: 4px;
-  font-size: 12px;
-  color: #5a7366;
+  font-size: 0.74rem;
+  color: var(--on-surface-variant);
 }
 
 .code-badge {
   font-family: monospace;
-  font-weight: 600;
-  background: #edf3f0;
+  font-weight: 700;
+  background: var(--surface-container-highest);
   padding: 1px 6px;
-  border-radius: 4px;
-  color: #116b62;
+  border-radius: var(--shape-xs);
+  color: var(--primary);
 }
 
 .catastale-tag {
-  background: #fdf2e9;
-  color: #b95c00;
-  padding: 1px 5px;
-  border-radius: 4px;
-  font-size: 11px;
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  padding: 1px 6px;
+  border-radius: var(--shape-xs);
+  font-size: 0.68rem;
 }
 
 .addr-tag {
-  color: #7a8e84;
+  color: var(--on-surface-variant);
 }
 
 .directory-dropdown-empty {
@@ -155,52 +159,52 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: #ffffff;
-  border: 1px solid #d8e3dd;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-lg);
+  box-shadow: 0 8px 24px var(--shadow-ambient);
   padding: 14px;
   text-align: center;
-  font-size: 13px;
-  color: #728578;
+  font-size: 0.82rem;
+  color: var(--on-surface-variant);
 }
 
 .school-summary {
   padding: 14px 18px;
-  background: #f0f7f4;
-  border: 1px solid #c8dfd5;
-  border-radius: 8px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
   overflow-wrap: anywhere;
 }
 
 .school-summary strong {
-  color: #116b62;
-  font-size: 14px;
+  color: var(--primary);
+  font-size: 0.88rem;
 }
 
 .school-summary p {
-  font-size: 12.5px;
+  font-size: 0.78rem;
   margin: 6px 0 0 0;
-  color: #3f554c;
+  color: var(--on-surface-variant);
 }
 
 .historical-custom-option {
-  border-top: 1.5px dashed #cbd5e1;
-  background: #f8fafc;
+  border-top: 1.5px dashed var(--outline-variant);
+  background: var(--surface-container);
   margin-top: 4px;
 }
 
 .historical-custom-option:hover {
-  background: #f0fdf4 !important;
+  background: var(--surface-container-high) !important;
 }
 
 .use-historical-school-btn {
-  background: #0f766e;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--on-primary);
   border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 12px;
+  border-radius: var(--shape-full);
+  padding: 6px 14px;
+  font-size: 0.76rem;
   font-weight: 650;
   display: inline-flex;
   align-items: center;
@@ -210,16 +214,16 @@
 }
 
 .use-historical-school-btn:hover {
-  background: #115e59;
+  filter: brightness(1.1);
   transform: translateY(-1px);
 }
 
 .use-historical-school-btn.secondary {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #cbd5e1;
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
 }
 
 .use-historical-school-btn.secondary:hover {
-  background: #e2e8f0;
+  background: var(--surface-container-highest);
 }

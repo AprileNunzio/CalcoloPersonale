@@ -1,8 +1,8 @@
 .family-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(2px);
+  background: var(--scrim);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,14 +11,14 @@
 }
 
 .family-modal-dialog {
-  background: var(--color-panel, #ffffff);
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background: var(--surface-container);
+  border-radius: var(--shape-xl);
+  box-shadow: 0 10px 25px var(--shadow-ambient);
   width: 100%;
   max-width: 580px;
   max-height: 90vh;
   overflow-y: auto;
-  border: 1px solid var(--color-border, #e2e8f0);
+  border: 1px solid var(--outline-variant);
 }
 
 .family-modal-header {
@@ -26,13 +26,15 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  border-bottom: 1px solid var(--outline-variant);
+  background: var(--surface-container-high);
 }
 
 .family-modal-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
+  color: var(--on-surface);
 }
 
 .family-modal-form {
@@ -45,9 +47,9 @@
 .family-source-switch {
   display: flex;
   gap: 8px;
-  background: #f1f5f9;
+  background: var(--surface-container-highest);
   padding: 4px;
-  border-radius: 8px;
+  border-radius: var(--shape-full);
 }
 
 .family-source-switch button {
@@ -56,27 +58,28 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: var(--shape-full);
   background: transparent;
-  color: #64748b;
+  color: var(--on-surface-variant);
   border: none;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .family-source-switch button.active {
-  background: #ffffff;
-  color: var(--color-text, #1e293b);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: 0 1px 4px var(--shadow-ambient);
 }
 
 .archive-picker-box {
   padding: 12px;
-  border-radius: 8px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border-radius: var(--shape-md);
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
 }
 
 .selected-archive-person {
@@ -86,11 +89,11 @@
 }
 
 .selected-archive-person .person-avatar-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #eff6ff;
-  color: #2563eb;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--shape-full);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,18 +101,18 @@
 
 .selected-archive-person small {
   display: block;
-  font-size: 11px;
-  color: #64748b;
+  font-size: 0.7rem;
+  color: var(--on-surface-variant);
 }
 
 .archive-search-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 10px;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  padding: 8px 12px;
+  background: var(--surface-container-highest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
   margin-bottom: 8px;
 }
 
@@ -118,7 +121,9 @@
   outline: none;
   padding: 0;
   width: 100%;
-  font-size: 12px;
+  font-size: 0.82rem;
+  background: transparent;
+  color: var(--on-surface);
 }
 
 .archive-results-scroll {
@@ -133,23 +138,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 8px;
+  padding: 6px 10px;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--shape-sm);
   text-align: left;
   cursor: pointer;
-  color: inherit;
+  color: var(--on-surface);
+  transition: background 0.15s ease;
 }
 
 .archive-person-row:hover {
-  background: #f1f5f9;
+  background: var(--surface-container-high);
 }
 
 .archive-person-row small {
   display: block;
-  font-size: 11px;
-  color: #64748b;
+  font-size: 0.7rem;
+  color: var(--on-surface-variant);
 }
 
 .relation-chips {
@@ -163,20 +169,26 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 6px 11px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: var(--shape-full);
+  font-size: 0.78rem;
   font-weight: 500;
-  border: 1px solid var(--color-border, #cbd5e1);
-  background: #f8fafc;
-  color: #475569;
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.relation-chip:hover {
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
 }
 
 .relation-chip.active {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
 }
 
 .form-grid-2 {
@@ -192,14 +204,14 @@
 }
 
 .form-field-group label {
-  font-size: 12px;
+  font-size: 0.76rem;
   font-weight: 600;
-  color: var(--color-text, #334155);
+  color: var(--on-surface-variant);
 }
 
 .live-age-text {
-  font-weight: 500;
-  color: #2563eb;
+  font-weight: 600;
+  color: var(--primary);
   margin-left: 5px;
 }
 
@@ -214,27 +226,28 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 6px 4px;
-  border-radius: 6px;
-  font-size: 11px;
+  padding: 6px 6px;
+  border-radius: var(--shape-full);
+  font-size: 0.72rem;
   font-weight: 600;
-  border: 1px solid #cbd5e1;
-  background: #f8fafc;
-  color: #475569;
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .dep-chip.active {
-  background: #059669;
-  border-color: #059669;
-  color: #ffffff;
+  background: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--on-secondary);
 }
 
 .law104-toggle-box {
   padding: 10px 14px;
-  border-radius: 8px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  border-radius: var(--shape-md);
+  background: var(--tertiary-container);
+  border: 1px solid var(--tertiary);
 }
 
 .checkbox-label {
@@ -246,18 +259,19 @@
 
 .checkbox-label input {
   margin-top: 3px;
+  accent-color: var(--primary);
 }
 
 .checkbox-label strong {
   display: block;
-  font-size: 13px;
-  color: #991b1b;
+  font-size: 0.85rem;
+  color: var(--on-tertiary-container);
 }
 
 .checkbox-label small {
   display: block;
-  font-size: 11px;
-  color: #b91c1c;
+  font-size: 0.74rem;
+  color: var(--on-tertiary-container);
 }
 
 .family-modal-actions {

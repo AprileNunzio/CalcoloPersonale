@@ -1,12 +1,15 @@
-/* Seniority Progression Card */
+/* ==========================================================================
+   SENIORITY PROGRESSION & TFR HISTORY - MD3 EXPRESSIVE (Rules 1, 3, 6)
+   ========================================================================== */
+
 .seniority-progression-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 18px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-md);
 }
 
 .seniority-card-header {
@@ -14,33 +17,35 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-sm);
 }
 
 .seniority-card-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-xs);
 }
 
 .seniority-card-title h4 {
   margin: 0;
-  font-size: 15px;
-  color: #0f172a;
+  font-size: var(--font-title-medium);
+  font-weight: 750;
+  color: var(--on-surface);
 }
 
 .seniority-subtitle {
-  font-size: 11px;
-  color: #64748b;
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
 }
 
 .seniority-active-badge {
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  color: #047857;
-  padding: 5px 10px;
-  border-radius: 8px;
-  font-size: 12px;
+  background: var(--secondary-container);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-secondary-container);
+  padding: 4px 12px;
+  border-radius: var(--shape-full);
+  font-size: var(--font-label-small);
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -48,14 +53,14 @@
 
 .seniority-stats-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 15vw, 260px), 1fr));
+  gap: var(--space-sm);
 }
 
 .seniority-stat-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
   padding: 10px 14px;
   display: flex;
   flex-direction: column;
@@ -63,26 +68,27 @@
 }
 
 .seniority-stat-box.highlight {
-  background: #f0fdf9;
-  border-color: #a7f3d0;
+  background: var(--primary-container);
+  border-color: var(--primary);
 }
 
 .stat-label {
-  font-size: 11px;
+  font-size: var(--font-label-small);
   font-weight: 700;
-  color: #64748b;
+  color: var(--on-surface-variant);
   text-transform: uppercase;
 }
 
 .stat-value {
-  font-size: 16px;
+  font-size: var(--font-title-large);
   font-weight: 800;
-  color: #0f172a;
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-sub {
-  font-size: 11px;
-  color: #64748b;
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
 }
 
 .seniority-progress-bar-wrap {
@@ -94,44 +100,44 @@
 .progress-bar-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: #475569;
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
 }
 
 .seniority-progress-track {
-  background: #e2e8f0;
-  border-radius: 999px;
+  background: var(--surface-container-highest);
+  border-radius: var(--shape-full);
   height: 8px;
   overflow: hidden;
 }
 
 .seniority-progress-fill {
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  background: var(--primary);
   height: 100%;
-  border-radius: 999px;
+  border-radius: var(--shape-full);
   transition: width 0.3s ease;
 }
 
 .fascia-selector-container {
-  border-top: 1px dashed #e2e8f0;
-  padding-top: 10px;
+  border-top: 1px dashed var(--outline-variant);
+  padding-top: var(--space-xs);
 }
 
 .fascia-pills-row {
   display: flex;
-  gap: 8px;
+  gap: var(--space-xs);
   flex-wrap: wrap;
   margin-top: 6px;
 }
 
 .fascia-pill-btn {
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #334155;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-full);
+  padding: 6px 14px;
+  font-size: var(--font-label-small);
+  font-weight: 650;
+  color: var(--on-surface-variant);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -140,43 +146,45 @@
 }
 
 .fascia-pill-btn:hover {
-  background: #f1f5f9;
-  border-color: #94a3b8;
+  background: var(--surface-container-high);
+  color: var(--on-surface);
 }
 
 .fascia-pill-btn.selected {
-  background: #116b62;
-  color: #ffffff;
-  border-color: #116b62;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+  font-weight: 750;
 }
 
 .fascia-pill-btn.calculated {
-  border-color: #059669;
+  border-color: var(--primary);
 }
 
 .fascia-auto-tag {
-  background: #047857;
-  color: #ffffff;
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
   font-size: 9px;
-  padding: 1px 4px;
-  border-radius: 3px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--shape-full);
   text-transform: uppercase;
 }
 
 .fascia-pill-btn.selected .fascia-auto-tag {
-  background: #ffffff;
-  color: #116b62;
+  background: var(--on-primary);
+  color: var(--primary);
 }
 
 /* TFR History Card */
 .tfr-history-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 18px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-md);
 }
 
 .tfr-card-header {
@@ -184,34 +192,35 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-sm);
 }
 
 .tfr-card-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-xs);
 }
 
 .tfr-card-title h4 {
   margin: 0;
-  font-size: 15px;
-  color: #0f172a;
+  font-size: var(--font-title-medium);
+  font-weight: 750;
+  color: var(--on-surface);
 }
 
 .tfr-subtitle {
-  font-size: 11px;
-  color: #64748b;
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
 }
 
 .tfr-contracts-badge {
-  background: #ccfbf1;
-  border: 1px solid #99f6e4;
-  color: #0f766e;
-  padding: 5px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
+  background: var(--secondary-container);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-secondary-container);
+  padding: 4px 12px;
+  border-radius: var(--shape-full);
+  font-size: var(--font-label-small);
+  font-weight: 750;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -219,14 +228,14 @@
 
 .tfr-metrics-deck {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 15vw, 260px), 1fr));
+  gap: var(--space-sm);
 }
 
 .tfr-metric-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -234,40 +243,42 @@
 }
 
 .tfr-metric-box.primary {
-  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
-  border-color: #99f6e4;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border-color: var(--primary);
 }
 
 .tfr-metric-label {
-  font-size: 11px;
+  font-size: var(--font-label-small);
   font-weight: 700;
-  color: #64748b;
+  color: var(--on-surface-variant);
   text-transform: uppercase;
 }
 
 .tfr-metric-value {
-  font-size: 20px;
+  font-size: var(--font-title-large);
   font-weight: 800;
-  color: #0f172a;
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
 }
 
 .tfr-metric-box.primary .tfr-metric-value {
-  color: #0f766e;
+  color: var(--on-primary-container);
 }
 
 .tfr-metric-sub {
-  font-size: 11px;
-  color: #64748b;
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
 }
 
 .tfr-toggle-table-btn {
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #0f766e;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-full);
+  padding: 6px 14px;
+  font-size: var(--font-label-small);
+  font-weight: 650;
+  color: var(--primary);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -275,32 +286,33 @@
 }
 
 .tfr-toggle-table-btn:hover {
-  background: #f1f5f9;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
 }
 
 .tfr-table-wrap {
-  margin-top: 10px;
+  margin-top: var(--space-xs);
   overflow-x: auto;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
 }
 
 .tfr-breakdown-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: var(--font-body-small);
 }
 
 .tfr-breakdown-table th,
 .tfr-breakdown-table td {
   padding: 8px 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--outline-variant);
   text-align: left;
 }
 
 .tfr-breakdown-table th {
-  background: #f8fafc;
-  color: #475569;
+  background: var(--surface-container);
+  color: var(--on-surface);
   font-weight: 700;
 }
 
@@ -310,12 +322,12 @@
 
 .tfr-info-footer {
   display: flex;
-  gap: 8px;
-  font-size: 11px;
-  color: #64748b;
+  gap: var(--space-xs);
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
   line-height: 1.5;
-  background: #f8fafc;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  background: var(--surface-container);
+  padding: 10px 14px;
+  border-radius: var(--shape-md);
+  border: 1px solid var(--outline-variant);
 }

@@ -1,70 +1,41 @@
+/* ==========================================================================
+   SCORES CARD - MD3 EXPRESSIVE (Rules 1, 3, 6)
+   Tonal card hierarchy, rounded shapes, tabular scores
+   ========================================================================== */
+
 .profile-scores-compact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(290px, 20vw, 420px), 1fr));
+  gap: var(--space-md);
   width: 100%;
 }
 
 .compact-score-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 16px 18px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: var(--space-md) var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: var(--space-sm);
+  transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .compact-score-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-  border-color: #cbd5e1;
-}
-
-.compact-score-card.profile-CS {
-  border-color: #86efac;
-  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 50%);
-}
-
-.compact-score-card.profile-AA {
-  border-color: #93c5fd;
-  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 50%);
-}
-
-.compact-score-card.profile-AT {
-  border-color: #d8b4fe;
-  background: linear-gradient(180deg, #faf5ff 0%, #ffffff 50%);
-}
-
-.compact-score-card.profile-OS {
-  border-color: #fcd34d;
-  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 50%);
-}
-
-.compact-score-card.profile-CO {
-  border-color: #fdba74;
-  background: linear-gradient(180deg, #fff7ed 0%, #ffffff 50%);
-}
-
-.compact-score-card.profile-IF {
-  border-color: #fca5a5;
-  background: linear-gradient(180deg, #fef2f2 0%, #ffffff 50%);
-}
-
-.compact-score-card.profile-GA {
-  border-color: #5eead4;
-  background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 50%);
+  background: var(--surface-container);
+  border-color: var(--outline);
+  box-shadow: 0 8px 24px var(--shadow);
 }
 
 .compact-score-card-main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-sm);
 }
 
 .compact-card-title-col {
@@ -74,53 +45,54 @@
 
 .compact-card-title-col h4 {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--font-title-medium);
   font-weight: 750;
-  color: #0f172a;
+  color: var(--on-surface);
 }
 
 .compact-code-tag {
-  font-size: 11px;
+  font-size: var(--font-label-small);
   font-weight: 700;
-  background: #f1f5f9;
-  color: #475569;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: monospace;
+  background: var(--surface-container-highest);
+  color: var(--on-surface-variant);
+  padding: 2px 8px;
+  border-radius: var(--shape-full);
+  font-family: ui-monospace, monospace;
 }
 
 .compact-score-number {
   display: flex;
   align-items: baseline;
   gap: 4px;
-  background: #ffffff;
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1.5px solid #cbd5e1;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  padding: 4px 12px;
+  border-radius: var(--shape-full);
+  border: 1px solid var(--outline-variant);
 }
 
 .compact-score-number strong {
-  font-size: 20px;
+  font-size: var(--font-headline-small);
   font-weight: 850;
-  color: #0f172a;
+  color: var(--on-primary-container);
+  font-variant-numeric: tabular-nums;
 }
 
 .compact-score-number small {
-  font-size: 11px;
+  font-size: var(--font-label-small);
   font-weight: 700;
-  color: #64748b;
+  color: var(--on-primary-container);
   text-transform: uppercase;
 }
 
 .compact-card-metrics {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  background: rgba(248, 250, 252, 0.85);
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  gap: var(--space-xs);
+  background: var(--surface-container);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--shape-md);
+  border: 1px solid var(--outline-variant);
 }
 
 .compact-metric-col {
@@ -131,44 +103,45 @@
 }
 
 .compact-metric-label {
-  font-size: 10.5px;
+  font-size: var(--font-label-small);
   font-weight: 700;
-  color: #64748b;
+  color: var(--on-surface-variant);
   text-transform: uppercase;
   letter-spacing: 0.3px;
   margin-bottom: 2px;
 }
 
 .compact-metric-val {
-  font-size: 14px;
+  font-size: var(--font-label-large);
   font-weight: 800;
-  color: #1e293b;
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
 }
 
 .ciad-status-pill {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 11.5px;
+  padding: 6px 12px;
+  border-radius: var(--shape-full);
+  font-size: var(--font-label-small);
   font-weight: 650;
 }
 
 .ciad-status-pill.valid {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1px solid #a7f3d0;
+  background: var(--success-container);
+  color: var(--on-success-container);
+  border: 1px solid var(--outline-variant);
 }
 
 .ciad-status-pill.missing {
-  background: #fffbeb;
-  color: #b45309;
-  border: 1px solid #fde68a;
+  background: var(--warning-container);
+  color: var(--on-warning-container);
+  border: 1px solid var(--outline-variant);
 }
 
 .ciad-status-pill.not-required {
-  background: #f8fafc;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  background: var(--surface-container-highest);
+  color: var(--on-surface-variant);
+  border: 1px solid var(--outline-variant);
 }

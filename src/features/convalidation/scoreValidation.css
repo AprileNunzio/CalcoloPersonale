@@ -1,29 +1,29 @@
 .score-validation-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: clamp(14px, 1.5vw, 22px);
   width: 100%;
 }
 
 .validation-header-pane {
-  background: linear-gradient(135deg, #ffffff 0%, #f4faf8 100%);
-  border: 1px solid #dcebe6;
-  border-radius: 18px;
-  padding: 22px 26px;
-  box-shadow: 0 4px 16px rgba(17, 107, 98, 0.04);
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: clamp(16px, 1.8vw, 26px);
+  box-shadow: 0 4px 16px var(--shadow-ambient);
 }
 
 .validation-header-pane h2 {
   margin: 0 0 6px 0;
-  font-size: 20px;
+  font-size: clamp(1.15rem, 1.3vw, 1.45rem);
   font-weight: 800;
-  color: #102d27;
+  color: var(--on-surface);
 }
 
 .validation-header-pane p {
   margin: 0 0 16px 0;
-  font-size: 13px;
-  color: #55726c;
+  font-size: 0.82rem;
+  color: var(--on-surface-variant);
   line-height: 1.5;
   max-width: 780px;
 }
@@ -36,38 +36,38 @@
 }
 
 .decree-btn {
-  background: #ffffff;
-  border: 1.5px solid #d1e3dd;
-  color: #3b5a54;
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-size: 12px;
+  background: var(--surface-container-high);
+  border: 1.5px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+  padding: 8px 16px;
+  border-radius: var(--shape-full);
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .decree-btn:hover {
-  background: #eef6f3;
-  border-color: #116b62;
-  color: #116b62;
+  background: var(--surface-container-highest);
+  border-color: var(--primary);
+  color: var(--on-surface);
 }
 
 .decree-btn.active {
-  background: #116b62;
-  color: #ffffff;
-  border-color: #116b62;
-  box-shadow: 0 2px 8px rgba(17, 107, 98, 0.25);
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px var(--primary-container);
 }
 
 .decree-callout {
   margin-top: 14px;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: #eef7f4;
-  border: 1px solid #c8e3da;
-  font-size: 12px;
-  color: #154e43;
+  border-radius: var(--shape-md);
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  font-size: 0.78rem;
+  color: var(--on-secondary-container);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -80,11 +80,11 @@
 }
 
 .profile-val-card {
-  background: #ffffff;
-  border: 1.5px solid #e1ece8;
-  border-radius: 16px;
-  padding: 22px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: clamp(16px, 1.6vw, 24px);
+  box-shadow: 0 2px 10px var(--shadow-ambient);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -92,8 +92,8 @@
 }
 
 .profile-val-card.validated-active {
-  border-color: #10b981;
-  background: linear-gradient(180deg, #ffffff 0%, #f6fdfa 100%);
+  border-color: var(--secondary);
+  background: var(--surface-container-high);
 }
 
 .val-card-top {
@@ -112,9 +112,9 @@
 
 .val-card-identity h3 {
   margin: 0;
-  font-size: 17px;
+  font-size: clamp(1rem, 1.1vw, 1.2rem);
   font-weight: 750;
-  color: #102d27;
+  color: var(--on-surface);
 }
 
 .val-card-scores-row {
@@ -125,24 +125,25 @@
 
 .val-score-badge {
   padding: 6px 14px;
-  border-radius: 10px;
-  font-size: 13px;
+  border-radius: var(--shape-full);
+  font-size: 0.82rem;
   font-weight: 750;
   display: flex;
   align-items: center;
   gap: 6px;
+  font-variant-numeric: tabular-nums;
 }
 
 .val-score-badge.official {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1.5px solid #a7f3d0;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border: 1.5px solid var(--secondary);
 }
 
 .val-score-badge.calculated {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
 }
 
 .val-convalidation-seal {
@@ -150,11 +151,11 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  color: #065f46;
-  font-size: 12px;
+  border-radius: var(--shape-md);
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  color: var(--on-secondary-container);
+  font-size: 0.78rem;
 }
 
 .val-convalidation-pending {
@@ -162,16 +163,16 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
-  font-size: 12px;
+  border-radius: var(--shape-md);
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+  font-size: 0.78rem;
 }
 
 .val-sy-table-wrap {
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
   overflow: hidden;
   margin-top: 6px;
 }
@@ -179,22 +180,23 @@
 .val-sy-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 0.78rem;
   text-align: left;
 }
 
 .val-sy-table th {
-  background: #f8fafc;
-  color: #475569;
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
   font-weight: 700;
   padding: 8px 12px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--outline-variant);
 }
 
 .val-sy-table td {
   padding: 8px 12px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #1e293b;
+  border-bottom: 1px solid var(--outline-variant);
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
 }
 
 .val-sy-table tr:last-child td {
@@ -202,28 +204,28 @@
 }
 
 .capped-tag {
-  background: #fef2f2;
-  color: #b91c1c;
+  background: var(--error-container);
+  color: var(--on-error-container);
   font-weight: 700;
   padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 10.5px;
+  border-radius: var(--shape-xs);
+  font-size: 0.68rem;
 }
 
 .val-form-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 16px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-lg);
+  padding: clamp(12px, 1.2vw, 18px);
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 .val-form-title {
-  font-size: 13px;
+  font-size: 0.85rem;
   font-weight: 750;
-  color: #1e293b;
+  color: var(--on-surface);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -242,61 +244,62 @@
 }
 
 .val-field-group label {
-  font-size: 11px;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #475569;
+  color: var(--on-surface-variant);
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
 .val-field-group input, .val-field-group textarea {
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 13px;
-  background: #ffffff;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
   outline: none;
 }
 
 .val-field-group input:focus, .val-field-group textarea:focus {
-  border-color: #116b62;
-  box-shadow: 0 0 0 2px rgba(17, 107, 98, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-container);
 }
 
 .val-checkbox-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--on-surface);
   cursor: pointer;
   user-select: none;
 }
 
 .val-checkbox-row.highlight {
-  color: #047857;
-  background: #ecfdf5;
+  color: var(--on-secondary-container);
+  background: var(--secondary-container);
   padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #a7f3d0;
+  border-radius: var(--shape-md);
+  border: 1px solid var(--secondary);
 }
 
 .val-checkbox-row input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #116b62;
+  accent-color: var(--primary);
   cursor: pointer;
 }
 
 .val-btn-save {
   align-self: flex-start;
-  background: #116b62;
-  color: #ffffff;
-  padding: 9px 18px;
-  border-radius: 8px;
+  background: var(--primary);
+  color: var(--on-primary);
+  padding: 9px 20px;
+  border-radius: var(--shape-full);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.82rem;
   border: none;
   cursor: pointer;
   transition: all 0.18s ease;
@@ -306,16 +309,16 @@
 }
 
 .val-btn-save:hover {
-  background: #0d564e;
+  filter: brightness(1.1);
   transform: translateY(-1px);
 }
 
 /* Incremental banner & math pills */
 .val-incremental-banner {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-  border: 1px solid #a7f3d0;
-  border-radius: 12px;
-  padding: 12px 14px;
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  border-radius: var(--shape-lg);
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -325,9 +328,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #065f46;
+  color: var(--on-secondary-container);
 }
 
 .val-math-breakdown {
@@ -340,43 +343,44 @@
 .val-math-pill {
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 6px 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
+  background: var(--surface-container-high);
+  border-radius: var(--shape-md);
+  padding: 6px 14px;
+  box-shadow: 0 1px 3px var(--shadow-ambient);
+  border: 1px solid var(--outline-variant);
 }
 
 .val-math-pill.base {
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid var(--primary);
 }
 
 .val-math-pill.added {
-  border-left: 3px solid #10b981;
+  border-left: 3px solid var(--secondary);
 }
 
 .val-math-pill.total {
-  border-left: 3px solid #116b62;
-  background: #f0fdf9;
+  border-left: 3px solid var(--primary);
+  background: var(--surface-container-highest);
 }
 
 .pill-label {
-  font-size: 11px;
+  font-size: 0.68rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--on-surface-variant);
   text-transform: uppercase;
 }
 
 .pill-value {
-  font-size: 14px;
+  font-size: 0.95rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
 }
 
 .math-operator {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
-  color: #94a3b8;
+  color: var(--on-surface-variant);
 }
 
 /* Mode selector */
@@ -388,45 +392,45 @@
 }
 
 .val-mode-card {
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 10px 12px;
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-lg);
+  padding: 10px 14px;
   cursor: pointer;
-  background: #f8fafc;
+  background: var(--surface-container-high);
   transition: all 0.16s ease;
 }
 
 .val-mode-card:hover {
-  border-color: #cbd5e1;
-  background: #ffffff;
+  border-color: var(--primary);
+  background: var(--surface-container-highest);
 }
 
 .val-mode-card.active {
-  border-color: #116b62;
-  background: #f0fdf9;
-  box-shadow: 0 2px 6px rgba(17, 107, 98, 0.08);
+  border-color: var(--primary);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  box-shadow: 0 2px 6px var(--shadow-ambient);
 }
 
 .val-mode-title {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 13px;
+  font-size: 0.82rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--on-surface);
   margin-bottom: 4px;
 }
 
 .val-mode-card p {
   margin: 0;
-  font-size: 11px;
+  font-size: 0.72rem;
   line-height: 1.4;
-  color: #64748b;
+  color: var(--on-surface-variant);
 }
 
 .val-field-group.highlight-border input {
-  border-color: #059669;
-  background: #f0fdf4;
+  border-color: var(--secondary);
+  background: var(--surface-container-highest);
   font-weight: 600;
 }
-

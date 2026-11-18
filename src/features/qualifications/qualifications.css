@@ -1,10 +1,10 @@
 .qualification-summary-deck {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1.5px solid #cbd5e1;
-  border-radius: 14px;
-  padding: 16px 20px;
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: clamp(14px, 1.5vw, 20px);
   margin-bottom: 20px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 4px 16px var(--shadow-ambient);
 }
 
 .qual-header-row {
@@ -20,9 +20,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 15px;
+  font-size: 0.95rem;
   font-weight: 750;
-  color: #0f172a;
+  color: var(--on-surface);
 }
 
 .qual-stats-grid {
@@ -32,11 +32,11 @@
 }
 
 .qual-stat-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-lg);
   padding: 12px 14px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 6px var(--shadow-ambient);
   transition: transform 0.15s ease;
 }
 
@@ -45,9 +45,9 @@
 }
 
 .qual-stat-label {
-  font-size: 11px;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #64748b;
+  color: var(--on-surface-variant);
   text-transform: uppercase;
   letter-spacing: 0.3px;
   display: flex;
@@ -57,15 +57,16 @@
 }
 
 .qual-stat-val {
-  font-size: 18px;
+  font-size: clamp(1.1rem, 1.3vw, 1.4rem);
   font-weight: 850;
-  color: #0f172a;
+  color: var(--on-surface);
   line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 
 .qual-stat-sub {
-  font-size: 11px;
-  color: #059669;
+  font-size: 0.74rem;
+  color: var(--secondary);
   font-weight: 600;
   margin-top: 2px;
 }
@@ -73,21 +74,21 @@
 .ciad-alert-box {
   margin-top: 12px;
   padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 12px;
+  border-radius: var(--shape-md);
+  font-size: 0.78rem;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 .ciad-alert-box.valid {
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  color: #065f46;
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  color: var(--on-secondary-container);
 }
 
 .ciad-alert-box.missing {
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  color: #92400e;
+  background: var(--tertiary-container);
+  border: 1px solid var(--tertiary);
+  color: var(--on-tertiary-container);
 }

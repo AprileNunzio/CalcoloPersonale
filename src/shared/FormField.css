@@ -1,7 +1,7 @@
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: clamp(4px, 0.4vw, 8px);
   position: relative;
   min-width: 0;
 }
@@ -19,12 +19,17 @@
 }
 
 .field-label-text {
-  font-size: 12px;
+  font-size: clamp(0.72rem, 0.75vw, 0.85rem);
   font-weight: 600;
-  color: #556c65;
+  color: var(--on-surface-variant);
   margin: 0;
   display: inline-block;
   cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.form-field:focus-within .field-label-text {
+  color: var(--primary);
 }
 
 .field-tip-anchor {
@@ -32,7 +37,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #7d938d;
+  color: var(--on-surface-variant);
   cursor: help;
   outline: none;
   transition: color 0.15s ease;
@@ -40,11 +45,11 @@
 
 .field-tip-anchor:hover,
 .field-tip-anchor:focus-visible {
-  color: #146b60;
+  color: var(--primary);
 }
 
 .tip-icon {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .field-tooltip {
@@ -54,19 +59,20 @@
   bottom: calc(100% + 7px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  background: #172c27;
-  color: #f1f8f6;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
   padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 11.5px;
+  border-radius: var(--shape-sm);
+  font-size: 0.75rem;
   line-height: 1.45;
-  font-weight: 400;
+  font-weight: 500;
   white-space: normal;
   width: max-content;
   max-width: 280px;
   z-index: 1000;
   pointer-events: none;
-  box-shadow: 0 8px 24px rgba(10, 25, 22, 0.25);
+  box-shadow: 0 8px 24px var(--shadow-ambient);
   transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.18s;
 }
 
@@ -78,7 +84,7 @@
   transform: translateX(-50%);
   border-width: 5px;
   border-style: solid;
-  border-color: #172c27 transparent transparent transparent;
+  border-color: var(--surface-container-highest) transparent transparent transparent;
 }
 
 .field-tip-anchor:hover .field-tooltip,
@@ -91,7 +97,7 @@
 .input-wrapper {
   display: flex;
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--shape-md);
   transition: all 0.2s ease;
 }
 
@@ -99,43 +105,55 @@
 .input-wrapper > select,
 .input-wrapper > textarea {
   width: 100%;
-  border: 1.5px solid #d8e3dd;
-  border-radius: 8px;
-  padding: 10px 12px;
-  background: #fff;
-  color: #233e34;
-  font-size: 13.5px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 10px 14px;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  font-size: clamp(0.82rem, 0.85vw, 0.95rem);
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
   outline: none;
+}
+
+.input-wrapper > input::placeholder,
+.input-wrapper > textarea::placeholder {
+  color: var(--on-surface-variant);
+  opacity: 0.8;
 }
 
 .input-wrapper > input:focus,
 .input-wrapper > select:focus,
 .input-wrapper > textarea:focus {
-  border-color: #359183;
-  box-shadow: 0 0 0 3px rgba(53, 145, 131, 0.18);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-container);
+  background: var(--surface-container-high);
 }
 
-/* Saved (valid) state with subtle green border */
+/* Saved (valid) state */
 .input-wrapper.saved > input,
 .input-wrapper.saved > select,
 .input-wrapper.saved > textarea {
-  border-color: #238662 !important;
-  box-shadow: 0 0 0 2px rgba(35, 134, 98, 0.18);
+  border-color: var(--secondary) !important;
+  box-shadow: 0 0 0 2px var(--secondary-container);
 }
 
-/* Error state with red border */
+/* Error state */
 .input-wrapper.error > input,
 .input-wrapper.error > select,
 .input-wrapper.error > textarea {
-  border-color: #dc3545 !important;
-  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.18);
-  background: #fffafa;
+  border-color: var(--error) !important;
+  box-shadow: 0 0 0 2px var(--error-container);
+  background: var(--error-container);
+  color: var(--on-error-container);
 }
 
 .field-error-text {
-  font-size: 11px;
-  color: #dc3545;
-  font-weight: 500;
+  font-size: 0.72rem;
+  color: var(--error);
+  font-weight: 600;
   margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

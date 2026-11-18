@@ -1,0 +1,245 @@
+/* ==========================================================================
+   DASHBOARD FAMILY & SPOUSE CARDS - MD3 EXPRESSIVE (Rule 3)
+   Tonal cards, rounded progress bars, status pills, zero hardcoded hex
+   ========================================================================== */
+
+.dash-family-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+.dash-section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: 4px;
+}
+
+.dash-section-title-row h3 {
+  font-size: var(--font-title-medium);
+  font-weight: 700;
+  color: var(--on-surface);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0;
+}
+
+.dash-section-badge {
+  font-size: var(--font-label-small);
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--shape-full);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+/* SPOUSE CARD */
+.dash-spouse-card {
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.dash-spouse-card:hover {
+  background: var(--surface-container);
+  border-color: var(--outline);
+  transform: translateY(-2px);
+}
+
+.dash-spouse-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.dash-person-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.dash-avatar-circle {
+  width: clamp(40px, 2.6vw, 48px);
+  height: clamp(40px, 2.6vw, 48px);
+  border-radius: var(--shape-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: 1px solid var(--outline-variant);
+}
+
+.dash-avatar-circle.spouse {
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+}
+
+.dash-avatar-circle.child {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+
+.dash-avatar-circle.expired {
+  background: var(--surface-container-highest);
+  color: var(--on-surface-variant);
+}
+
+.dash-person-names h4 {
+  margin: 0;
+  font-size: var(--font-title-medium);
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.dash-person-names small {
+  color: var(--on-surface-variant);
+  font-size: var(--font-label-small);
+}
+
+.dash-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--font-label-small);
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--shape-full);
+}
+
+.dash-badge-pill.spouse {
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+}
+
+.dash-badge-pill.child-active {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.dash-badge-pill.child-expired {
+  background: var(--surface-container-highest);
+  color: var(--on-surface-variant);
+}
+
+.dash-entitlements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-xs);
+}
+
+.dash-entitlement-box {
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dash-entitlement-box.highlight {
+  border-color: var(--primary);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.dash-entitlement-box.warning {
+  border-color: var(--warning);
+  background: var(--warning-container);
+}
+
+.dash-ent-label {
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.dash-ent-value {
+  font-size: var(--font-label-large);
+  font-weight: 750;
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-card-legal-note {
+  font-size: var(--font-body-small);
+  line-height: 1.5;
+  color: var(--on-surface-variant);
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-sm);
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+/* CHILD PARENTAL LEAVE CARD */
+.dash-child-card {
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.dash-child-card.expired {
+  background: var(--surface-container-highest);
+  opacity: 0.8;
+}
+
+.dash-child-card:hover {
+  background: var(--surface-container);
+  border-color: var(--outline);
+  transform: translateY(-2px);
+}
+
+.dash-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dash-progress-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: var(--shape-full);
+  background: var(--surface-container-highest);
+  overflow: hidden;
+}
+
+.dash-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: var(--shape-full);
+  transition: width 0.3s ease;
+}
+
+.dash-progress-fill.warning {
+  background: var(--warning);
+}
+
+.dash-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-label-small);
+  font-weight: 600;
+  color: var(--on-surface-variant);
+}

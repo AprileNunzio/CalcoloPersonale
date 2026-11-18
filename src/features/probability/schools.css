@@ -20,61 +20,73 @@
 
 .section-title-left h4 {
   margin: 0;
-  font-size: 16px;
-  color: #0f172a;
+  font-size: 1rem;
+  color: var(--on-surface);
 }
 
 .schools-counter-pill {
-  font-size: 11px;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: #f1f5f9;
-  color: #475569;
+  padding: 2px 10px;
+  border-radius: var(--shape-full);
+  background: var(--surface-container-highest);
+  color: var(--on-surface-variant);
 }
 
 .schools-filter-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 6px 10px;
+  background: var(--surface-container-highest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-full);
+  padding: 6px 14px;
   min-width: 240px;
 }
 
 .schools-filter-box .search-icon {
-  color: #94a3b8;
+  color: var(--on-surface-variant);
 }
 
 .schools-filter-box input {
   border: none;
   background: transparent;
   outline: none;
-  font-size: 12px;
-  color: #0f172a;
+  font-size: 0.8rem;
+  color: var(--on-surface);
   width: 100%;
 }
 
 .prob-schools-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 14px;
+  gap: clamp(12px, 1.2vw, 18px);
+}
+
+@media (min-width: 2560px) {
+  .prob-schools-grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  }
 }
 
 .prob-school-card {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-lg);
+  padding: clamp(14px, 1.4vw, 18px);
+  box-shadow: 0 1px 4px var(--shadow-ambient);
   overflow: hidden;
   box-sizing: border-box;
   min-width: 0;
+  transition: all 0.2s ease;
+}
+
+.prob-school-card:hover {
+  border-color: var(--primary);
+  background: var(--surface-container-high);
 }
 
 .school-card-top {
@@ -88,13 +100,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #f1f5f9;
-  font-size: 11px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--shape-full);
+  background: var(--surface-container-highest);
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #475569;
+  color: var(--on-surface);
   flex-shrink: 0;
 }
 
@@ -107,16 +119,16 @@
 }
 
 .school-name-block strong {
-  font-size: 13px;
-  color: #0f172a;
+  font-size: 0.85rem;
+  color: var(--on-surface);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .school-name-block small {
-  font-size: 11px;
-  color: #64748b;
+  font-size: 0.72rem;
+  color: var(--on-surface-variant);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -126,35 +138,36 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  padding: 4px 8px;
-  border-radius: 8px;
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  padding: 4px 10px;
+  border-radius: var(--shape-md);
   flex-shrink: 0;
 }
 
 .opportunity-chip small {
-  font-size: 9px;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #166534;
+  color: var(--on-secondary-container);
 }
 
 .opportunity-chip strong {
-  font-size: 13px;
-  color: #15803d;
+  font-size: 0.88rem;
+  color: var(--on-secondary-container);
+  font-variant-numeric: tabular-nums;
 }
 
 .dossier-school-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #15803d;
-  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: var(--shape-full);
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  color: var(--on-secondary-container);
+  font-size: 0.72rem;
   font-weight: 600;
 }
 
@@ -162,10 +175,10 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px 12px;
-  background: #f8fafc;
-  border-radius: 8px;
+  background: var(--surface-container-low);
+  border-radius: var(--shape-md);
   padding: 8px 12px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--outline-variant);
   min-width: 0;
   box-sizing: border-box;
 }
@@ -178,8 +191,8 @@
 }
 
 .matrix-label {
-  font-size: 10px;
-  color: #64748b;
+  font-size: 0.68rem;
+  color: var(--on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -188,19 +201,20 @@
 }
 
 .matrix-val {
-  font-size: 12px;
+  font-size: 0.82rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
 }
 
 .matrix-val small {
-  font-size: 10px;
+  font-size: 0.68rem;
   font-weight: 400;
-  color: #64748b;
+  color: var(--on-surface-variant);
 }
 
 .matrix-val.text-accent {
-  color: #ea580c;
+  color: var(--tertiary);
 }
 
 .school-prob-bars {
@@ -213,12 +227,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 0.72rem;
 }
 
 .bar-row small {
   width: 90px;
-  color: #64748b;
+  color: var(--on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -227,28 +241,29 @@
 .bar-track {
   flex: 1;
   height: 6px;
-  border-radius: 3px;
-  background: #f1f5f9;
+  border-radius: var(--shape-full);
+  background: var(--surface-container-highest);
   overflow: hidden;
 }
 
 .bar-fill.annual {
   height: 100%;
-  background: #16a34a;
-  border-radius: 3px;
+  background: var(--secondary);
+  border-radius: var(--shape-full);
 }
 
 .bar-fill.sub {
   height: 100%;
-  background: #2563eb;
-  border-radius: 3px;
+  background: var(--primary);
+  border-radius: var(--shape-full);
 }
 
 .bar-row span {
   font-weight: 700;
   width: 38px;
   text-align: right;
-  color: #334155;
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 768px) {

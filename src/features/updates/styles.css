@@ -11,11 +11,11 @@
   bottom: 24px;
   right: 28px;
   z-index: 9999;
-  background: #ffffff;
-  border: 1px solid #c2e2d9;
-  border-left: 5px solid #146b60;
-  box-shadow: 0 12px 35px rgba(20, 50, 45, 0.16);
-  border-radius: 12px;
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-left: 5px solid var(--primary);
+  box-shadow: 0 12px 35px var(--shadow-ambient);
+  border-radius: var(--shape-lg);
   padding: 16px 20px;
   display: flex;
   align-items: center;
@@ -43,20 +43,20 @@
 
 .update-banner-content strong {
   display: block;
-  font-size: 14px;
-  color: #173b33;
+  font-size: 0.92rem;
+  color: var(--on-surface);
   margin-bottom: 2px;
 }
 
 .update-banner-content p {
   margin: 0;
-  font-size: 12px;
-  color: #5d756e;
+  font-size: 0.78rem;
+  color: var(--on-surface-variant);
   line-height: 1.4;
 }
 
 .update-icon.success {
-  color: #1b8753;
+  color: var(--secondary);
   flex-shrink: 0;
 }
 
@@ -68,21 +68,35 @@
 }
 
 .primary-update {
-  background: #146b60;
-  color: white;
-  padding: 8px 14px;
-  font-size: 12.5px;
+  background: var(--primary);
+  color: var(--on-primary);
+  padding: 8px 16px;
+  font-size: 0.8rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--shape-full);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.primary-update:hover {
+  filter: brightness(1.1);
 }
 
 .secondary-update {
-  background: #edf4f1;
-  color: #45655c;
-  padding: 8px 12px;
-  font-size: 12.5px;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  padding: 8px 14px;
+  font-size: 0.8rem;
   font-weight: 500;
-  border-radius: 8px;
+  border-radius: var(--shape-full);
+  border: 1px solid var(--outline-variant);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondary-update:hover {
+  background: var(--surface-container-highest);
 }
 
 /* Floating status toast for brief feedback */
@@ -91,15 +105,16 @@
   top: 24px;
   right: 28px;
   z-index: 9999;
-  background: #19312b;
-  color: #f1f8f5;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
   padding: 10px 18px;
-  border-radius: 10px;
+  border-radius: var(--shape-full);
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12.5px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-size: 0.8rem;
+  box-shadow: 0 8px 24px var(--shadow-ambient);
   animation: fadeIn 0.2s ease;
 }
 

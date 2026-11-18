@@ -1,7 +1,12 @@
+/* ==========================================================================
+   DOSSIER & SCHEDA SINDACATI - MD3 EXPRESSIVE (Rules 1, 3, 6)
+   Tonal cards, print-optimized full layout, tabular numbers
+   ========================================================================== */
+
 .dossier-root {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-lg);
   width: 100%;
 }
 
@@ -10,128 +15,134 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 16px 20px;
+  gap: var(--space-sm);
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: 14px 20px;
 }
 
 .dossier-actions-buttons {
   display: flex;
-  gap: 10px;
+  gap: var(--space-xs);
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .dossier-sheet {
-  background: white;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 36px 40px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
-  font-family: inherit;
-  color: #1e293b;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: clamp(24px, 3vw, 44px);
+  color: var(--on-surface);
 }
 
 .dossier-sheet-header {
-  border-bottom: 2px solid #0f172a;
-  padding-bottom: 16px;
-  margin-bottom: 24px;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: var(--space-md);
+  margin-bottom: var(--space-lg);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
 }
 
 .dossier-brand-title {
-  font-size: 20px;
+  font-size: var(--font-title-large);
   font-weight: 800;
-  color: #0f172a;
+  color: var(--on-surface);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 4px 0;
 }
 
 .dossier-brand-sub {
-  font-size: 13px;
-  color: #64748b;
+  font-size: var(--font-body-small);
+  color: var(--on-surface-variant);
   margin: 0;
 }
 
 .dossier-date-badge {
   text-align: right;
-  font-size: 12px;
-  color: #64748b;
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
 }
 
 .dossier-section {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-lg);
 }
 
 .dossier-section-title {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: var(--font-label-large);
+  font-weight: 750;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #1e293b;
-  background: #f1f5f9;
-  padding: 6px 12px;
-  border-left: 4px solid #2563eb;
-  margin: 0 0 12px 0;
+  color: var(--on-surface);
+  background: var(--surface-container);
+  padding: 8px 14px;
+  border-left: 4px solid var(--primary);
+  border-radius: 0 var(--shape-sm) var(--shape-sm) 0;
+  margin: 0 0 var(--space-sm) 0;
 }
 
 .dossier-anagrafica-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px 18px;
-  font-size: 13px;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(160px, 16vw, 260px), 1fr));
+  gap: var(--space-sm);
+  font-size: var(--font-body-medium);
 }
 
 .dossier-anagrafica-item span {
   display: block;
-  font-size: 11px;
-  color: #64748b;
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
   text-transform: uppercase;
 }
 
 .dossier-anagrafica-item strong {
-  font-size: 13px;
-  color: #0f172a;
+  font-size: var(--font-body-medium);
+  color: var(--on-surface);
 }
 
 .dossier-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
-  margin-top: 8px;
+  font-size: var(--font-body-small);
+  margin-top: var(--space-xs);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  overflow: hidden;
 }
 
 .dossier-table th,
 .dossier-table td {
-  padding: 8px 10px;
-  border: 1px solid #cbd5e1;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--outline-variant);
   text-align: left;
 }
 
 .dossier-table th {
-  background: #f8fafc;
-  font-weight: 700;
-  color: #334155;
+  background: var(--surface-container);
+  font-weight: 750;
+  color: var(--on-surface);
 }
 
 .dossier-table tr.total-row {
-  background: #f8fafc;
+  background: var(--surface-container);
   font-weight: 800;
 }
 
 .dossier-table tr.total-row td {
-  font-size: 13px;
+  font-size: var(--font-body-medium);
+  font-variant-numeric: tabular-nums;
 }
 
 .backup-panel {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: var(--space-lg);
 }
 
 @media print {

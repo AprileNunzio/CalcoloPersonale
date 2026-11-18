@@ -1,78 +1,95 @@
+/* ==========================================================================
+   CAREER INTELLIGENCE & PREDICTIONS - MD3 EXPRESSIVE (Rules 1, 3, 6)
+   Tonal cards, rounded progress tracks, tabular KPIs
+   ========================================================================== */
+
 .career-intelligence-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(300px, 22vw, 440px), 1fr));
+  gap: var(--space-md);
+  width: 100%;
 }
 
 .career-card {
-  padding: 14px 16px;
+  padding: var(--space-md) var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  gap: var(--space-sm);
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
+  box-sizing: border-box;
+}
+
+.career-card:hover {
+  transform: translateY(-2px);
+  background: var(--surface-container);
+  border-color: var(--outline);
 }
 
 .career-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 10px;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: var(--space-xs);
 }
 
 .career-card-profile {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-xs);
 }
 
 .career-card-title-col h4 {
   margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: var(--font-title-medium);
+  font-weight: 750;
+  color: var(--on-surface);
 }
 
 .career-profile-tag {
-  font-size: 10px;
+  font-size: var(--font-label-small);
   font-weight: 700;
-  background: #f1f5f9;
-  color: #475569;
-  padding: 1px 6px;
-  border-radius: 4px;
+  background: var(--surface-container-highest);
+  color: var(--on-surface-variant);
+  padding: 2px 8px;
+  border-radius: var(--shape-full);
 }
 
 .career-score-pill {
   display: flex;
   align-items: baseline;
   gap: 3px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  padding: 4px 8px;
-  border-radius: 6px;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: 1px solid var(--outline-variant);
+  padding: 4px 10px;
+  border-radius: var(--shape-full);
 }
 
 .career-score-pill strong {
-  font-size: 14px;
-  color: #166534;
+  font-size: var(--font-label-large);
+  color: var(--on-primary-container);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
 }
 
 .career-score-pill small {
-  font-size: 10px;
-  color: #15803d;
+  font-size: var(--font-label-small);
+  color: var(--on-primary-container);
+  font-weight: 600;
 }
 
 .first-tier-block {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 10px 12px;
+  gap: var(--space-2xs);
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: var(--space-sm) var(--space-md);
 }
 
 .first-tier-header {
@@ -84,149 +101,85 @@
 .first-tier-title {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
+  gap: var(--space-xs);
+  font-size: var(--font-label-small);
   font-weight: 700;
-  color: #1e293b;
+  color: var(--on-surface);
 }
 
 .first-tier-percent-badge {
-  font-size: 11px;
+  font-size: var(--font-label-small);
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 3px 10px;
+  border-radius: var(--shape-full);
 }
 
 .first-tier-percent-badge.eligible {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--success-container);
+  color: var(--on-success-container);
+  border: 1px solid var(--outline-variant);
 }
 
 .first-tier-percent-badge.progress {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: 1px solid var(--outline-variant);
 }
 
-.first-tier-track {
+.career-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2xs) 0;
+  font-size: var(--font-label-small);
+}
+
+.career-metric-row span {
+  color: var(--on-surface-variant);
+}
+
+.career-metric-row strong {
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.career-progress-track {
   width: 100%;
   height: 8px;
-  background: #e2e8f0;
-  border-radius: 4px;
+  border-radius: var(--shape-full);
+  background: var(--surface-container-highest);
   overflow: hidden;
 }
 
-.first-tier-fill {
+.career-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #0284c7, #38bdf8);
-  border-radius: 4px;
+  border-radius: var(--shape-full);
+  background: var(--primary);
   transition: width 0.3s ease;
 }
 
-.first-tier-fill.eligible {
-  background: linear-gradient(90deg, #16a34a, #4ade80);
+.career-progress-fill.success {
+  background: var(--success);
 }
 
-.first-tier-metrics {
+.career-callout {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--shape-md);
+  font-size: var(--font-body-small);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;
-  color: #64748b;
+  align-items: flex-start;
+  gap: var(--space-xs);
 }
 
-.first-tier-metrics strong {
-  color: #0f172a;
+.career-callout.info {
+  background: var(--surface-container);
+  color: var(--on-surface-variant);
+  border: 1px solid var(--outline-variant);
 }
 
-.first-tier-window {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 10px;
-  color: #0284c7;
-  font-weight: 600;
-}
-
-.call-odds-block {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 10px 12px;
-}
-
-.call-odds-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.call-odds-title {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.call-band-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 6px;
-}
-
-.call-band-badge.high {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
-}
-
-.call-band-badge.medium {
-  background: #fef9c3;
-  color: #854d0e;
-  border: 1px solid #fef08a;
-}
-
-.call-band-badge.low {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
-
-.call-type-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;
-  color: #475569;
-}
-
-.call-type-tag {
-  font-weight: 600;
-  color: #0f172a;
-}
-
-.strategic-advice-box {
-  background: #f8fafc;
-  border-left: 3px solid #116b62;
-  padding: 6px 10px;
-  border-radius: 0 6px 6px 0;
-  font-size: 11px;
-  color: #334155;
-  line-height: 1.4;
-}
-
-.career-notice-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #64748b;
-  padding: 6px 10px;
-  background: #f8fafc;
-  border-radius: 8px;
+.career-callout.tip {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border: 1px solid var(--outline-variant);
 }

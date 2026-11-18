@@ -3,11 +3,11 @@
   bottom: 24px;
   right: 28px;
   z-index: 9998;
-  background: #ffffff;
-  border: 1px solid #c2e2d9;
-  border-left: 5px solid #0f8575;
-  box-shadow: 0 14px 40px rgba(15, 60, 52, 0.16);
-  border-radius: 12px;
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-left: 5px solid var(--secondary);
+  box-shadow: 0 14px 40px var(--shadow-ambient);
+  border-radius: var(--shape-lg);
   padding: 14px 18px;
   display: flex;
   align-items: center;
@@ -29,12 +29,13 @@
 }
 
 .ota-banner-error {
-  border-left-color: #ef4444;
-  border-color: #fecaca;
+  border-left-color: var(--error);
+  border-color: var(--error);
+  background: var(--error-container);
 }
 
 .ota-error-icon {
-  color: #ef4444;
+  color: var(--error);
 }
 
 .ota-spin {
@@ -57,22 +58,30 @@
 }
 
 .ota-icon {
-  color: #0f8575;
+  color: var(--secondary);
   flex-shrink: 0;
 }
 
 .ota-text strong {
   display: block;
-  font-size: 13.5px;
-  color: #173831;
+  font-size: 0.88rem;
+  color: var(--on-surface);
   margin-bottom: 2px;
+}
+
+.ota-banner-error .ota-text strong {
+  color: var(--on-error-container);
 }
 
 .ota-text p {
   margin: 0;
-  font-size: 12px;
-  color: #556f67;
+  font-size: 0.76rem;
+  color: var(--on-surface-variant);
   line-height: 1.4;
+}
+
+.ota-banner-error .ota-text p {
+  color: var(--on-error-container);
 }
 
 .ota-actions {
@@ -83,65 +92,64 @@
 }
 
 .ota-btn-primary {
-  background: #0f8575;
-  color: #ffffff;
-  padding: 8px 14px;
-  font-size: 12px;
+  background: var(--primary);
+  color: var(--on-primary);
+  padding: 8px 16px;
+  font-size: 0.78rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--shape-full);
   border: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .ota-btn-primary:hover {
-  background: #0a6b5e;
+  filter: brightness(1.1);
 }
 
 .ota-btn-secondary {
-  background: #eff5f2;
-  color: #406157;
-  padding: 8px 12px;
-  font-size: 12px;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  padding: 8px 14px;
+  font-size: 0.78rem;
   font-weight: 500;
-  border-radius: 8px;
-  border: none;
+  border-radius: var(--shape-full);
+  border: 1px solid var(--outline-variant);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .ota-btn-secondary:hover {
-  background: #e1ede8;
+  background: var(--surface-container-highest);
 }
 
 .ota-btn-ghost {
   background: transparent;
-  color: #64748b;
-  padding: 8px 10px;
-  font-size: 11.5px;
+  color: var(--on-surface-variant);
+  padding: 8px 12px;
+  font-size: 0.76rem;
   font-weight: 500;
-  border-radius: 8px;
-  border: 1px solid transparent;
+  border-radius: var(--shape-full);
+  border: 1px solid var(--outline-variant);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .ota-btn-ghost:hover {
-  background: #f1f5f9;
-  color: #334155;
-  border-color: #cbd5e1;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
 }
 
 .ota-btn-close {
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: var(--on-surface-variant);
   padding: 6px;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--shape-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,8 +157,8 @@
 }
 
 .ota-btn-close:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
 }
 
 @media (max-width: 600px) {

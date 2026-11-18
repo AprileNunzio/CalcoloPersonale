@@ -1,0 +1,333 @@
+.update-channel-card {
+  padding: clamp(14px, 1.4vw, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  box-shadow: 0 4px 16px var(--shadow-ambient);
+  transition: all 0.2s ease;
+}
+
+.update-channel-card:hover {
+  border-color: var(--primary);
+  background: var(--surface-container-high);
+}
+
+.update-channel-card.highlight-ota {
+  border-color: var(--primary);
+  background: var(--surface-container-high);
+}
+
+.channel-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.channel-icon {
+  margin-top: 2px;
+}
+
+.channel-icon.ota {
+  color: var(--secondary);
+}
+
+.channel-icon.native {
+  color: var(--primary);
+}
+
+.channel-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.channel-title-row h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.channel-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--shape-full);
+  text-transform: uppercase;
+}
+
+.channel-tag.ota {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+
+.channel-tag.native {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.channel-title-group p {
+  margin: 4px 0 0;
+  font-size: 0.76rem;
+  color: var(--on-surface-variant);
+  line-height: 1.4;
+}
+
+.version-info-strip {
+  display: flex;
+  align-items: center;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 8px 12px;
+}
+
+.version-metric {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.version-metric small {
+  font-size: 0.68rem;
+  color: var(--on-surface-variant);
+}
+
+.version-metric strong {
+  font-size: 0.88rem;
+  color: var(--on-surface);
+  font-variant-numeric: tabular-nums;
+}
+
+.version-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--outline-variant);
+  margin: 0 12px;
+}
+
+.pipeline-stepper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-sm);
+  padding: 6px 8px;
+  font-size: 0.74rem;
+  color: var(--on-surface-variant);
+}
+
+.step-item.done {
+  background: var(--secondary-container);
+  border-color: var(--secondary);
+  color: var(--on-secondary-container);
+}
+
+.step-item.active {
+  background: var(--tertiary-container);
+  border-color: var(--tertiary);
+  color: var(--on-tertiary-container);
+  font-weight: 650;
+}
+
+.step-dot {
+  display: flex;
+  align-items: center;
+}
+
+.channel-action-area {
+  margin-top: auto;
+}
+
+.ready-action-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  border-radius: var(--shape-md);
+  padding: 10px 12px;
+}
+
+.ready-text {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.ready-icon {
+  color: var(--secondary);
+  margin-top: 2px;
+}
+
+.ready-text strong {
+  font-size: 0.82rem;
+  color: var(--on-secondary-container);
+}
+
+.ready-text p {
+  margin: 2px 0 0;
+  font-size: 0.74rem;
+  color: var(--on-secondary-container);
+}
+
+.apply-ota-btn {
+  background: var(--secondary);
+  color: var(--on-secondary);
+  border: 0;
+  border-radius: var(--shape-full);
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.apply-ota-btn:hover {
+  filter: brightness(1.1);
+}
+
+.up-to-date-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--secondary-container);
+  border: 1px solid var(--secondary);
+  border-radius: var(--shape-md);
+  padding: 8px 12px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--on-secondary-container);
+}
+
+.text-green {
+  color: var(--secondary);
+}
+
+.in-progress-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--tertiary-container);
+  border: 1px solid var(--tertiary);
+  border-radius: var(--shape-md);
+  padding: 8px 12px;
+  font-size: 0.76rem;
+  color: var(--on-tertiary-container);
+  font-weight: 600;
+}
+
+.error-action-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--error-container);
+  border: 1px solid var(--error);
+  border-radius: var(--shape-md);
+  padding: 8px 12px;
+  font-size: 0.76rem;
+  color: var(--on-error-container);
+}
+
+.retry-btn {
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface);
+  border-radius: var(--shape-full);
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+
+.native-download-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.download-progress-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: var(--on-surface-variant);
+}
+
+.ota-settings-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 8px 12px;
+  font-size: 0.78rem;
+}
+
+.ota-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--on-surface);
+  font-weight: 500;
+}
+
+.ota-toggle-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.ota-reset-inline-btn {
+  background: transparent;
+  color: var(--error);
+  border: 1px solid var(--error);
+  border-radius: var(--shape-full);
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ota-reset-inline-btn:hover {
+  background: var(--error-container);
+}
+
+.ready-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ignore-ota-btn {
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-full);
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ignore-ota-btn:hover {
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+}
