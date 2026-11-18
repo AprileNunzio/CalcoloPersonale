@@ -84,7 +84,9 @@ export function FamilyRightsPanel({
           <div className="rights-grid">
             <div className="right-item-card">
               <div className="right-item-head">
-                <HeartHandshake size={16} color="var(--primary)" />
+                <div className="right-item-icon-box primary">
+                  <HeartHandshake size={16} />
+                </div>
                 <h4>{t('sharedParentalLeaveTitle')}</h4>
               </div>
               <p>{t('sharedParentalLeaveDesc')}</p>
@@ -92,7 +94,9 @@ export function FamilyRightsPanel({
 
             <div className="right-item-card">
               <div className="right-item-head">
-                <Baby size={16} color="var(--secondary)" />
+                <div className="right-item-icon-box secondary">
+                  <Baby size={16} />
+                </div>
                 <h4>{t('childSicknessTitle')}</h4>
               </div>
               <p>{t('childSicknessDesc')}</p>
@@ -100,7 +104,9 @@ export function FamilyRightsPanel({
 
             <div className="right-item-card">
               <div className="right-item-head">
-                <ShieldCheck size={16} color="var(--error)" />
+                <div className="right-item-icon-box error">
+                  <ShieldCheck size={16} />
+                </div>
                 <h4>{t('law104FamilyRightsTitle')}</h4>
               </div>
               <p>{t('law104FamilyRightsDesc')}</p>
@@ -108,7 +114,9 @@ export function FamilyRightsPanel({
 
             <div className="right-item-card">
               <div className="right-item-head">
-                <Award size={16} color="var(--tertiary)" />
+                <div className="right-item-icon-box tertiary">
+                  <Award size={16} />
+                </div>
                 <h4>{t('ataPreferencesTitle')}</h4>
               </div>
               <p>{t('ataPreferencesDesc')}</p>
@@ -116,7 +124,9 @@ export function FamilyRightsPanel({
 
             <div className="right-item-card wide">
               <div className="right-item-head">
-                <DollarSign size={16} color="var(--primary)" />
+                <div className="right-item-icon-box primary">
+                  <DollarSign size={16} />
+                </div>
                 <h4>{t('auuTitle')}</h4>
               </div>
               <p>{t('auuDesc')}</p>
