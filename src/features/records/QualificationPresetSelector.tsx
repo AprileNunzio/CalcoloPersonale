@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Award, GraduationCap, CheckCircle2, Info } from 'lucide-react';
+import { Award, GraduationCap, CheckCircle2, Info, Laptop, Languages, HeartPulse, Keyboard } from 'lucide-react';
 import { FormField } from '../../shared/FormField';
 
 export interface QualificationPresetData {
@@ -28,6 +28,8 @@ export function QualificationPresetSelector({
     const t = initialTitle.toLowerCase();
     if (t.includes('ciad') || t.includes('alfabetizzazione')) return 'ciad';
     if (t.includes('dattilografia')) return 'typing';
+    if (t.includes('oss') || t.includes('operatore socio')) return 'oss';
+    if (t.includes('lingua') || t.includes('qcer') || t.includes('cambridge') || t.includes('b2') || t.includes('c1') || t.includes('c2')) return 'language';
     if (t.includes('diploma') || t.includes('maturit') || t.includes('accesso') || initialNotes.includes('isAccessTitle')) return 'diploma';
     if (t.includes('eipass') || t.includes('icdl') || t.includes('ecdl') || t.includes('digcomp') || t.includes('informatica')) return 'digital';
     if (t.includes('laurea')) return 'degree';
@@ -38,6 +40,8 @@ export function QualificationPresetSelector({
   const [scoreAchieved, setScoreAchieved] = useState<number>(80);
   const [scoreBase, setScoreBase] = useState<number>(100);
   const [hasHonors, setHasHonors] = useState<boolean>(false);
+  const [ciadEntity, setCiadEntity] = useState('EIPASS / Certipass');
+  const [languageLevel, setLanguageLevel] = useState('B2');
 
   const applyPreset = (presetKey: string) => {
     setSelectedPreset(presetKey);
@@ -57,10 +61,11 @@ export function QualificationPresetSelector({
       });
     } else if (presetKey === 'ciad') {
       onChange({
-        title: 'Certificazione Internazionale di Alfabetizzazione Digitale (CIAD - Reg. Accredia)',
+        title: `Certificazione Internazionale di Alfabetizzazione Digitale (CIAD - Accredia ${ciadEntity})`,
         amount: 0,
         notes: JSON.stringify({
           isCiad: true,
+          accreditingBody: ciadEntity,
           notesText: 'Requisito di accesso obbligatorio ai sensi del CCNL 18/01/2024.',
         }),
       });
@@ -75,29 +80,52 @@ export function QualificationPresetSelector({
         }),
       });
     } else if (presetKey === 'digital') {
-      const pts = profile === 'CS' ? 0.30 : 0.60;
+      const pts = profile === 'CS' || profile === 'OS' ? 0.30 : 0.60;
       onChange({
-        title: 'Certificazione Informatica (EIPASS 7 Moduli / ICDL / DigComp)',
+        title: 'Certificazione Informatica (EIPASS / ICDL / DigComp / Pekit)',
         amount: pts,
         notes: JSON.stringify({
           kind: 'digital',
           calculatedPoints: pts,
-          notesText: 'Certificazione informatica aggiuntiva (max 1 valutabile da tabella ministeriale).',
+          notesText: `Certificazione informatica (max ${pts} pt per ${profile || 'ATA'}).`,
         }),
       });
     } else if (presetKey === 'degree') {
+      const pts = profile === 'CS' || profile === 'OS' ? 1.00 : 2.00;
       onChange({
-        title: 'Diploma di Laurea (Triennale o Magistrale)',
-        amount: 2.0,
+        title: 'Diploma di Laurea (Triennale / Magistrale / Specialistica)',
+        amount: pts,
         notes: JSON.stringify({
           kind: 'degree',
-          calculatedPoints: 2.0,
-          notesText: 'Titolo culturale valutabile 2.00 punti (AA/AT).',
+          calculatedPoints: pts,
+          notesText: `Diploma di Laurea valutabile ${pts.toFixed(2)} punti.`,
+        }),
+      });
+    } else if (presetKey === 'oss') {
+      onChange({
+        title: 'Attestato Qualifica Professionale Operatore Socio Sanitario (OSS / OSA)',
+        amount: 1.0,
+        notes: JSON.stringify({
+          kind: 'oss',
+          calculatedPoints: 1.0,
+          notesText: 'Qualifica regionale valutabile 1.00 punto per Collaboratore e Operatore Scolastico.',
+        }),
+      });
+    } else if (presetKey === 'language') {
+      const pts = languageLevel === 'C2' ? 2.0 : languageLevel === 'C1' ? 1.5 : 1.0;
+      onChange({
+        title: `Certificazione Linguistica Internazionale QCER Livello ${languageLevel}`,
+        amount: pts,
+        notes: JSON.stringify({
+          kind: 'language',
+          level: languageLevel,
+          calculatedPoints: pts,
+          notesText: `Certificazione linguistica QCER livello ${languageLevel} (+${pts.toFixed(2)} pt).`,
         }),
       });
     } else if (presetKey === 'contest') {
       onChange({
-        title: 'Idoneità conseguita in Concorso Pubblico per il profilo',
+        title: 'Idoneità conseguita in Concorso Pubblico per esami per il profilo',
         amount: 1.0,
         notes: JSON.stringify({
           kind: 'contest',
@@ -127,25 +155,27 @@ export function QualificationPresetSelector({
   };
 
   return (
-    <div className="qualification-preset-block" style={{ gridColumn: '1 / -1', background: '#f8fafc', padding: 14, borderRadius: 8, border: '1px solid #cbd5e1', marginBottom: 12 }}>
-      <FormField label="Seleziona Modello Titolo / Certificazione ATA" tip="Scegli un modello preimpostato per calcolare automaticamente il punteggio ministeriale ed evitare errori di digitazione.">
+    <div className="qualification-preset-block" style={{ gridColumn: '1 / -1', background: '#f8fafc', padding: 14, borderRadius: 10, border: '1.5px solid #cbd5e1', marginBottom: 14 }}>
+      <FormField label="Seleziona Modello Titolo / Certificazione ATA (D.M. 89/2024)" tip="Scegli un modello conforme alle tabelle ministeriali per calcolare automaticamente il punteggio esatto.">
         <select
           value={selectedPreset}
           onChange={e => applyPreset(e.target.value)}
-          style={{ fontWeight: 600, color: '#1e293b' }}
+          style={{ fontWeight: 700, color: '#1e293b' }}
         >
-          <option value="diploma">🎓 Diploma di Maturità / Titolo di Accesso (Calcolo voto ministeriale)</option>
-          <option value="ciad">⭐ CIAD - Certificazione Alfabetizzazione Digitale (Requisito Obbligatorio CCNL 2024)</option>
+          <option value="diploma">🎓 Diploma di Maturità / Titolo di Accesso (Calcolo voto ministeriale base 10)</option>
+          <option value="ciad">🛡️ CIAD - Certificazione Alfabetizzazione Digitale (Obbligatorio CCNL 2024)</option>
           <option value="typing">⌨️ Corso di Addestramento alla Dattilografia (+1.00 pt per AA)</option>
-          <option value="digital">💻 Certificazione Informatica (EIPASS / ICDL / DigComp / Pekit) (+0.60 pt AA/AT, +0.30 CS)</option>
-          <option value="degree">🏛️ Diploma di Laurea Triennale / Magistrale (+2.00 pt)</option>
-          <option value="contest">🏆 Idoneità in Concorso Pubblico (+1.00 pt)</option>
+          <option value="digital">💻 Certificazione Informatica (EIPASS / ICDL / Pekit / MOS) (+0.60 pt AA/AT, +0.30 CS)</option>
+          <option value="degree">🏛️ Diploma di Laurea Triennale o Magistrale (+2.00 pt AA/AT, +1.00 CS)</option>
+          <option value="language">🌐 Certificazione Linguistica QCER (B2, C1, C2) (+1.00 / +1.50 / +2.00 pt)</option>
+          <option value="oss">🏥 Qualifica Professionale OSS / OSA (+1.00 pt per CS/OS)</option>
+          <option value="contest">🏆 Idoneità in Concorso Pubblico per esami (+1.00 pt)</option>
           <option value="custom">✏️ Altro titolo o attestato personalizzato</option>
         </select>
       </FormField>
 
       {selectedPreset === 'diploma' && (
-        <div style={{ marginTop: 10, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 10, alignItems: 'center', background: '#ffffff', padding: 12, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+        <div style={{ marginTop: 10, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 10, alignItems: 'center', background: '#ffffff', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
               Voto Conseguito
@@ -186,11 +216,58 @@ export function QualificationPresetSelector({
       )}
 
       {selectedPreset === 'ciad' && (
-        <div style={{ marginTop: 8, fontSize: 12, color: '#0369a1', display: 'flex', gap: 6, alignItems: 'center' }}>
-          <Info size={16} />
-          <span>
-            <strong>Requisito di Accesso Obbligatorio:</strong> Il CIAD non attribuisce punteggio numerico aggiuntivo ma è indispensabile per la validità della domanda ATA (CCNL 18 gennaio 2024).
-          </span>
+        <div style={{ marginTop: 10, background: '#ffffff', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
+          <FormField label="Ente Rilasciante Accreditato Accredia" tip="La CIAD deve essere registrata presso Accredia sotto norma DigComp 2.2">
+            <select
+              value={ciadEntity}
+              onChange={e => {
+                setCiadEntity(e.target.value);
+                onChange({
+                  title: `Certificazione Internazionale di Alfabetizzazione Digitale (CIAD - Accredia ${e.target.value})`,
+                  amount: 0,
+                  notes: JSON.stringify({
+                    isCiad: true,
+                    accreditingBody: e.target.value,
+                    notesText: 'Requisito di accesso obbligatorio ai sensi del CCNL 18/01/2024.',
+                  }),
+                });
+              }}
+            >
+              <option value="EIPASS / Certipass">EIPASS (Certipass - Accredia)</option>
+              <option value="AICA / ICDL Full Standard">AICA (ICDL Full Standard - Accredia)</option>
+              <option value="Fondazione Sviluppo Europa / PEKIT">PEKIT (Fondazione Sviluppo Europa - Accredia)</option>
+              <option value="IDCERT / Intertek">IDCERT (Intertek - Accredia)</option>
+              <option value="Altro Ente Accreditato">Altro Organismo di Certificazione Accreditato</option>
+            </select>
+          </FormField>
+        </div>
+      )}
+
+      {selectedPreset === 'language' && (
+        <div style={{ marginTop: 10, background: '#ffffff', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
+          <FormField label="Livello Quadro Comune Europeo di Riferimento (QCER)">
+            <select
+              value={languageLevel}
+              onChange={e => {
+                setLanguageLevel(e.target.value);
+                const pts = e.target.value === 'C2' ? 2.0 : e.target.value === 'C1' ? 1.5 : 1.0;
+                onChange({
+                  title: `Certificazione Linguistica Internazionale QCER Livello ${e.target.value}`,
+                  amount: pts,
+                  notes: JSON.stringify({
+                    kind: 'language',
+                    level: e.target.value,
+                    calculatedPoints: pts,
+                    notesText: `Certificazione linguistica QCER livello ${e.target.value} (+${pts.toFixed(2)} pt).`,
+                  }),
+                });
+              }}
+            >
+              <option value="B2">Livello B2 Intermedio Superiore (+1.00 pt)</option>
+              <option value="C1">Livello C1 Avanzato (+1.50 pt)</option>
+              <option value="C2">Livello C2 Padronanza / Madrelingua (+2.00 pt)</option>
+            </select>
+          </FormField>
         </div>
       )}
     </div>

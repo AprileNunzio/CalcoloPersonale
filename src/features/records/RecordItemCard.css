@@ -42,6 +42,29 @@
   border-left: 4.5px solid #d97706;
 }
 
+.record-card-modern.is-qualification {
+  border-left: 4.5px solid #0d9488;
+}
+
+.record-card-modern.is-qualification.has-ciad {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+  border-color: #99f6e4;
+}
+
+.record-card-modern.is-absence {
+  border-left: 4.5px solid #6366f1;
+}
+
+.record-card-modern.is-absence.is-sickness {
+  border-left: 4.5px solid #ea580c;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+}
+
+.record-card-modern.is-absence.is-holiday {
+  border-left: 4.5px solid #059669;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+}
+
 .card-top-badges {
   display: flex;
   flex-wrap: wrap;

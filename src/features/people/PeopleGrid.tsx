@@ -91,7 +91,7 @@ export function PeopleGrid({
           </button>
           <button className="add-person-btn-secondary" onClick={onCreate}>
             <Plus size={18} />
-            <span>{t('add')}</span>
+            <span>{t('newPerson')}</span>
           </button>
         </div>
       </div>

@@ -1,6 +1,16 @@
+import {
+  CheckCircle2,
+  AlertTriangle,
+  GraduationCap,
+  Briefcase,
+  Repeat,
+  Award,
+  ShieldCheck,
+} from 'lucide-react';
 import { ProfileScore } from '../../shared/scoring';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { useT } from '../../shared/i18n';
+import './ScoresCard.css';
 
 export interface DashboardScoresPaneProps {
   profileScores: ProfileScore[];
@@ -23,18 +33,31 @@ export function DashboardScoresPane({ profileScores }: DashboardScoresPaneProps)
         {profileScores.map(score => (
           <div className={`compact-score-card profile-${score.code}`} key={score.code}>
             <div className="compact-score-card-main">
-              <ProfileBadge3d code={score.code} size={30} />
-              <div className="compact-card-title-col">
-                <h4>{score.label}</h4>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span className="compact-code-tag">{score.code}</span>
-                  {score.useValidatedScore && (
-                    <span style={{ fontSize: 10, background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', padding: '1px 5px', borderRadius: 4, fontWeight: 700 }}>
-                      ✓ Convalidato
-                    </span>
-                  )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <ProfileBadge3d code={score.code} size={34} />
+                <div className="compact-card-title-col">
+                  <h4>{score.label}</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+                    <span className="compact-code-tag">{score.code}</span>
+                    {score.useValidatedScore && (
+                      <span
+                        style={{
+                          fontSize: 10,
+                          background: '#ecfdf5',
+                          color: '#047857',
+                          border: '1px solid #a7f3d0',
+                          padding: '1px 6px',
+                          borderRadius: 4,
+                          fontWeight: 700,
+                        }}
+                      >
+                        ✓ Convalidato
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
+
               <div className="compact-score-number">
                 <strong>{score.effectiveScore.toFixed(2)}</strong>
                 <small>{t('points')}</small>
@@ -42,39 +65,42 @@ export function DashboardScoresPane({ profileScores }: DashboardScoresPaneProps)
             </div>
 
             <div className="compact-card-metrics">
-              <div className="compact-metric-col">
+              <div className="compact-metric-col" title="Punti Titolo di Accesso (Diploma / Qualifica)">
                 <span className="compact-metric-label">Accesso</span>
                 <span className="compact-metric-val">{score.baseAccessScore.toFixed(2)}</span>
               </div>
-              <div className="compact-metric-col">
+              <div className="compact-metric-col" title="Servizio Specifico prestato nel profilo ATA">
                 <span className="compact-metric-label">Specifico</span>
                 <span className="compact-metric-val">{score.specificServiceScore.toFixed(2)}</span>
               </div>
-              <div className="compact-metric-col">
+              <div className="compact-metric-col" title="Altro Servizio prestato in diversa qualifica o scuola">
                 <span className="compact-metric-label">Altro</span>
                 <span className="compact-metric-val">{score.otherServiceScore.toFixed(2)}</span>
               </div>
-              <div className="compact-metric-col">
+              <div className="compact-metric-col" title="Titoli Culturali, Certificazioni Informatiche, Laurea">
                 <span className="compact-metric-label">Culturali</span>
                 <span className="compact-metric-val">{score.culturalScore.toFixed(2)}</span>
               </div>
             </div>
 
-            <div style={{ padding: '6px 12px 10px 12px' }}>
+            <div>
               {score.requiresCiad ? (
                 score.hasCiad ? (
-                  <span style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontSize: 10, padding: '2px 6px', borderRadius: 4, fontWeight: 650 }}>
-                    ✓ CIAD Conforme (CCNL 2024)
-                  </span>
+                  <div className="ciad-status-pill valid">
+                    <ShieldCheck size={14} />
+                    <span>CIAD Conforme (Accredia DigComp 2.2 - CCNL 2024)</span>
+                  </div>
                 ) : (
-                  <span style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', fontSize: 10, padding: '2px 6px', borderRadius: 4, fontWeight: 650 }}>
-                    ⚠ CIAD Mancante (Scad. 30/04/2025)
-                  </span>
+                  <div className="ciad-status-pill missing">
+                    <AlertTriangle size={14} />
+                    <span>CIAD Mancante (Obbligatoria per Graduatorie ATA)</span>
+                  </div>
                 )
               ) : (
-                <span style={{ fontSize: 10, color: '#64748b' }}>
-                  Accesso: Diploma (CIAD non richiesta)
-                </span>
+                <div className="ciad-status-pill not-required">
+                  <GraduationCap size={14} />
+                  <span>Accesso con Diploma (CIAD non obbligatoria per {score.code})</span>
+                </div>
               )}
             </div>
           </div>

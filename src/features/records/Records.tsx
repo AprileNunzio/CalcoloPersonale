@@ -8,6 +8,8 @@ import { flush } from '../autosave/store';
 import { IstanzeOnlineImportModal } from '../import/IstanzeOnlineImportModal';
 import { RecordItemCard } from './RecordItemCard';
 import { RecordEditForm } from './RecordEditForm';
+import { QualificationSummaryPanel } from '../qualifications/QualificationSummaryPanel';
+import { AbsenceComportoPanel } from '../absences/AbsenceComportoPanel';
 import './recordDetails.css';
 
 const absenceKinds = ['sickness', 'specialist', 'parental', 'holiday', 'festivity', 'bereavement', 'personal', 'law104', 'blood', 'study', 'marriage', 'other'];
@@ -121,7 +123,14 @@ export function Records({
               });
             }}
           >
-            <Plus size={17} /> {t('add')}
+            <Plus size={17} />{' '}
+            {section === 'service'
+              ? t('addService')
+              : section === 'qualification'
+              ? t('addQualification')
+              : section === 'absences'
+              ? t('addAbsence')
+              : t('add')}
           </button>
         </div>
       </div>
@@ -149,6 +158,9 @@ export function Records({
           onSubmit={entry => void persist(entry)}
         />
       )}
+
+      {section === 'qualification' && <QualificationSummaryPanel person={person} />}
+      {section === 'absences' && <AbsenceComportoPanel person={person} />}
 
       <div className="panel entries">
         {entries.length === 0 ? (
