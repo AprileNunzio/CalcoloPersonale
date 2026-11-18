@@ -51,13 +51,45 @@ pub fn search_directory(kind: String, query: String) -> Result<Vec<DirectoryEntr
     if needle.len() < 2 {
         return Ok(vec![]);
     }
-    let mut found: Vec<_> = directory
+    let mut scored: Vec<(u8, &DirectoryEntry)> = directory
         .entries
         .iter()
-        .filter(|e| {
-            e.code.to_uppercase().starts_with(&needle) || e.name.to_uppercase().contains(&needle)
+        .filter_map(|e| {
+            let code_up = e.code.to_uppercase();
+            let name_up = e.name.to_uppercase();
+            let muni_up = e.municipality.to_uppercase();
+            let prov_up = e.province.to_uppercase();
+
+            let rank = if code_up == needle {
+                0
+            } else if name_up == needle {
+                1
+            } else if muni_up == needle {
+                2
+            } else if code_up.starts_with(&needle) {
+                3
+            } else if name_up.starts_with(&needle) {
+                4
+            } else if muni_up.starts_with(&needle) {
+                5
+            } else if name_up.contains(&needle) {
+                6
+            } else if muni_up.contains(&needle) {
+                7
+            } else if prov_up == needle || prov_up.starts_with(&needle) {
+                8
+            } else if e.details.values().any(|v| v.to_uppercase().contains(&needle)) {
+                9
+            } else {
+                return None;
+            };
+            Some((rank, e))
         })
         .collect();
-    found.sort_by_key(|e| (e.code.to_uppercase() != needle, e.name.to_uppercase()));
-    Ok(found.into_iter().take(30).cloned().collect())
+
+    scored.sort_by(|a, b| {
+        a.0.cmp(&b.0).then_with(|| a.1.name.cmp(&b.1.name))
+    });
+
+    Ok(scored.into_iter().take(50).map(|(_, e)| e.clone()).collect())
 }

@@ -1,6 +1,7 @@
 import { familyLocalesIt } from './familyLocales';
 import { absenceLocalesIt } from './absenceLocales';
 import { copilotLocalesIt } from './copilotLocales';
+import { extraLocalesIt } from './extraLocales';
 
 const coreIt = {
   assistant: 'Assistente AI',
@@ -449,6 +450,7 @@ export const it = {
   ...familyLocalesIt,
   ...absenceLocalesIt,
   ...copilotLocalesIt,
+  ...extraLocalesIt,
 };
 
 

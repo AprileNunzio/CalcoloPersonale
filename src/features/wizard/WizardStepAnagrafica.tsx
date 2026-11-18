@@ -1,4 +1,6 @@
 import { useRef, useEffect } from 'react';
+import { call } from '../../shared/api';
+import { decodeFiscalCode } from '../../shared/fiscalCodeUtils';
 import type { DirectoryEntry } from '../directory/DirectoryPicker';
 
 interface WizardStepAnagraficaProps {
@@ -186,7 +188,32 @@ export function WizardStepAnagrafica({
             maxLength={16}
             required
             value={fiscalCode}
-            onChange={e => setFiscalCode(e.target.value.toUpperCase().replace(/\s+/g, ''))}
+            onChange={e => {
+              const code = e.target.value.toUpperCase().replace(/\s+/g, '');
+              setFiscalCode(code);
+              const decoded = decodeFiscalCode(code);
+              if (decoded) {
+                setGender(decoded.gender);
+                setBirthDate(decoded.birthDate);
+                void call<DirectoryEntry[]>('search_directory', {
+                  kind: 'municipality',
+                  query: decoded.cadastralCode,
+                })
+                  .then(results => {
+                    const match = results?.find(
+                      r =>
+                        r.details?.['Codice Catastale del Comune']?.toUpperCase() ===
+                          decoded.cadastralCode || r.code?.toUpperCase() === decoded.cadastralCode,
+                    ) || results?.[0];
+                    if (match) {
+                      setBirthPlace(match.name);
+                      setBirthProvince(match.province);
+                      setMuniQuery(match.name);
+                    }
+                  })
+                  .catch(() => {});
+              }
+            }}
             placeholder="RSSMRA85M01D612L"
             style={{ letterSpacing: 1.5, fontWeight: 700 }}
           />

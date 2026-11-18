@@ -4,6 +4,7 @@ import { Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
 import { FormField, FieldStatus } from '../../shared/FormField';
 import { call } from '../../shared/api';
+import { decodeFiscalCode } from '../../shared/fiscalCodeUtils';
 import type { DirectoryEntry } from '../directory/DirectoryPicker';
 import './PersonForm.css';
 
@@ -282,9 +283,45 @@ export function PersonForm({
             type="text"
             maxLength={16}
             value={value.fiscalCode || ''}
-            onChange={e =>
-              setValue({ ...value, fiscalCode: e.target.value.toUpperCase().replace(/\s+/g, '') })
-            }
+            onChange={e => {
+              const code = e.target.value.toUpperCase().replace(/\s+/g, '');
+              const decoded = decodeFiscalCode(code);
+              if (decoded) {
+                const updated: Partial<Person> = {
+                  fiscalCode: code,
+                  gender: decoded.gender,
+                  birthDate: decoded.birthDate,
+                };
+                void call<DirectoryEntry[]>('search_directory', {
+                  kind: 'municipality',
+                  query: decoded.cadastralCode,
+                })
+                  .then(results => {
+                    const match = results?.find(
+                      r =>
+                        r.details?.['Codice Catastale del Comune']?.toUpperCase() ===
+                          decoded.cadastralCode || r.code?.toUpperCase() === decoded.cadastralCode,
+                    ) || results?.[0];
+                    if (match) {
+                      setValue(prev => ({
+                        ...prev,
+                        ...updated,
+                        birthPlace: match.name,
+                        birthProvince: match.province,
+                        municipality: match,
+                      }));
+                      setMuniQuery(match.name);
+                    } else {
+                      setValue(prev => ({ ...prev, ...updated }));
+                    }
+                  })
+                  .catch(() => {
+                    setValue(prev => ({ ...prev, ...updated }));
+                  });
+              } else {
+                setValue({ ...value, fiscalCode: code });
+              }
+            }}
             placeholder={t('placeholderFiscalCode')}
           />
         </FormField>

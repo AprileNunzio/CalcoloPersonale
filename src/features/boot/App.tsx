@@ -8,7 +8,6 @@ import {
   ShieldCheck,
   Users,
   UserRound,
-  Languages,
   RefreshCw,
   FileText,
   Bot,
@@ -167,20 +166,7 @@ function Workspace({
       setCreating(false);
     });
 
-  const language = (
-    <button
-      className="secondary language"
-      aria-label={t('language')}
-      onClick={() => {
-        const next = locale === 'it' ? 'en' : 'it';
-        setLocale(next);
-        document.documentElement.lang = next;
-      }}
-    >
-      <Languages size={17} />
-      {locale.toUpperCase()}
-    </button>
-  );
+
 
   const banner = (
     <>
@@ -260,7 +246,6 @@ function Workspace({
             </span>
             <div>
               {busy && <span role="status">{t('loading')}</span>}
-              {language}
               <span className="user-mark">CP</span>
             </div>
           </header>

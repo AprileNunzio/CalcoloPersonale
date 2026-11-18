@@ -1,17 +1,15 @@
 import { useState } from 'react';
-import { BriefcaseBusiness, LockKeyhole, ArrowUpRight, ShieldCheck, Languages } from 'lucide-react';
-import { Locale, useT } from '../../shared/i18n';
+import { BriefcaseBusiness, LockKeyhole, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { useT } from '../../shared/i18n';
 
 export function VaultScreen({
-  locale,
-  setLocale,
   onUnlock,
   busy,
   error,
   notice,
 }: {
-  locale: Locale;
-  setLocale: (l: Locale) => void;
+  locale?: string;
+  setLocale?: (l: any) => void;
   onUnlock: (password: string) => void;
   busy: boolean;
   error?: string;
@@ -20,28 +18,11 @@ export function VaultScreen({
   const t = useT();
   const [password, setPassword] = useState('');
 
-  const language = (
-    <button
-      type="button"
-      className="secondary language"
-      aria-label={t('language')}
-      onClick={() => {
-        const next = locale === 'it' ? 'en' : 'it';
-        setLocale(next);
-        document.documentElement.lang = next;
-      }}
-    >
-      <Languages size={17} />
-      {locale.toUpperCase()}
-    </button>
-  );
-
   return (
     <main className="vault-screen">
       <div className="vault-brand">
         <BriefcaseBusiness size={30} />
         {t('app')}
-        {language}
       </div>
       <div className="vault-layout">
         <div>

@@ -140,13 +140,24 @@ export function RecordEditForm({
             >
               <DirectoryPicker
                 kind="school"
-                onSelect={school =>
+                value={draft.school?.name || ''}
+                onSelect={school => {
+                  const isParitaria = school.category === 'SCUANAGRAFEPA';
+                  const autoSector: ServiceSector = isParitaria ? 'paritaria_ata' : 'statale_ata';
+                  const updatedNotes = {
+                    ...parsedDraftNotes,
+                    sector: autoSector,
+                    schoolCode: school.code,
+                    schoolMunicipality: school.municipality,
+                    schoolProvince: school.province,
+                  };
                   setDraft({
                     ...draft,
                     school,
-                    title: draft.title || school.name,
-                  })
-                }
+                    title: school.name,
+                    notes: JSON.stringify(updatedNotes),
+                  });
+                }}
               />
             </FormField>
           </div>
@@ -154,15 +165,27 @@ export function RecordEditForm({
 
         {draft.school && (
           <div className="school-summary" style={{ marginBottom: 18 }}>
-            <strong>
-              {draft.school.code} · {draft.school.name}
-            </strong>
-            <p>
-              {draft.school.address} · {draft.school.postalCode} · {draft.school.municipality} · {draft.school.province}
-            </p>
-            <p>
-              {draft.school.email} · {draft.school.pec} · {draft.school.website}
-            </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <strong>
+                  {draft.school.code} · {draft.school.name}
+                </strong>
+                <p>
+                  {draft.school.address} · {draft.school.postalCode} · {draft.school.municipality} ({draft.school.province})
+                </p>
+                <p>
+                  {draft.school.email} · {draft.school.pec}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="secondary"
+                style={{ fontSize: 12, padding: '4px 8px' }}
+                onClick={() => setDraft({ ...draft, school: undefined })}
+              >
+                {t('change')}
+              </button>
+            </div>
           </div>
         )}
 
