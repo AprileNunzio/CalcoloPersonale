@@ -43,9 +43,9 @@ export function DashboardScoresPane({ profileScores }: DashboardScoresPaneProps)
                       <span
                         style={{
                           fontSize: 10,
-                          background: '#ecfdf5',
-                          color: '#047857',
-                          border: '1px solid #a7f3d0',
+                          background: 'var(--secondary-container)',
+                          color: 'var(--secondary)',
+                          border: '1px solid var(--outline-variant)',
                           padding: '1px 6px',
                           borderRadius: 4,
                           fontWeight: 700,

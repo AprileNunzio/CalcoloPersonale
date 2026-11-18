@@ -76,7 +76,7 @@ export function FamilyRightsPanel({
               ))}
             </div>
           ) : (
-            <div style={{ padding: '12px 14px', background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13, color: '#64748b', marginBottom: 16 }}>
+            <div style={{ padding: '12px 14px', background: 'var(--surface-container-high)', borderRadius: 8, border: '1px solid var(--outline-variant)', fontSize: 13, color: 'var(--on-surface-variant)', marginBottom: 16 }}>
               <strong>Nessun congedo parentale attivo:</strong> Ai sensi del D.Lgs. 151/2001 e del D.Lgs. 105/2022, il congedo parentale spetta esclusivamente in presenza di figli fino al compimento del 12° anno di vita.
             </div>
           )}
@@ -84,7 +84,7 @@ export function FamilyRightsPanel({
           <div className="rights-grid">
             <div className="right-item-card">
               <div className="right-item-head">
-                <HeartHandshake size={16} color="#2563eb" />
+                <HeartHandshake size={16} color="var(--primary)" />
                 <h4>{t('sharedParentalLeaveTitle')}</h4>
               </div>
               <p>{t('sharedParentalLeaveDesc')}</p>
@@ -92,7 +92,7 @@ export function FamilyRightsPanel({
 
             <div className="right-item-card">
               <div className="right-item-head">
-                <Baby size={16} color="#059669" />
+                <Baby size={16} color="var(--secondary)" />
                 <h4>{t('childSicknessTitle')}</h4>
               </div>
               <p>{t('childSicknessDesc')}</p>
@@ -100,7 +100,7 @@ export function FamilyRightsPanel({
 
             <div className="right-item-card">
               <div className="right-item-head">
-                <ShieldCheck size={16} color="#dc2626" />
+                <ShieldCheck size={16} color="var(--error)" />
                 <h4>{t('law104FamilyRightsTitle')}</h4>
               </div>
               <p>{t('law104FamilyRightsDesc')}</p>
@@ -108,7 +108,7 @@ export function FamilyRightsPanel({
 
             <div className="right-item-card">
               <div className="right-item-head">
-                <Award size={16} color="#d97706" />
+                <Award size={16} color="var(--tertiary)" />
                 <h4>{t('ataPreferencesTitle')}</h4>
               </div>
               <p>{t('ataPreferencesDesc')}</p>
@@ -116,7 +116,7 @@ export function FamilyRightsPanel({
 
             <div className="right-item-card wide">
               <div className="right-item-head">
-                <DollarSign size={16} color="#7c3aed" />
+                <DollarSign size={16} color="var(--primary)" />
                 <h4>{t('auuTitle')}</h4>
               </div>
               <p>{t('auuDesc')}</p>

@@ -113,7 +113,7 @@ export function Dashboard({
                 style={{ cursor: 'pointer' }}
                 onClick={() => setActiveStep('probability')}
               >
-                <div className="dash-stat-icon" style={{ background: '#fef3c7', color: '#d97706' }}>
+                <div className="dash-stat-icon" style={{ background: 'var(--tertiary-container)', color: 'var(--tertiary)' }}>
                   <TrendingUp size={18} />
                 </div>
                 <div className="dash-stat-content">
@@ -132,7 +132,7 @@ export function Dashboard({
                 style={{ cursor: 'pointer' }}
                 onClick={() => setActiveStep('timeline')}
               >
-                <div className="dash-stat-icon" style={{ background: '#e0f2fe', color: '#0284c7' }}>
+                <div className="dash-stat-icon" style={{ background: 'var(--primary-container)', color: 'var(--primary)' }}>
                   <CalendarDays size={18} />
                 </div>
                 <div className="dash-stat-content">
@@ -202,8 +202,8 @@ export function Dashboard({
               <span
                 className="dash-tab-counter"
                 style={{
-                  background: timelineData.naspiDaysRemaining && timelineData.naspiDaysRemaining <= 10 ? '#ef4444' : '#0284c7',
-                  color: '#ffffff',
+                  background: timelineData.naspiDaysRemaining && timelineData.naspiDaysRemaining <= 10 ? 'var(--error)' : 'var(--primary)',
+                  color: 'var(--surface)',
                 }}
               >
                 {timelineData.deadlines.length}

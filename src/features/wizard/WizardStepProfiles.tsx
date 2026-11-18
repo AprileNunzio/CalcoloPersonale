@@ -75,13 +75,13 @@ export function WizardStepProfiles({
                 <span className="wizard-profile-code-badge">{p.code}</span>
               </div>
               {selectedProfile === p.code && (
-                <CheckCircle2 size={20} color="#116b62" />
+                <CheckCircle2 size={20} color="var(--primary)" />
               )}
             </div>
             <h3 className="wizard-profile-title">{p.title}</h3>
             <p className="wizard-profile-desc">{p.desc}</p>
             <span className="wizard-profile-badge-tag">{p.req}</span>
-            <small style={{ fontSize: 11, color: '#059669', fontWeight: 600 }}>{p.highlight}</small>
+            <small style={{ fontSize: 11, color: 'var(--secondary)', fontWeight: 600 }}>{p.highlight}</small>
           </div>
         ))}
       </div>

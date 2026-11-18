@@ -79,10 +79,10 @@ export function AiOllamaSettings({
         {ollamaModels.length > 0 ? (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-              <label style={{ margin: 0, fontWeight: 700, color: '#1e293b' }}>
+              <label style={{ margin: 0, fontWeight: 700, color: 'var(--on-surface)' }}>
                 Modelli Trovati in Ollama ({ollamaModels.length}):
               </label>
-              <small style={{ color: '#64748b', fontSize: 11 }}>Clicca per selezionare</small>
+              <small style={{ color: 'var(--on-surface-variant)', fontSize: 11 }}>Clicca per selezionare</small>
             </div>
 
             <div className="ollama-models-list">
@@ -96,14 +96,14 @@ export function AiOllamaSettings({
                     onClick={() => setOllamaModel(item.name)}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 16, height: 16, borderRadius: '50%', border: isSelected ? '5px solid #2563eb' : '2px solid #cbd5e1', background: isSelected ? '#ffffff' : 'transparent', flexShrink: 0 }} />
+                      <div style={{ width: 16, height: 16, borderRadius: '50%', border: isSelected ? '5px solid var(--primary)' : '2px solid var(--outline-variant)', background: isSelected ? 'var(--surface)' : 'transparent', flexShrink: 0 }} />
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <strong style={{ fontSize: 13, color: isSelected ? '#1e40af' : '#1e293b' }}>{item.name}</strong>
+                          <strong style={{ fontSize: 13, color: isSelected ? 'var(--primary)' : 'var(--on-surface)' }}>{item.name}</strong>
                           {item.inMemory && <span className="badge-in-memory"><Sparkles size={10} /> In memoria RAM</span>}
                         </div>
                         {(item.parameterSize || sizeGb) && (
-                          <span style={{ fontSize: 11, color: '#64748b' }}>
+                          <span style={{ fontSize: 11, color: 'var(--on-surface-variant)' }}>
                             {item.parameterSize ? `Parametri: ${item.parameterSize}` : ''}
                             {item.parameterSize && sizeGb ? ' • ' : ''}
                             {sizeGb ? `Dimensione: ${sizeGb}` : ''}
@@ -129,7 +129,7 @@ export function AiOllamaSettings({
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-              <span style={{ fontSize: 11, color: '#64748b', whiteSpace: 'nowrap' }}>Modello attivo:</span>
+              <span style={{ fontSize: 11, color: 'var(--on-surface-variant)', whiteSpace: 'nowrap' }}>Modello attivo:</span>
               <input
                 type="text"
                 value={ollamaModel}
@@ -143,11 +143,11 @@ export function AiOllamaSettings({
             <label>{t('localModel')}</label>
             <div style={{
               padding: '10px 12px',
-              background: ollamaRunning ? '#ecfdf5' : '#fffbeb',
-              border: `1px solid ${ollamaRunning ? '#a7f3d0' : '#fde68a'}`,
+              background: ollamaRunning ? 'var(--secondary-container)' : 'var(--tertiary-container)',
+              border: `1px solid ${ollamaRunning ? 'var(--outline-variant)' : 'var(--outline-variant)'}`,
               borderRadius: '8px',
               fontSize: '12px',
-              color: ollamaRunning ? '#065f46' : '#92400e',
+              color: ollamaRunning ? 'var(--secondary)' : 'var(--on-tertiary-container)',
               display: 'flex',
               alignItems: 'center',
               gap: 8,
@@ -169,7 +169,7 @@ export function AiOllamaSettings({
             />
 
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 11, color: '#64748b', alignSelf: 'center' }}>Modelli consigliati:</span>
+              <span style={{ fontSize: 11, color: 'var(--on-surface-variant)', alignSelf: 'center' }}>Modelli consigliati:</span>
               {['llama3.2', 'llama3.2-vision', 'mistral', 'qwen2.5', 'gemma2'].map(rec => (
                 <button
                   key={rec}
@@ -188,18 +188,18 @@ export function AiOllamaSettings({
         <div style={{
           marginTop: 10,
           padding: '10px 12px',
-          background: '#f8fafc',
-          border: '1px solid #e2e8f0',
+          background: 'var(--surface-container-high)',
+          border: '1px solid var(--outline-variant)',
           borderRadius: '8px',
           fontSize: '11px',
-          color: '#475569',
+          color: 'var(--on-surface-variant)',
           display: 'flex',
           flexDirection: 'column',
           gap: 6,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, color: '#1e293b' }}>
-              <Terminal size={13} color="#059669" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, color: 'var(--on-surface)' }}>
+              <Terminal size={13} color="var(--secondary)" />
               <span>Comando per installare/avviare il modello nel terminale:</span>
             </div>
             <button
@@ -208,11 +208,11 @@ export function AiOllamaSettings({
               style={{ fontSize: 10, padding: '2px 8px' }}
               onClick={copyPullCommand}
             >
-              {copiedCommand ? <Check size={11} color="#059669" /> : <Copy size={11} />}
+              {copiedCommand ? <Check size={11} color="var(--secondary)" /> : <Copy size={11} />}
               <span>{copiedCommand ? 'Copiato!' : 'Copia'}</span>
             </button>
           </div>
-          <code style={{ background: '#1e293b', color: '#f8fafc', padding: '5px 8px', borderRadius: 4, fontFamily: 'monospace' }}>
+          <code style={{ background: 'var(--on-surface)', color: 'var(--surface-container-high)', padding: '5px 8px', borderRadius: 4, fontFamily: 'monospace' }}>
             ollama run {ollamaModel || 'llama3.2'}
           </code>
         </div>

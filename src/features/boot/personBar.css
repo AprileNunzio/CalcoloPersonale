@@ -5,12 +5,12 @@
 .person-compact-bar {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-  padding: clamp(12px, 1vw, 18px) clamp(16px, 1.4vw, 28px);
+  gap: var(--space-sm);
+  padding: 8px 14px;
   background: var(--surface-container-low);
   border: 1px solid var(--outline-variant);
-  border-radius: var(--shape-xl);
-  margin-bottom: var(--space-lg);
+  border-radius: var(--shape-full);
+  margin-bottom: var(--space-md);
   flex-wrap: wrap;
 }
 
@@ -19,8 +19,9 @@
   color: var(--on-surface);
   border: 1px solid var(--outline-variant);
   border-radius: var(--shape-full);
-  padding: 8px 14px;
-  font-size: var(--font-label-medium);
+  padding: 4px 12px;
+  min-height: 28px;
+  font-size: var(--font-label-small);
   font-weight: 600;
 }
 
@@ -31,8 +32,8 @@
 }
 
 .avatar-compact {
-  width: clamp(38px, 2.5vw, 48px);
-  height: clamp(38px, 2.5vw, 48px);
+  width: 32px;
+  height: 32px;
   border-radius: var(--shape-full);
   display: flex;
   align-items: center;
@@ -50,52 +51,49 @@
 .person-compact-info {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: 1px;
 }
 
 .person-compact-info h2 {
   margin: 0;
-  font-size: var(--font-title-large);
+  font-size: var(--font-title-small);
   font-weight: 750;
   color: var(--on-surface);
+  line-height: 1.2;
 }
 
-.person-profile-badge-row {
+.person-compact-meta {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 8px;
+  font-size: var(--font-label-small);
+  color: var(--on-surface-variant);
   flex-wrap: wrap;
 }
 
-.export-person-header-btn {
-  margin-left: auto;
-  background: var(--secondary-container);
-  color: var(--on-secondary-container);
-  border: 1px solid var(--outline-variant);
-  border-radius: var(--shape-full);
-  padding: 8px 16px;
-  font-size: var(--font-label-small);
-  font-weight: 650;
-}
-
-.export-person-header-btn:hover {
-  background: var(--surface-container-highest);
-  color: var(--on-surface);
-}
-
-.wizard-btn-primary {
-  background: var(--primary);
-  color: var(--on-primary);
-  border-radius: var(--shape-full);
-  padding: 8px 18px;
-  font-size: var(--font-label-small);
+.person-compact-meta code {
+  font-family: monospace;
   font-weight: 700;
+  background: var(--surface-container-highest);
+  color: var(--primary);
+  padding: 1px 6px;
+  border-radius: var(--shape-xs);
+  font-size: 11px;
+}
+
+.person-compact-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.person-compact-btn {
+  padding: 4px 10px;
+  min-height: 28px;
+  font-size: var(--font-label-small);
+  border-radius: var(--shape-full);
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
-  border: 0;
-}
-
-.wizard-btn-primary:hover {
-  filter: brightness(1.08);
+  gap: 4px;
 }

@@ -131,8 +131,8 @@ export function WizardStepAnagrafica({
                 top: '100%',
                 left: 0,
                 right: 0,
-                background: '#ffffff',
-                border: '1.5px solid #116b62',
+                background: 'var(--surface)',
+                border: '1.5px solid var(--primary)',
                 borderRadius: 8,
                 boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
                 listStyle: 'none',
@@ -153,7 +153,7 @@ export function WizardStepAnagrafica({
                     display: 'flex',
                     justifyContent: 'space-between',
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#e6f4f1')}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'var(--primary-container)')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                   onClick={() => {
                     setBirthPlace(res.name);
@@ -163,7 +163,7 @@ export function WizardStepAnagrafica({
                   }}
                 >
                   <strong>{res.name}</strong>
-                  <span style={{ fontSize: 12, color: '#116b62' }}>({res.province})</span>
+                  <span style={{ fontSize: 12, color: 'var(--primary)' }}>({res.province})</span>
                 </li>
               ))}
             </ul>

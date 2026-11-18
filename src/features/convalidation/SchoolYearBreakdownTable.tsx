@@ -19,9 +19,9 @@ export function SchoolYearBreakdownTable({
 }: SchoolYearBreakdownTableProps) {
   return (
     <div style={{ marginTop: 12 }}>
-      <div style={{ fontSize: 12, color: '#475569', marginBottom: 6, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 12, color: 'var(--on-surface-variant)', marginBottom: 6, lineHeight: 1.6 }}>
         {isIncremental ? (
-          <span style={{ color: '#047857', fontWeight: 600 }}>
+          <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>
             • Modalità Incrementale: i titoli di accesso e i servizi storici sono inclusi nella Base Convalidata. Di seguito sono esposti solo i servizi e i titoli maturati successivamente:
           </span>
         ) : (
@@ -66,7 +66,7 @@ export function SchoolYearBreakdownTable({
                         Applicato tetto 6.00 pt (lordi: {sy.totalAnnualScore.toFixed(2)})
                       </span>
                     ) : (
-                      <span style={{ color: '#059669', fontWeight: 600 }}>Entro il limite</span>
+                      <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>Entro il limite</span>
                     )}
                   </td>
                 </tr>
@@ -75,7 +75,7 @@ export function SchoolYearBreakdownTable({
           </table>
         </div>
       ) : (
-        <div style={{ fontSize: 12, color: '#94a3b8', fontStyle: 'italic', marginTop: 4 }}>
+        <div style={{ fontSize: 12, color: 'var(--on-surface-variant)', fontStyle: 'italic', marginTop: 4 }}>
           {isIncremental
             ? 'Nessun nuovo servizio registrato successivamente alla data di consolidamento.'
             : 'Nessun servizio scolastico registrato per questo profilo.'}

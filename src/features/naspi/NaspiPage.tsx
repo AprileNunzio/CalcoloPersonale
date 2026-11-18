@@ -92,7 +92,7 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
           <div className="naspi-deadline-badge">
             <div className="days-num">{evaluation.daysLeftToApply}</div>
             <small>Giorni rimasti per presentare domanda</small>
-            <div style={{ fontSize: 11, color: '#a7f3d0', marginTop: 2 }}>
+            <div style={{ fontSize: 11, color: 'var(--outline-variant)', marginTop: 2 }}>
               Scadenza tassativa: {evaluation.deadlineDateStr}
             </div>
           </div>
@@ -103,8 +103,8 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
       {evaluation.isPermanentStaff && (
         <div
           style={{
-            background: '#fef2f2',
-            border: '1.5px solid #fecaca',
+            background: 'var(--error-container)',
+            border: '1.5px solid var(--error)',
             borderRadius: 12,
             padding: 16,
             display: 'flex',
@@ -112,12 +112,12 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
             alignItems: 'flex-start',
           }}
         >
-          <AlertCircle color="#dc2626" size={24} style={{ flexShrink: 0, marginTop: 2 }} />
+          <AlertCircle color="var(--error)" size={24} style={{ flexShrink: 0, marginTop: 2 }} />
           <div>
-            <strong style={{ color: '#991b1b', fontSize: 14 }}>
+            <strong style={{ color: 'var(--error)', fontSize: 14 }}>
               Regime Incompatibilità Personale di Ruolo (Tempo Indeterminato)
             </strong>
-            <p style={{ margin: '4px 0 0 0', fontSize: 13, color: '#7f1d1d', lineHeight: 1.5 }}>
+            <p style={{ margin: '4px 0 0 0', fontSize: 13, color: 'var(--error)', lineHeight: 1.5 }}>
               L'ultimo servizio registrato per questa persona è a <strong>Tempo Indeterminato (Ruolo)</strong>.
               In base all'art. 3 del D.Lgs. 22/2015, la NASpI spetta esclusivamente ai lavoratori che abbiano perso involontariamente
               la propria occupazione. Il personale di ruolo non ha accesso alla NASpI in virtù della continuità del rapporto di pubblico impiego.
@@ -131,7 +131,7 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
       <div className="naspi-kpi-grid">
         <div className="naspi-kpi-card">
           <div className="naspi-kpi-label">
-            <Clock size={15} color="#059669" /> Settimane Lavorate (4 anni)
+            <Clock size={15} color="var(--secondary)" /> Settimane Lavorate (4 anni)
           </div>
           <div className="naspi-kpi-value">{evaluation.weeksWorkedLast4Years} sett.</div>
           <div className="naspi-kpi-sub">{evaluation.daysWorkedLast4Years} giorni di servizio effettivo</div>
@@ -139,7 +139,7 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
 
         <div className="naspi-kpi-card">
           <div className="naspi-kpi-label">
-            <Calendar size={15} color="#0284c7" /> Durata Indennità
+            <Calendar size={15} color="var(--primary)" /> Durata Indennità
           </div>
           <div className="naspi-kpi-value">{evaluation.durationWeeks} sett.</div>
           <div className="naspi-kpi-sub">Pari a circa {evaluation.durationMonths} mesi di copertura</div>
@@ -147,7 +147,7 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
 
         <div className="naspi-kpi-card">
           <div className="naspi-kpi-label">
-            <Banknote size={15} color="#7e22ce" /> Importo Iniziale Netto
+            <Banknote size={15} color="var(--primary)" /> Importo Iniziale Netto
           </div>
           <div className="naspi-kpi-value">€ {evaluation.baseMonthlyNet.toFixed(2)}</div>
           <div className="naspi-kpi-sub">Lordo mensile: € {evaluation.baseMonthlyGross.toFixed(2)}</div>
@@ -155,7 +155,7 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
 
         <div className="naspi-kpi-card">
           <div className="naspi-kpi-label">
-            <Sparkles size={15} color="#d97706" /> Totale Netto Previsto
+            <Sparkles size={15} color="var(--tertiary)" /> Totale Netto Previsto
           </div>
           <div className="naspi-kpi-value">€ {evaluation.totalProjectedNet.toFixed(2)}</div>
           <div className="naspi-kpi-sub">Totale lordo INPS: € {evaluation.totalProjectedGross.toFixed(2)}</div>
@@ -165,10 +165,10 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
       {/* Proiezioni Mese per Mese */}
       <div className="naspi-card-panel">
         <h3 className="naspi-card-title">
-          <TrendingDown size={19} color="#0284c7" />
+          <TrendingDown size={19} color="var(--primary)" />
           Proiezione Mese per Mese & Meccanismo di Décalage 3% (D.Lgs. 22/2015)
         </h3>
-        <p style={{ margin: '-8px 0 16px 0', fontSize: 12.5, color: '#64748b' }}>
+        <p style={{ margin: '-8px 0 16px 0', fontSize: 12.5, color: 'var(--on-surface-variant)' }}>
           La NASpI si riduce del 3% al mese a partire dal <strong>{evaluation.decalageStartMonth}° mese</strong>
           {evaluation.ageOver55 ? ' (agevolazione over 55 anni attiva)' : ' (lavoratore under 55 anni)'}.
           Decorrenza indennità: <strong>{evaluation.decorrenzaDateStr}</strong> (8° giorno dalla fine del contratto).
@@ -192,13 +192,13 @@ export function NaspiPage({ person, save, busy }: NaspiPageProps) {
                   <td>€ {proj.grossAmount.toFixed(2)}</td>
                   <td>
                     {proj.isDecalageActive ? (
-                      <span style={{ color: '#dc2626', fontWeight: 700 }}>-{proj.decalageRatePercent}%</span>
+                      <span style={{ color: 'var(--error)', fontWeight: 700 }}>-{proj.decalageRatePercent}%</span>
                     ) : (
-                      <span style={{ color: '#059669', fontWeight: 600 }}>100% (Senza taglio)</span>
+                      <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>100% (Senza taglio)</span>
                     )}
                   </td>
-                  <td><strong style={{ color: '#0f172a' }}>€ {proj.estimatedNetAmount.toFixed(2)}</strong></td>
-                  <td style={{ fontSize: 11.5, color: '#64748b' }}>
+                  <td><strong style={{ color: 'var(--on-surface)' }}>€ {proj.estimatedNetAmount.toFixed(2)}</strong></td>
+                  <td style={{ fontSize: 11.5, color: 'var(--on-surface-variant)' }}>
                     {proj.monthIndex === 1
                       ? `Decorrenza ${evaluation.decorrenzaDateStr} se domanda inoltrata entro 8 giorni`
                       : proj.isDecalageActive

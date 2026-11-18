@@ -13,7 +13,7 @@ export function FamilyLeavePane({
         <div>
           <div className="dash-section-title-row">
             <h3>
-              <Heart size={18} color="#e11d48" />
+              <Heart size={18} color="var(--primary)" />
               Coniuge / Partner Convivente
             </h3>
             <span className="dash-section-badge">Diritti CCNL e Mobilità</span>
@@ -68,7 +68,7 @@ export function FamilyLeavePane({
                 </div>
 
                 <div className="dash-card-legal-note">
-                  <Info size={16} style={{ flexShrink: 0, color: '#e11d48', marginTop: 2 }} />
+                  <Info size={16} style={{ flexShrink: 0, color: 'var(--primary)', marginTop: 2 }} />
                   <div>
                     <strong>Chiarimento normativo:</strong> Il congedo parentale (D.Lgs. 151/2001) è riservato esclusivamente alla cura dei figli. Per il coniuge si applicano il congedo matrimoniale, i permessi retribuiti e il punteggio di ricongiungimento (+6 pt).
                   </div>
@@ -84,7 +84,7 @@ export function FamilyLeavePane({
         <div>
           <div className="dash-section-title-row">
             <h3>
-              <Baby size={18} color="#2563eb" />
+              <Baby size={18} color="var(--primary)" />
               Figli a Carico & Congedo Parentale (D.Lgs. 151/2001 e D.Lgs. 105/2022)
             </h3>
             <span className="dash-section-badge">
@@ -157,7 +157,7 @@ export function FamilyLeavePane({
                       </div>
 
                       <div className="dash-card-legal-note">
-                        <CheckCircle size={16} style={{ flexShrink: 0, color: '#059669', marginTop: 2 }} />
+                        <CheckCircle size={16} style={{ flexShrink: 0, color: 'var(--secondary)', marginTop: 2 }} />
                         <div>
                           <div><strong>{child.illnessRightsText}</strong></div>
                           <div style={{ marginTop: 2 }}>{child.legalNote}</div>
@@ -165,8 +165,8 @@ export function FamilyLeavePane({
                       </div>
                     </>
                   ) : (
-                    <div className="dash-card-legal-note" style={{ background: '#fffbeb', borderColor: '#fde68a' }}>
-                      <AlertCircle size={16} style={{ flexShrink: 0, color: '#d97706', marginTop: 2 }} />
+                    <div className="dash-card-legal-note" style={{ background: 'var(--tertiary-container)', borderColor: 'var(--outline-variant)' }}>
+                      <AlertCircle size={16} style={{ flexShrink: 0, color: 'var(--tertiary)', marginTop: 2 }} />
                       <div>
                         <strong>Nessun congedo parentale residuo:</strong> {child.legalNote}
                       </div>
@@ -182,7 +182,7 @@ export function FamilyLeavePane({
       {/* 3. EMPTY STATE IF NO FAMILY MEMBERS */}
       {(!familyOverview || (familyOverview.spouses.length === 0 && familyOverview.childrenLeaves.length === 0)) && (
         <div className="panel empty-step-card">
-          <Users2 size={36} color="#94a3b8" />
+          <Users2 size={36} color="var(--on-surface-variant)" />
           <h4>Nessun familiare registrato nel fascicolo</h4>
           <p className="muted">
             Aggiungi il tuo coniuge o i tuoi figli nella sezione "Famiglia" del menu per monitorare diritti, permessi retribuiti e congedo parentale a norma di legge.

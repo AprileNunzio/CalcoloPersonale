@@ -51,19 +51,19 @@ export function CareerIntelligencePane({
               <div style={{ margin: '6px 0 10px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
                 {scoreItem?.requiresCiad ? (
                   scoreItem.hasCiad ? (
-                    <span style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontSize: 10, padding: '2px 8px', borderRadius: 4, fontWeight: 650, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ background: 'var(--secondary-container)', color: 'var(--secondary)', border: '1px solid var(--outline-variant)', fontSize: 10, padding: '2px 8px', borderRadius: 4, fontWeight: 650, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                       ✓ CIAD Accreditata Registrata
                     </span>
                   ) : (
                     <span
-                      style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', fontSize: 10, padding: '2px 8px', borderRadius: 4, fontWeight: 650, display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                      style={{ background: 'var(--error-container)', color: 'var(--error)', border: '1px solid var(--error)', fontSize: 10, padding: '2px 8px', borderRadius: 4, fontWeight: 650, display: 'inline-flex', alignItems: 'center', gap: 4 }}
                       title={scoreItem.ciadWarning}
                     >
                       ⚠ CIAD Mancante (Scad. 30/04/2025)
                     </span>
                   )
                 ) : (
-                  <span style={{ fontSize: 10, color: '#64748b' }}>
+                  <span style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>
                     Requisito di accesso: Diploma / Terza media (No CIAD)
                   </span>
                 )}
@@ -98,11 +98,11 @@ export function CareerIntelligencePane({
                   )}
                 </div>
 
-                <div style={{ fontSize: 11, color: '#64748b', display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
+                <div style={{ fontSize: 11, color: 'var(--on-surface-variant)', display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
                   <span>Specifici: <strong>{firstTier.specificDays} gg</strong></span>
                   {firstTier.otherAtaDays > 0 && <span>Altri ATA: <strong>{firstTier.otherAtaDays} gg</strong></span>}
                   {firstTier.docenteDays > 0 && (
-                    <span style={{ color: '#d97706' }} title="Il servizio docente dà punteggio in III fascia ma non concorre ai 24 mesi I fascia ATA (art. 554 D.Lgs. 297/94)">
+                    <span style={{ color: 'var(--tertiary)' }} title="Il servizio docente dà punteggio in III fascia ma non concorre ai 24 mesi I fascia ATA (art. 554 D.Lgs. 297/94)">
                       Docente: <strong>{firstTier.docenteDays} gg</strong> (escluso dai 24M ATA)
                     </span>
                   )}

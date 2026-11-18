@@ -87,12 +87,12 @@ p {
 
 /* Header with Glassmorphism & MD3 Tonal Surface */
 header {
-  height: clamp(62px, 4.2vw, 80px);
+  height: 52px;
   border-bottom: 1px solid var(--outline-variant);
   background: var(--surface-container-low);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 0 clamp(18px, 2vw, 44px);
+  padding: 0 clamp(14px, 1.4vw, 24px);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -110,7 +110,7 @@ header > span {
 
 header > div {
   display: flex;
-  gap: var(--space-md);
+  gap: var(--space-sm);
   align-items: center;
 }
 
@@ -118,8 +118,8 @@ header > div {
   background: var(--primary-container);
   color: var(--on-primary-container);
   font-weight: 750;
-  width: clamp(34px, 2.4vw, 44px);
-  height: clamp(34px, 2.4vw, 44px);
+  width: 32px;
+  height: 32px;
   border-radius: var(--shape-full);
   display: inline-flex;
   align-items: center;
@@ -133,7 +133,7 @@ header > div {
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: clamp(16px, 1.8vw, 44px);
+  padding: clamp(12px, 1.2vw, 20px);
   box-sizing: border-box;
   flex: 1;
 }
@@ -142,17 +142,17 @@ header > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-lg);
-  margin: 0 0 var(--space-xl);
+  gap: var(--space-md);
+  margin: 0 0 var(--space-md);
 }
 
 .page-heading h1 {
-  margin: var(--space-xs) 0 0;
+  margin: 2px 0 0;
 }
 
 .eyebrow {
   font-size: var(--font-label-small);
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   color: var(--primary);
   text-transform: uppercase;
   font-weight: 800;
@@ -162,8 +162,8 @@ header > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
 }
 
 .collection-heading h2 {
@@ -175,7 +175,7 @@ header > div {
   color: var(--on-secondary-container);
   background: var(--secondary-container);
   border-radius: var(--shape-full);
-  padding: 3px 10px;
+  padding: 2px 8px;
   margin-left: var(--space-xs);
   font-weight: 700;
 }
@@ -185,19 +185,19 @@ header > div {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--space-sm);
-  height: clamp(42px, 2.8vw, 50px);
-  width: clamp(260px, 22vw, 460px);
+  gap: var(--space-xs);
+  height: 36px;
+  width: clamp(220px, 18vw, 340px);
   background: var(--surface-container-highest);
   border: 1.5px solid var(--outline-variant);
   border-radius: var(--shape-full);
-  padding: 0 clamp(14px, 1vw, 20px);
+  padding: 0 12px;
   transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .search-wrapper:focus-within {
   border-color: var(--primary);
-  background: var(--surface-container-lowest);
+  background: var(--surface-container-high);
   box-shadow: 0 0 0 3px var(--primary-container);
 }
 

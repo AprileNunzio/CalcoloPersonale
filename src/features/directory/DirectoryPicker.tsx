@@ -232,14 +232,14 @@ export function DirectoryPicker({
               }}
             >
               <div className="directory-item-header">
-                <span style={{ color: '#0f766e', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ color: 'var(--primary)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                   <Plus size={14} /> Usa "{query.trim()}" come codice / scuola storica o deprecata
                 </span>
-                <span className="cat-pill" style={{ background: '#fef3c7', color: '#92400e' }}>
+                <span className="cat-pill" style={{ background: 'var(--tertiary-container)', color: 'var(--on-tertiary-container)' }}>
                   Storico
                 </span>
               </div>
-              <div className="directory-item-sub" style={{ fontSize: 11, color: '#64748b' }}>
+              <div className="directory-item-sub" style={{ fontSize: 11, color: 'var(--on-surface-variant)' }}>
                 Per servizi ante 2024 (es. FIMM290003 nel 2008) o istituti accorpati/soppressi.
               </div>
             </li>
@@ -249,7 +249,7 @@ export function DirectoryPicker({
 
       {isOpen && !loading && query.trim().length >= 2 && rows.length === 0 && (
         <div className="directory-dropdown-empty">
-          <p style={{ margin: '0 0 10px 0', fontSize: 13, color: '#475569' }}>
+          <p style={{ margin: '0 0 10px 0', fontSize: 13, color: 'var(--on-surface-variant)' }}>
             Nessun istituto trovato nell'anagrafe attiva con "<strong>{query.trim()}</strong>"
           </p>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>

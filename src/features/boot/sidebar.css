@@ -4,14 +4,14 @@
    ========================================================================== */
 
 .sidebar {
-  width: var(--rail-width, 260px);
+  width: var(--rail-width, 220px);
   position: fixed;
   inset: 0 auto 0 0;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--outline-variant);
   background: var(--surface-container-low);
-  padding: clamp(16px, 1.4vw, 28px) clamp(10px, 0.9vw, 18px);
+  padding: 12px 8px;
   z-index: 100;
   transition: width 0.22s cubic-bezier(0.2, 0, 0, 1), padding 0.22s ease, background-color 0.22s ease;
   overflow-y: auto;
@@ -23,15 +23,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-lg);
+  gap: var(--space-xs);
+  margin-bottom: 12px;
   font-size: var(--font-title-medium);
   font-weight: 750;
   color: var(--primary);
+  padding: 0 4px;
 }
 
 .brand-icon {
-  padding: 8px;
+  padding: 6px;
   background: var(--primary-container);
   color: var(--on-primary-container);
   border-radius: var(--shape-md);
@@ -47,12 +48,12 @@
   box-sizing: border-box !important;
   padding: 0 !important;
   margin: 0;
-  width: 32px !important;
-  min-width: 32px !important;
-  max-width: 32px !important;
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
+  width: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
   border-radius: var(--shape-sm);
   background: var(--surface-container);
   border: 1px solid var(--outline-variant);
@@ -74,13 +75,13 @@
 }
 
 .side-label {
-  font-size: var(--font-label-small);
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
+  letter-spacing: 1px;
   color: var(--on-surface-variant);
-  margin: var(--space-md) var(--space-xs) var(--space-xs);
+  margin: 10px 8px 4px;
   font-weight: 750;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 .nav {
@@ -89,15 +90,16 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--space-sm);
+  gap: 8px;
   width: 100%;
-  padding: clamp(9px, 0.75vw, 13px) clamp(12px, 0.9vw, 16px);
-  margin-bottom: 4px;
-  font-size: var(--font-body-medium);
+  padding: 6px 10px;
+  min-height: 32px;
+  margin-bottom: 2px;
+  font-size: 12.5px;
   text-align: left;
   border-radius: var(--shape-full);
   border: 1px solid transparent;
-  transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
+  transition: all 0.15s ease;
   white-space: nowrap;
   box-sizing: border-box;
 }
@@ -105,7 +107,6 @@
 .nav:hover {
   background: var(--surface-container-high);
   color: var(--on-surface);
-  transform: translateX(2px);
 }
 
 .nav.active {

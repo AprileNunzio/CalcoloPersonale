@@ -116,7 +116,7 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
 
       <div className="salary-sync-banner">
         <div className="salary-sync-info">
-          <Sparkles size={20} color="#059669" />
+          <Sparkles size={20} color="var(--secondary)" />
           <div className="salary-sync-text">
             <h5>
               {isManualOverride ? 'Modalità Simulazione Personalizzata' : 'Sincronizzazione Automatica con Fascicolo Personale Attiva'}
@@ -175,17 +175,17 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
           <div className="auto-summary-item">
             <span className="summary-label">Profilo</span>
-            <strong style={{ fontSize: 13, color: '#1e293b' }}>{profileLabel}</strong>
+            <strong style={{ fontSize: 13, color: 'var(--on-surface)' }}>{profileLabel}</strong>
           </div>
           <div className="auto-summary-item">
             <span className="summary-label">Orario</span>
-            <strong style={{ fontSize: 13, color: '#1e293b' }}>
+            <strong style={{ fontSize: 13, color: 'var(--on-surface)' }}>
               {weeklyHours}h / sett. ({Math.round((weeklyHours / (profile === 'DOCENTE' ? 18 : 36)) * 100)}%)
             </strong>
           </div>
           <div className="auto-summary-item">
             <span className="summary-label">Inquadramento</span>
-            <strong style={{ fontSize: 13, color: '#1e293b' }}>
+            <strong style={{ fontSize: 13, color: 'var(--on-surface)' }}>
               {contractType === 'permanent'
                 ? 'Ruolo / Indeterminato'
                 : contractType === 'annual'
@@ -197,12 +197,12 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
           </div>
           <div className="auto-summary-item">
             <span className="summary-label">Figli a Carico</span>
-            <strong style={{ fontSize: 13, color: '#1e293b' }}>{dependentChildrenCount}</strong>
+            <strong style={{ fontSize: 13, color: 'var(--on-surface)' }}>{dependentChildrenCount}</strong>
           </div>
           {sicknessDaysInMonth > 0 && (
             <div className="auto-summary-item">
               <span className="summary-label">Malattia Mese</span>
-              <strong style={{ fontSize: 13, color: '#dc2626' }}>{sicknessDaysInMonth} gg (-{result.sicknessDeductions.toFixed(0)}€)</strong>
+              <strong style={{ fontSize: 13, color: 'var(--error)' }}>{sicknessDaysInMonth} gg (-{result.sicknessDeductions.toFixed(0)}€)</strong>
             </div>
           )}
         </div>

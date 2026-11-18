@@ -85,7 +85,7 @@ Firma del Ricorrente: _________________________________________
         <head>
           <title>Reclamo Graduatoria Provvisoria - ${person.lastName} ${person.firstName}</title>
           <style>
-            body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; padding: 40px; color: #000; }
+            body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; padding: 40px; color: black; }
             h2 { text-align: center; font-size: 14pt; margin-bottom: 24px; }
             pre { white-space: pre-wrap; font-family: inherit; }
           </style>
@@ -116,18 +116,18 @@ Firma del Ricorrente: _________________________________________
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
-      <div style={{ background: '#fff', borderRadius: 12, maxWidth: 840, width: '100%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, maxWidth: 840, width: '100%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}>
         
         {/* HEADER */}
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--outline-variant)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <FileWarning color="#dc2626" size={24} />
+            <FileWarning color="var(--error)" size={24} />
             <div>
-              <h3 style={{ margin: 0, fontSize: 16, color: '#0f172a' }}>Generatore Reclamo Graduatorie Provvisorie ATA</h3>
-              <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>Autotutela Legge 241/90 e Art. 8 DM 89/2024 entro 10 giorni dalla pubblicazione</p>
+              <h3 style={{ margin: 0, fontSize: 16, color: 'var(--on-surface)' }}>Generatore Reclamo Graduatorie Provvisorie ATA</h3>
+              <p style={{ margin: 0, fontSize: 12, color: 'var(--on-surface-variant)' }}>Autotutela Legge 241/90 e Art. 8 DM 89/2024 entro 10 giorni dalla pubblicazione</p>
             </div>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--on-surface-variant)' }}>
             <X size={20} />
           </button>
         </div>
@@ -136,33 +136,33 @@ Firma del Ricorrente: _________________________________________
         <div style={{ padding: '16px 20px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Scuola Capofila Validante</label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Scuola Capofila Validante</label>
               <input
                 type="text"
                 value={scuolaCapofila}
                 onChange={e => setScuolaCapofila(e.target.value)}
-                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4 }}
+                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4 }}
               />
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>PEC o Email della Scuola</label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>PEC o Email della Scuola</label>
               <input
                 type="text"
                 placeholder="es. rmps01000g@pec.istruzione.it"
                 value={pecScuola}
                 onChange={e => setPecScuola(e.target.value)}
-                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4 }}
+                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4 }}
               />
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Profilo Oggetto del Reclamo</label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Profilo Oggetto del Reclamo</label>
               <select
                 value={profiloScelto}
                 onChange={e => setProfiloScelto(e.target.value)}
-                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4 }}
+                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4 }}
               >
                 {profileScores.map(ps => (
                   <option key={ps.code} value={ps.code}>{ps.label} ({ps.code})</option>
@@ -170,46 +170,46 @@ Firma del Ricorrente: _________________________________________
               </select>
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#dc2626' }}>Punteggio Erroneo Assegnato</label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--error)' }}>Punteggio Erroneo Assegnato</label>
               <input
                 type="text"
                 value={punteggioAttribuito}
                 onChange={e => setPunteggioAttribuito(e.target.value)}
-                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4 }}
+                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4 }}
               />
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#15803d' }}>Punteggio Corretto Spettante</label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--secondary)' }}>Punteggio Corretto Spettante</label>
               <input
                 type="text"
                 value={punteggioCorretto}
                 readOnly
-                style={{ width: '100%', padding: '6px 10px', fontSize: 13, background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4, fontWeight: 700 }}
+                style={{ width: '100%', padding: '6px 10px', fontSize: 13, background: 'var(--surface-container-highest)', border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4, fontWeight: 700 }}
               />
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Dettaglio e Motivo del Reclamo</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Dettaglio e Motivo del Reclamo</label>
             <textarea
               rows={2}
               value={motivoReclamo}
               onChange={e => setMotivoReclamo(e.target.value)}
-              style={{ width: '100%', padding: '8px 10px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4 }}
+              style={{ width: '100%', padding: '8px 10px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4 }}
             />
           </div>
 
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Anteprima Testo Reclamo Ufficiale</label>
-            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12, maxHeight: 220, overflowY: 'auto', fontFamily: 'monospace', fontSize: 11, whiteSpace: 'pre-wrap', color: '#1e293b' }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Anteprima Testo Reclamo Ufficiale</label>
+            <div style={{ background: 'var(--surface-container-high)', border: '1px solid var(--outline-variant)', borderRadius: 8, padding: 12, maxHeight: 220, overflowY: 'auto', fontFamily: 'monospace', fontSize: 11, whiteSpace: 'pre-wrap', color: 'var(--on-surface)' }}>
               {generateReclamoText()}
             </div>
           </div>
         </div>
 
         {/* FOOTER */}
-        <div style={{ padding: '12px 20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: 12, color: '#64748b' }}>
+        <div style={{ padding: '12px 20px', borderTop: '1px solid var(--outline-variant)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: 12, color: 'var(--on-surface-variant)' }}>
             Termine perentorio di 10 giorni dalla pubblicazione all'Albo pretorio.
           </span>
           <div style={{ display: 'flex', gap: 10 }}>

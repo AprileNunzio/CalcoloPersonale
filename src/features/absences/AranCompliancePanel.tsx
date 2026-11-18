@@ -26,12 +26,12 @@ export function AranCompliancePanel({ person }: AranCompliancePanelProps) {
     <div className="aran-compliance-container">
       <div className="aran-compliance-header">
         <div className="aran-header-title">
-          <Scale size={20} color="#38bdf8" />
+          <Scale size={20} color="var(--primary)" />
           <span>Monitoraggio Orientamenti Applicativi ARAN (Conteggio Weekend e Festivi)</span>
         </div>
 
         <div className="aran-schedule-toggle">
-          <span style={{ fontSize: '0.74rem', color: '#94a3b8', marginRight: 4 }}>Orario di servizio:</span>
+          <span style={{ fontSize: '0.74rem', color: 'var(--on-surface-variant)', marginRight: 4 }}>Orario di servizio:</span>
           <button
             type="button"
             className={`aran-schedule-btn ${daysPerWeek === 5 ? 'active' : ''}`}
@@ -61,7 +61,7 @@ export function AranCompliancePanel({ person }: AranCompliancePanelProps) {
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
-            color: '#34d399',
+            color: 'var(--secondary)',
             fontSize: '0.85rem',
           }}
         >
@@ -104,7 +104,7 @@ export function AranCompliancePanel({ person }: AranCompliancePanelProps) {
               <div className="aran-alert-summary">{al.summary}</div>
 
               <div className="aran-alert-interpretation">
-                <div style={{ fontWeight: 700, color: '#f8fafc', marginBottom: 4 }}>
+                <div style={{ fontWeight: 700, color: 'var(--surface-container-high)', marginBottom: 4 }}>
                   ⚖️ Orientamento ARAN applicato: {al.legalReference}
                 </div>
                 {al.aranInterpretation}

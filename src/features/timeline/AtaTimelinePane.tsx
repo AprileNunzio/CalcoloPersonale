@@ -40,7 +40,7 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
       <div className="timeline-hero-banner">
         <div className="timeline-hero-title-group">
           <h2>
-            <CalendarDays size={24} color="#38bdf8" />
+            <CalendarDays size={24} color="var(--primary)" />
             <span>Timeline e Scadenziario Normativo ATA</span>
           </h2>
           <p>
@@ -54,17 +54,17 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
             style={{
               padding: '6px 12px',
               borderRadius: 10,
-              background: data.is24MesiReached ? '#f0fdf4' : '#f8fafc',
-              border: `1.5px solid ${data.is24MesiReached ? '#bbf7d0' : '#e2e8f0'}`,
+              background: data.is24MesiReached ? 'var(--secondary-container)' : 'var(--surface-container-high)',
+              border: `1.5px solid ${data.is24MesiReached ? 'var(--outline-variant)' : 'var(--outline-variant)'}`,
               fontSize: '0.8rem',
               fontWeight: 700,
-              color: data.is24MesiReached ? '#166534' : '#334155',
+              color: data.is24MesiReached ? 'var(--secondary)' : 'var(--on-surface-variant)',
               display: 'flex',
               alignItems: 'center',
               gap: 6,
             }}
           >
-            <Award size={15} color={data.is24MesiReached ? '#16a34a' : '#64748b'} />
+            <Award size={15} color={data.is24MesiReached ? 'var(--secondary)' : 'var(--on-surface-variant)'} />
             <span>24 Mesi ATA: {data.totalStataleDays}/716 gg ({data.percent24Mesi}%)</span>
           </div>
 
@@ -73,17 +73,17 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
               style={{
                 padding: '6px 12px',
                 borderRadius: 10,
-                background: data.naspiDaysRemaining <= 10 ? '#fef2f2' : '#eff6ff',
-                border: `1.5px solid ${data.naspiDaysRemaining <= 10 ? '#fecaca' : '#bfdbfe'}`,
+                background: data.naspiDaysRemaining <= 10 ? 'var(--error-container)' : 'var(--primary-container)',
+                border: `1.5px solid ${data.naspiDaysRemaining <= 10 ? 'var(--error)' : 'var(--outline-variant)'}`,
                 fontSize: '0.8rem',
                 fontWeight: 700,
-                color: data.naspiDaysRemaining <= 10 ? '#991b1b' : '#1d4ed8',
+                color: data.naspiDaysRemaining <= 10 ? 'var(--error)' : 'var(--primary)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 6,
               }}
             >
-              <Hourglass size={15} color={data.naspiDaysRemaining <= 10 ? '#dc2626' : '#2563eb'} />
+              <Hourglass size={15} color={data.naspiDaysRemaining <= 10 ? 'var(--error)' : 'var(--primary)'} />
               <span>NASpI INPS: {data.naspiDaysRemaining > 0 ? `${data.naspiDaysRemaining} gg rimasti` : 'Scaduto'}</span>
             </div>
           )}
@@ -104,7 +104,7 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
             <div className="timeline-countdown-big">
               {dl.status === 'completed' ? (
                 <>
-                  <CheckCircle2 size={30} color="#10b981" />
+                  <CheckCircle2 size={30} color="var(--secondary)" />
                   <span className="timeline-number-bold" style={{ fontSize: '1.4rem' }}>
                     Completato
                   </span>
@@ -130,8 +130,8 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
             <div className="timeline-card-desc">{dl.description}</div>
 
             {dl.targetDate && (
-              <div style={{ fontSize: '0.8rem', color: '#475569', marginBottom: 8 }}>
-                📅 Data di riferimento: <strong style={{ color: '#0f172a' }}>{formatDateItalian(dl.targetDate)}</strong>
+              <div style={{ fontSize: '0.8rem', color: 'var(--on-surface-variant)', marginBottom: 8 }}>
+                📅 Data di riferimento: <strong style={{ color: 'var(--on-surface)' }}>{formatDateItalian(dl.targetDate)}</strong>
               </div>
             )}
 
@@ -150,7 +150,7 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
       {/* Visual Step-by-Step Milestones Track */}
       <div className="timeline-track-section">
         <div className="timeline-track-title">
-          <CalendarRange size={18} color="#38bdf8" />
+          <CalendarRange size={18} color="var(--primary)" />
           <span>Percorso Cronologico delle Tappe di Carriera</span>
         </div>
 

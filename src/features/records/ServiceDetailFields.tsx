@@ -91,13 +91,13 @@ export function ServiceDetailFields({
       </div>
 
       {/* Orario Settimanale & Ore */}
-      <div style={{ background: '#f8fafc', padding: 12, borderRadius: 10, border: '1px solid #e2e8f0', marginTop: 10 }}>
+      <div style={{ background: 'var(--surface-container-high)', padding: 12, borderRadius: 10, border: '1px solid var(--outline-variant)', marginTop: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, color: '#1e293b' }}>
-            <Clock size={16} color="#059669" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, color: 'var(--on-surface)' }}>
+            <Clock size={16} color="var(--secondary)" />
             <span>Orario Settimanale di Servizio</span>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 800, color: '#047857' }}>
+          <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--secondary)' }}>
             {evaluation.weeklyHours} su {fullHours} ore ({evaluation.hourRatioPercent}% {evaluation.hourRatioPercent === 100 ? 'Tempo Pieno' : 'Part-Time'})
           </span>
         </div>
@@ -141,7 +141,7 @@ export function ServiceDetailFields({
             )}
           </div>
         </div>
-        <div style={{ fontSize: 11, color: '#64748b', marginTop: 4 }}>
+        <div style={{ fontSize: 11, color: 'var(--on-surface-variant)', marginTop: 4 }}>
           * Nelle graduatorie ATA il servizio part-time si valuta per intero con il massimo del punteggio (art. 2 D.M. 89/2024). L'orario influisce sul calcolo proporzionale dello stipendio e del TFR.
         </div>
       </div>
@@ -157,8 +157,8 @@ export function ServiceDetailFields({
           <div className="live-calc-metrics" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}>
             <div className="live-metric">
               <small>Punti Graduatoria ATA</small>
-              <strong style={{ color: '#047857' }}>+{evaluation.totalSpecificScore.toFixed(2)} pt</strong>
-              <span style={{ fontSize: 10, color: '#64748b' }}>({evaluation.totalOtherScore.toFixed(2)} aspecifico)</span>
+              <strong style={{ color: 'var(--secondary)' }}>+{evaluation.totalSpecificScore.toFixed(2)} pt</strong>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>({evaluation.totalOtherScore.toFixed(2)} aspecifico)</span>
             </div>
 
             <div className="live-metric">
@@ -166,7 +166,7 @@ export function ServiceDetailFields({
               <strong className={evaluation.validFor24Months ? 'text-green' : 'text-amber'}>
                 {evaluation.validFor24Months ? 'Idoneo (Statale)' : 'Non Idoneo'}
               </strong>
-              <span style={{ fontSize: 10, color: '#64748b' }}>{evaluation.days} gg utili</span>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>{evaluation.days} gg utili</span>
             </div>
 
             <div className="live-metric">
@@ -174,19 +174,19 @@ export function ServiceDetailFields({
               <strong className={evaluation.validForAnnualSeniority ? 'text-green' : 'text-amber'}>
                 {evaluation.validForAnnualSeniority ? 'Anno Pieno (&ge;180 gg)' : 'Parziale (<180 gg)'}
               </strong>
-              <span style={{ fontSize: 10, color: '#64748b' }}>Art. 485/569 D.Lgs. 297</span>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>Art. 485/569 D.Lgs. 297</span>
             </div>
 
             <div className="live-metric">
               <small>Stipendio Lordo Mensile</small>
               <strong>€ {evaluation.estimatedGrossMonthly.toFixed(2)}</strong>
-              <span style={{ fontSize: 10, color: '#64748b' }}>per {evaluation.weeklyHours}h/sett.</span>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>per {evaluation.weeklyHours}h/sett.</span>
             </div>
 
             <div className="live-metric">
               <small>TFR Maturato Stimato</small>
-              <strong style={{ color: '#0d9488' }}>€ {evaluation.estimatedContractTfr.toFixed(2)}</strong>
-              <span style={{ fontSize: 10, color: '#64748b' }}>Netto (~19% IRPEF)</span>
+              <strong style={{ color: 'var(--primary)' }}>€ {evaluation.estimatedContractTfr.toFixed(2)}</strong>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>Netto (~19% IRPEF)</span>
             </div>
           </div>
         </div>

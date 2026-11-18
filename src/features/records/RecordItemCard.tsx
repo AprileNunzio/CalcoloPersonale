@@ -319,7 +319,7 @@ export function RecordItemCard({
           )}
 
           {isLinked && (
-            <span className="status-chip profile" style={{ color: '#1d4ed8' }}>
+            <span className="status-chip profile" style={{ color: 'var(--primary)' }}>
               <Link2 size={11} /> Profilo Collegato
             </span>
           )}
@@ -331,30 +331,30 @@ export function RecordItemCard({
 
         {isQualification ? (
           <div className="card-dates-row">
-            <Calendar size={14} color="#0d9488" />
+            <Calendar size={14} color="var(--primary)" />
             <span>
               Data conseguimento: <strong>{formatDateItalian(record.start) || 'Non specificata'}</strong>
             </span>
             {parsed.scoreAchieved && parsed.scoreBase && (
-              <span style={{ color: '#0f172a', fontWeight: 650 }}>
+              <span style={{ color: 'var(--on-surface)', fontWeight: 650 }}>
                 · Voto: {parsed.scoreAchieved}/{parsed.scoreBase}
                 {parsed.hasHonors ? ' con Lode' : ''}
               </span>
             )}
             {parsed.accreditingBody && (
-              <span style={{ color: '#0d9488', fontWeight: 650 }}>
+              <span style={{ color: 'var(--primary)', fontWeight: 650 }}>
                 · Ente: {parsed.accreditingBody}
               </span>
             )}
           </div>
         ) : isAbsence ? (
           <div className="card-dates-row">
-            <Calendar size={14} color="#64748b" />
+            <Calendar size={14} color="var(--on-surface-variant)" />
             <span>
               Dal <strong>{formatDateItalian(record.start)}</strong>
               {record.end ? <> al <strong>{formatDateItalian(record.end)}</strong></> : ' (1 giorno)'}
             </span>
-            <span style={{ color: '#64748b' }}>
+            <span style={{ color: 'var(--on-surface-variant)' }}>
               · {parseDays(record.start, record.end)}{' '}
               {parseDays(record.start, record.end) === 1
                 ? 'giorno di calendario'
@@ -363,13 +363,13 @@ export function RecordItemCard({
           </div>
         ) : (
           <div className="card-dates-row">
-            <Calendar size={14} color="#64748b" />
+            <Calendar size={14} color="var(--on-surface-variant)" />
             <span>
               Dal <strong>{formatDateItalian(record.start)}</strong>
               {record.end ? (
                 <> al <strong>{formatDateItalian(record.end)}</strong></>
               ) : isRuolo ? (
-                <span style={{ color: '#7e22ce', fontWeight: 700 }}>
+                <span style={{ color: 'var(--primary)', fontWeight: 700 }}>
                   {' '}
                   (In corso a tempo indeterminato)
                 </span>
@@ -378,7 +378,7 @@ export function RecordItemCard({
               )}
             </span>
             {evaluation && (
-              <span style={{ color: '#64748b' }}>
+              <span style={{ color: 'var(--on-surface-variant)' }}>
                 · {evaluation.days} giorni ({evaluation.months} mesi di anzianità)
               </span>
             )}
@@ -387,7 +387,7 @@ export function RecordItemCard({
 
         {record.school && (
           <div className="card-school-info">
-            <School size={13} color="#059669" />
+            <School size={13} color="var(--secondary)" />
             <span>
               {record.school.code} · {record.school.name} ({record.school.municipality} -{' '}
               {record.school.province})
@@ -405,7 +405,7 @@ export function RecordItemCard({
             )}
 
             {parsed.ruoloMobility === 'assegnazione_provvisoria' && (
-              <span className="ruolo-tag" style={{ color: '#be185d' }}>
+              <span className="ruolo-tag" style={{ color: 'var(--primary)' }}>
                 <Navigation size={13} />
                 In Assegnazione Provvisoria
                 {parsed.titolaritaSchool?.name && ` (Titolare a: ${parsed.titolaritaSchool.name})`}
@@ -413,7 +413,7 @@ export function RecordItemCard({
             )}
 
             {parsed.ruoloMobility === 'trasferimento' && (
-              <span className="ruolo-tag" style={{ color: '#4338ca' }}>
+              <span className="ruolo-tag" style={{ color: 'var(--secondary)' }}>
                 <Repeat size={13} />
                 Trasferimento{' '}
                 {parsed.transferType === 'ufficio_soprannumerario' ? "d'ufficio" : 'volontario'}
@@ -422,7 +422,7 @@ export function RecordItemCard({
             )}
 
             {typeof parsed.continuityYears === 'number' && parsed.continuityYears > 0 && (
-              <span className="ruolo-tag" style={{ color: '#047857' }}>
+              <span className="ruolo-tag" style={{ color: 'var(--secondary)' }}>
                 <Award size={13} />
                 Continuità di sede: <strong>{parsed.continuityYears} anni</strong> (+
                 {parsed.continuityYears <= 5
@@ -433,7 +433,7 @@ export function RecordItemCard({
             )}
 
             {parsed.superamentoAnnoProva && (
-              <span className="ruolo-tag" style={{ color: '#059669' }}>
+              <span className="ruolo-tag" style={{ color: 'var(--secondary)' }}>
                 <CheckCircle2 size={13} /> Periodo di Prova Superato
               </span>
             )}
@@ -441,7 +441,7 @@ export function RecordItemCard({
         )}
 
         {(parsed.notesText || parsed.text) && (
-          <p style={{ margin: '8px 0 0 0', fontSize: 12, color: '#64748b', fontStyle: 'italic' }}>
+          <p style={{ margin: '8px 0 0 0', fontSize: 12, color: 'var(--on-surface-variant)', fontStyle: 'italic' }}>
             Note: {parsed.notesText || parsed.text}
           </p>
         )}

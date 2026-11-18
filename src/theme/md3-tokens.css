@@ -1,63 +1,68 @@
 /* ==========================================================================
-   MD3 EXPRESSIVE - CORE DESIGN TOKENS & FLUID SCALING
-   Responsive up to 8K (7680x4320) & Ultra-Wide with Fluid Scaling
+   MD3 EXPRESSIVE - COMPACT & HIGH-DENSITY SPACE-OPTIMIZED DESIGN TOKENS
+   Calibrated for Maximum Usable Screen Space & Ergonomic 8K Density
    ========================================================================== */
 
 :root {
-  /* Fluid Typography (clamp from mobile 360px up to 8K 7680px) */
+  /* Crisp, Compact Desktop Typography */
   --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-display-large: clamp(32px, 2.5vw + 1rem, 64px);
-  --font-display-medium: clamp(28px, 2.0vw + 0.8rem, 52px);
-  --font-display-small: clamp(24px, 1.6vw + 0.6rem, 42px);
-  --font-headline-large: clamp(22px, 1.4vw + 0.5rem, 36px);
-  --font-headline-medium: clamp(19px, 1.2vw + 0.4rem, 30px);
-  --font-headline-small: clamp(17px, 1.0vw + 0.3rem, 24px);
-  --font-title-large: clamp(16px, 0.9vw + 0.2rem, 22px);
-  --font-title-medium: clamp(14px, 0.75vw + 0.2rem, 18px);
-  --font-title-small: clamp(13px, 0.65vw + 0.2rem, 16px);
-  --font-body-large: clamp(14px, 0.7vw + 0.2rem, 18px);
-  --font-body-medium: clamp(13px, 0.6vw + 0.2rem, 16px);
-  --font-body-small: clamp(11.5px, 0.5vw + 0.2rem, 14px);
-  --font-label-large: clamp(13px, 0.6vw + 0.2rem, 16px);
-  --font-label-medium: clamp(12px, 0.5vw + 0.2rem, 14px);
-  --font-label-small: clamp(10.5px, 0.45vw + 0.15rem, 13px);
+  --font-display-large: clamp(24px, 1.2vw + 14px, 32px);
+  --font-display-medium: clamp(20px, 1.0vw + 12px, 26px);
+  --font-display-small: clamp(18px, 0.8vw + 10px, 22px);
+  --font-headline-large: clamp(17px, 0.7vw + 10px, 20px);
+  --font-headline-medium: clamp(15px, 0.6vw + 9px, 18px);
+  --font-headline-small: clamp(14px, 0.5vw + 8px, 16px);
+  --font-title-large: 15px;
+  --font-title-medium: 13.5px;
+  --font-title-small: 12.5px;
+  --font-body-large: 13.5px;
+  --font-body-medium: 12.5px;
+  --font-body-small: 11.5px;
+  --font-label-large: 12.5px;
+  --font-label-medium: 11.5px;
+  --font-label-small: 10.5px;
 
-  /* Fluid Spacing & Padding */
-  --space-2xs: clamp(2px, 0.2vw, 6px);
-  --space-xs: clamp(4px, 0.35vw, 8px);
-  --space-sm: clamp(8px, 0.65vw, 14px);
-  --space-md: clamp(14px, 1.1vw, 24px);
-  --space-lg: clamp(20px, 1.6vw, 36px);
-  --space-xl: clamp(28px, 2.2vw, 48px);
-  --space-2xl: clamp(36px, 3.0vw, 68px);
+  /* Space-Optimized Tight Padding & Gaps */
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 28px;
 
-  /* Shape Corner Radii (MD3 Expressive: soft & generous 16px-28px, 9999px) */
+  /* Refined MD3 Expressive Radii */
   --shape-none: 0px;
-  --shape-xs: clamp(4px, 0.3vw, 8px);
-  --shape-sm: clamp(8px, 0.6vw, 12px);
-  --shape-md: clamp(12px, 0.9vw, 18px);
-  --shape-lg: clamp(16px, 1.3vw, 24px);
-  --shape-xl: clamp(22px, 1.8vw, 32px);
+  --shape-xs: 4px;
+  --shape-sm: 8px;
+  --shape-md: 12px;
+  --shape-lg: 16px;
+  --shape-xl: 20px;
+  --shape-2xl: 24px;
   --shape-full: 9999px;
 
-  /* Bento Grid & Shell Dimensions */
-  --rail-width: clamp(240px, 16vw, 320px);
-  --rail-width-collapsed: clamp(68px, 5vw, 80px);
-  --bento-col-min: clamp(290px, 19vw, 440px);
-  --bento-gap: clamp(14px, 1.2vw, 28px);
+  /* Compact Desktop Shell Dimensions */
+  --rail-width: 220px;
+  --rail-width-collapsed: 64px;
+  --bento-col-min: 270px;
+  --bento-gap: 12px;
+
+  /* Shadows */
+  --shadow-ambient: rgba(0, 0, 0, 0.04);
+  --shadow-elevated: rgba(0, 0, 0, 0.08);
 
   /* Universal Feedback Tokens */
-  --error: #ba1a1a;
+  --error: #dc2626;
   --on-error: #ffffff;
-  --error-container: #ffdad6;
-  --on-error-container: #410002;
+  --error-container: #fee2e2;
+  --on-error-container: #991b1b;
 
-  --success: #15803d;
+  --success: #16a34a;
   --on-success: #ffffff;
   --success-container: #dcfce7;
   --on-success-container: #14532d;
 
-  --warning: #b45309;
+  --warning: #d97706;
   --on-warning: #ffffff;
   --warning-container: #fef3c7;
   --on-warning-container: #78350f;
@@ -70,10 +75,10 @@
   --inverse-surface: #1e293b;
   --inverse-on-surface: #f8fafc;
   --inverse-primary: #93c5fd;
-  --shadow: rgba(15, 23, 42, 0.06);
+  --shadow: rgba(15, 23, 42, 0.04);
 }
 
-/* Bento Grid Architecture (Rule 2) */
+/* High-Density Bento Grid Architecture (Rule 2) */
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--bento-col-min), 1fr));
@@ -93,33 +98,44 @@
   }
 }
 
+/* Ultra-Wide & 4K/8K: More columns side-by-side, NEVER blown-up cards! */
+@media (min-width: 1800px) {
+  :root {
+    --bento-col-min: 280px;
+    --bento-gap: 14px;
+  }
+}
+
 @media (min-width: 2560px) {
-  :root { --bento-col-min: 360px; --bento-gap: 28px; }
+  :root {
+    --bento-col-min: 300px;
+    --bento-gap: 16px;
+  }
 }
 
 @media (min-width: 3840px) {
-  :root { --bento-col-min: 420px; --bento-gap: 36px; }
+  :root {
+    --bento-col-min: 320px;
+    --bento-gap: 18px;
+  }
 }
 
-@media (min-width: 7680px) {
-  :root { --bento-col-min: 520px; --bento-gap: 48px; }
-}
-
-/* MD3 Expressive Component Primitives (Rules 3, 4, 5, 6) */
+/* MD3 Expressive Compact Primitives */
 .md3-card, .panel, .bento-card {
   background: var(--surface-container-low);
   color: var(--on-surface);
   border: 1px solid var(--outline-variant);
   border-radius: var(--shape-lg);
-  padding: var(--space-lg);
+  padding: var(--space-md);
   box-sizing: border-box;
-  transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1), background-color 0.22s ease, border-color 0.22s ease;
+  transition: transform 0.18s cubic-bezier(0.2, 0, 0, 1), background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .md3-card:hover, .bento-card:hover {
   background: var(--surface-container);
-  border-color: var(--outline);
-  transform: translateY(-2px);
+  border-color: var(--outline-variant);
+  box-shadow: 0 4px 12px var(--shadow-ambient);
+  transform: translateY(-1px);
 }
 
 button, .btn-primary {
@@ -130,139 +146,127 @@ button, .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
+  gap: 6px;
   border: 0;
   border-radius: var(--shape-full);
   background: var(--primary);
   color: var(--on-primary);
-  padding: clamp(10px, 0.8vw, 15px) clamp(20px, 1.4vw, 32px);
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  padding: 7px 16px;
+  min-height: 34px;
+  transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
   box-sizing: border-box;
 }
 
-button:hover, .btn-primary:hover {
-  filter: brightness(1.06);
-  transform: translateY(-1.5px);
-  box-shadow: 0 4px 12px var(--shadow);
+button:hover:not(:disabled), .btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow: 0 2px 8px var(--shadow-ambient);
 }
 
-button:active, .btn-primary:active {
-  transform: translateY(0);
-  filter: brightness(0.96);
+button:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
-button:disabled {
+button:disabled, .btn-primary:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
 }
 
-button.secondary, .btn-secondary {
+.btn-secondary {
   background: var(--secondary-container);
   color: var(--on-secondary-container);
-  border: 1px solid transparent;
+  border: 1px solid var(--outline-variant);
 }
 
-button.secondary:hover, .btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background: var(--surface-container-highest);
-  color: var(--on-surface);
 }
 
-button.tertiary, button.outline, button.back, .btn-tertiary {
+.btn-ghost, .btn-tertiary {
   background: transparent;
   color: var(--primary);
   border: 1px solid var(--outline-variant);
 }
 
-button.tertiary:hover, button.outline:hover, button.back:hover, .btn-tertiary:hover {
-  background: var(--primary-container);
-  color: var(--on-primary-container);
-  border-color: var(--primary);
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-container-high);
 }
 
-button.danger, .btn-danger {
-  background: var(--error-container);
-  color: var(--on-error-container);
-  border: 1px solid var(--error);
-}
-
-button.danger:hover, .btn-danger:hover {
-  background: var(--error);
-  color: var(--on-error);
-}
-
-input, select, textarea {
+/* Expressive Form Fields (Rule 5) */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+input[type="search"],
+select,
+textarea {
   font-family: inherit;
   font-size: var(--font-body-medium);
-  border: 1.5px solid transparent;
-  border-radius: var(--shape-md);
-  padding: clamp(11px, 0.8vw, 16px) clamp(14px, 1.0vw, 20px);
-  background: var(--surface-container-highest);
   color: var(--on-surface);
-  min-width: 0;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  background: var(--surface-container-highest);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 7px 12px;
+  min-height: 36px;
+  outline: none;
   box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
 }
 
 input::placeholder, textarea::placeholder {
   color: var(--on-surface-variant);
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 input:focus, select:focus, textarea:focus {
-  outline: none;
   border-color: var(--primary);
-  background: var(--surface-container-lowest);
   box-shadow: 0 0 0 3px var(--primary-container);
+  background: var(--surface-container-high);
 }
 
-label {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  font-size: var(--font-label-medium);
-  font-weight: 600;
-  color: var(--on-surface-variant);
-}
-
-label:focus-within { color: var(--primary); }
-
-.chip, .badge, .status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: clamp(4px, 0.4vw, 8px) clamp(10px, 0.8vw, 16px);
-  border-radius: var(--shape-full);
-  font-size: var(--font-label-small);
-  font-weight: 650;
-  background: var(--tertiary-container);
-  color: var(--on-tertiary-container);
-  border: 1px solid transparent;
-}
-
-.chip.primary { background: var(--primary-container); color: var(--on-primary-container); }
-.chip.secondary { background: var(--secondary-container); color: var(--on-secondary-container); }
-
+/* Structural Icon Badges (Rule 6) */
 .icon-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: clamp(38px, 2.5vw, 54px);
-  height: clamp(38px, 2.5vw, 54px);
-  border-radius: var(--shape-md);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--shape-full);
   background: var(--primary-container);
   color: var(--on-primary-container);
   flex-shrink: 0;
 }
 
-.icon-badge.tertiary { background: var(--tertiary-container); color: var(--on-tertiary-container); }
-.icon-badge.secondary { background: var(--secondary-container); color: var(--on-secondary-container); }
-.icon-badge.circular { border-radius: var(--shape-full); }
+.icon-badge.secondary {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
 
-.tabular-nums, .kpi-number, .stat-number, .score-number {
+.icon-badge.tertiary {
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+}
+
+/* Status Chips & Badges */
+.chip, .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-label-small);
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--shape-full);
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
+}
+
+.chip.active, .badge.primary {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+
+.tabular-nums {
   font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum' on;
-  font-weight: 750;
-  letter-spacing: -0.02em;
 }

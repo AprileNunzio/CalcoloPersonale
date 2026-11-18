@@ -21,7 +21,7 @@ export function SeniorityProgressionCard({
     <div className="seniority-progression-card">
       <div className="seniority-card-header">
         <div className="seniority-card-title">
-          <TrendingUp size={20} color="#059669" />
+          <TrendingUp size={20} color="var(--secondary)" />
           <div>
             <h4>Progressione di Carriera & Fasce CCNL 2024 ({profileLabel})</h4>
             <span className="seniority-subtitle">
@@ -55,7 +55,7 @@ export function SeniorityProgressionCard({
           <span className="stat-label">Prossimo Scatto di Fascia</span>
           {seniority.nextFascia ? (
             <>
-              <span className="stat-value" style={{ color: '#047857' }}>
+              <span className="stat-value" style={{ color: 'var(--secondary)' }}>
                 Fascia {seniority.nextFascia}
               </span>
               <span className="stat-sub">
@@ -64,7 +64,7 @@ export function SeniorityProgressionCard({
             </>
           ) : (
             <>
-              <span className="stat-value" style={{ color: '#059669' }}>Fascia Massima</span>
+              <span className="stat-value" style={{ color: 'var(--secondary)' }}>Fascia Massima</span>
               <span className="stat-sub">Oltre 35 anni di anzianità</span>
             </>
           )}
@@ -88,7 +88,7 @@ export function SeniorityProgressionCard({
 
       {/* Fascia interactive selector pills */}
       <div className="fascia-selector-container">
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>
           Simula Busta Paga per Fascia Stipendiale CCNL:
         </span>
         <div className="fascia-pills-row">
@@ -109,7 +109,7 @@ export function SeniorityProgressionCard({
           })}
         </div>
         {!isAuto && (
-          <div style={{ marginTop: 6, fontSize: 11, color: '#b45309', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ marginTop: 6, fontSize: 11, color: 'var(--tertiary)', display: 'flex', alignItems: 'center', gap: 4 }}>
             <Zap size={13} />
             <span>
               Stai simulando una fascia manuale ({selectedFascia}). Clicca su "Tua Fascia" ({seniority.currentFascia}) per tornare alla tua anzianità reale.

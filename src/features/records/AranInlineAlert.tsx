@@ -33,7 +33,7 @@ export function AranInlineAlert({ alerts }: { alerts: AranItem[] }) {
             key={al.id}
             className="aran-inline-warning-box"
             style={{
-              borderColor: isRed ? '#ef4444' : isAmber ? '#f59e0b' : '#3b82f6',
+              borderColor: isRed ? 'var(--error)' : isAmber ? 'var(--tertiary)' : 'var(--primary)',
               background: isRed
                 ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.16) 0%, rgba(185, 28, 28, 0.08) 100%)'
                 : isAmber
@@ -42,18 +42,18 @@ export function AranInlineAlert({ alerts }: { alerts: AranItem[] }) {
             }}
           >
             {isRed ? (
-              <AlertOctagon size={24} color="#ef4444" style={{ flexShrink: 0, marginTop: 2 }} />
+              <AlertOctagon size={24} color="var(--error)" style={{ flexShrink: 0, marginTop: 2 }} />
             ) : isAmber ? (
-              <AlertTriangle size={24} color="#f59e0b" style={{ flexShrink: 0, marginTop: 2 }} />
+              <AlertTriangle size={24} color="var(--tertiary)" style={{ flexShrink: 0, marginTop: 2 }} />
             ) : (
-              <Info size={24} color="#38bdf8" style={{ flexShrink: 0, marginTop: 2 }} />
+              <Info size={24} color="var(--primary)" style={{ flexShrink: 0, marginTop: 2 }} />
             )}
 
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{
                   fontWeight: 800,
-                  color: isRed ? '#fca5a5' : isAmber ? '#fde68a' : '#bae6fd',
+                  color: isRed ? 'var(--error)' : isAmber ? 'var(--outline-variant)' : 'var(--primary)',
                   textTransform: 'uppercase',
                   fontSize: '0.8rem',
                   letterSpacing: '0.5px',
@@ -63,13 +63,13 @@ export function AranInlineAlert({ alerts }: { alerts: AranItem[] }) {
                 ⚠️ {al.ruleCode}: {al.title}
               </div>
 
-              <div style={{ fontSize: '0.82rem', color: '#f8fafc', lineHeight: 1.45 }}>{al.summary}</div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--surface-container-high)', lineHeight: 1.45 }}>{al.summary}</div>
 
               <div
                 style={{
                   marginTop: 6,
                   fontWeight: 700,
-                  color: isRed ? '#fecaca' : isAmber ? '#fef08a' : '#e0f2fe',
+                  color: isRed ? 'var(--error)' : isAmber ? 'var(--tertiary)' : 'var(--primary-container)',
                   fontSize: '0.82rem',
                 }}
               >
@@ -94,7 +94,7 @@ export function AranInlineAlert({ alerts }: { alerts: AranItem[] }) {
                       marginBottom: 4,
                     }}
                   >
-                    <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#38bdf8' }}>
+                    <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--primary)' }}>
                       📝 Nota di tutela da presentare alla Segreteria Scolastica:
                     </span>
                     <button
@@ -102,7 +102,7 @@ export function AranInlineAlert({ alerts }: { alerts: AranItem[] }) {
                       style={{
                         background: 'rgba(255, 255, 255, 0.1)',
                         border: 'none',
-                        color: copiedId === al.id ? '#34d399' : '#e2e8f0',
+                        color: copiedId === al.id ? 'var(--secondary)' : 'var(--outline-variant)',
                         fontSize: '0.72rem',
                         fontWeight: 650,
                         padding: '3px 8px',
@@ -122,7 +122,7 @@ export function AranInlineAlert({ alerts }: { alerts: AranItem[] }) {
                     style={{
                       fontSize: '0.78rem',
                       fontStyle: 'italic',
-                      color: '#cbd5e1',
+                      color: 'var(--outline-variant)',
                       lineHeight: 1.4,
                     }}
                   >

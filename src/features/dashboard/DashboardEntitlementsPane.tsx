@@ -122,7 +122,7 @@ export function DashboardEntitlementsPane({
             </div>
           </div>
 
-          <div style={{ fontSize: 11, color: '#64748b', marginTop: 10, lineHeight: 1.4, background: '#f8fafc', padding: '6px 10px', borderRadius: 6, border: '1px solid #e2e8f0' }}>
+          <div style={{ fontSize: 11, color: 'var(--on-surface-variant)', marginTop: 10, lineHeight: 1.4, background: 'var(--surface-container-high)', padding: '6px 10px', borderRadius: 6, border: '1px solid var(--outline-variant)' }}>
             {entitlements.contractType === 'annual'
               ? 'Normativa CCNL Scuola Art. 19 c. 3 (supplenze fino al 30/06 o 31/08): assenze per malattia max 9 mesi nel triennio scolastico (primi 30 gg retribuiti al 100%, dal 31° al 90° giorno al 50%, dal 91° al 270° giorno allo 0% con diritto alla sola conservazione del posto).'
               : entitlements.contractType === 'short'

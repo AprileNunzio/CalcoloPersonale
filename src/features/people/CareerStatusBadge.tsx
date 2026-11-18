@@ -18,8 +18,8 @@ export function CareerStatusBadge({ person, showDetails = false }: CareerStatusB
           flexDirection: showDetails ? 'column' : 'row',
           alignItems: showDetails ? 'flex-start' : 'center',
           gap: 6,
-          background: 'linear-gradient(135deg, #fbf7ff 0%, #f3e8ff 100%)',
-          border: '1.5px solid #d8b4fe',
+          background: 'linear-gradient(135deg, var(--surface-container-high) 0%, var(--surface-container) 100%)',
+          border: '1.5px solid var(--outline-variant)',
           borderRadius: 8,
           padding: showDetails ? '8px 12px' : '4px 10px',
           boxShadow: '0 2px 8px rgba(168, 85, 247, 0.1)',
@@ -27,13 +27,13 @@ export function CareerStatusBadge({ person, showDetails = false }: CareerStatusB
         title={status.shortDescription}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Crown size={15} color="#7e22ce" />
-          <strong style={{ color: '#581c87', fontSize: 12.5, fontWeight: 750 }}>
+          <Crown size={15} color="var(--primary)" />
+          <strong style={{ color: 'var(--primary)', fontSize: 12.5, fontWeight: 750 }}>
             {status.badgeTitle}
           </strong>
         </div>
         {showDetails && (
-          <div style={{ fontSize: 11, color: '#6b21a8', lineHeight: 1.4 }}>
+          <div style={{ fontSize: 11, color: 'var(--primary)', lineHeight: 1.4 }}>
             {status.activeRuoloDetails?.serviceSchoolName && (
               <div>Sede: {status.activeRuoloDetails.serviceSchoolName}</div>
             )}
@@ -54,19 +54,19 @@ export function CareerStatusBadge({ person, showDetails = false }: CareerStatusB
           display: 'inline-flex',
           alignItems: 'center',
           gap: 6,
-          background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-          border: '1.5px solid #6ee7b7',
+          background: 'linear-gradient(135deg, var(--secondary-container) 0%, var(--secondary-container) 100%)',
+          border: '1.5px solid var(--outline-variant)',
           borderRadius: 8,
           padding: '4px 10px',
           boxShadow: '0 2px 8px rgba(16, 185, 129, 0.1)',
         }}
         title={status.shortDescription}
       >
-        <Sparkles size={14} color="#047857" />
-        <strong style={{ color: '#065f46', fontSize: 12, fontWeight: 750 }}>
+        <Sparkles size={14} color="var(--secondary)" />
+        <strong style={{ color: 'var(--secondary)', fontSize: 12, fontWeight: 750 }}>
           {status.badgeTitle}
         </strong>
-        <span style={{ fontSize: 11, color: '#047857', fontWeight: 600 }}>
+        <span style={{ fontSize: 11, color: 'var(--secondary)', fontWeight: 600 }}>
           ({status.totalStateAtaMonths} mesi)
         </span>
       </div>
@@ -79,28 +79,28 @@ export function CareerStatusBadge({ person, showDetails = false }: CareerStatusB
         display: 'inline-flex',
         flexDirection: 'column',
         gap: 3,
-        background: '#f8fafc',
-        border: '1px solid #cbd5e1',
+        background: 'var(--surface-container-high)',
+        border: '1px solid var(--outline-variant)',
         borderRadius: 8,
         padding: '4px 10px',
       }}
       title={status.shortDescription}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <Clock size={13} color="#475569" />
-        <strong style={{ color: '#334155', fontSize: 12, fontWeight: 700 }}>
+        <Clock size={13} color="var(--on-surface-variant)" />
+        <strong style={{ color: 'var(--on-surface-variant)', fontSize: 12, fontWeight: 700 }}>
           {status.badgeTitle}
         </strong>
-        <span style={{ fontSize: 11, color: '#64748b' }}>
+        <span style={{ fontSize: 11, color: 'var(--on-surface-variant)' }}>
           {status.totalStateAtaDays}/706 gg ({status.percentTo24Months}%)
         </span>
       </div>
       {showDetails && (
-        <div style={{ width: '100%', background: '#e2e8f0', height: 4, borderRadius: 2, overflow: 'hidden' }}>
+        <div style={{ width: '100%', background: 'var(--outline-variant)', height: 4, borderRadius: 2, overflow: 'hidden' }}>
           <div
             style={{
               width: `${status.percentTo24Months}%`,
-              background: '#0d9488',
+              background: 'var(--primary)',
               height: '100%',
               transition: 'width 0.3s ease',
             }}

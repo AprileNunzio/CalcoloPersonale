@@ -198,8 +198,8 @@ export function IstanzeOnlineImportModal({
                 }}
                 onClick={() => fileInputRef.current?.click()}
                 style={{
-                  border: isDragging ? '2px dashed #2563eb' : '2px dashed #cbd5e1',
-                  background: isDragging ? '#eff6ff' : '#f8fafc',
+                  border: isDragging ? '2px dashed var(--primary)' : '2px dashed var(--outline-variant)',
+                  background: isDragging ? 'var(--primary-container)' : 'var(--surface-container-high)',
                   padding: '24px 16px',
                   borderRadius: 12,
                   textAlign: 'center',
@@ -208,11 +208,11 @@ export function IstanzeOnlineImportModal({
                   transition: 'all 0.2s ease',
                 }}
               >
-                <Upload size={32} color={isDragging ? '#2563eb' : '#64748b'} style={{ margin: '0 auto 8px auto' }} />
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b' }}>
+                <Upload size={32} color={isDragging ? 'var(--primary)' : 'var(--on-surface-variant)'} style={{ margin: '0 auto 8px auto' }} />
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--on-surface)' }}>
                   Trascina qui il file PDF della Domanda Istanze Online (Zero-Click)
                 </div>
-                <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
+                <div style={{ fontSize: 12, color: 'var(--on-surface-variant)', marginTop: 4 }}>
                   oppure clicca qui per selezionare il file dal tuo computer
                 </div>
                 <input
@@ -227,7 +227,7 @@ export function IstanzeOnlineImportModal({
               </div>
 
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 6 }}>
                   Oppure incolla direttamente il testo estratto dalla domanda:
                 </label>
                 <textarea
@@ -235,7 +235,7 @@ export function IstanzeOnlineImportModal({
                   value={inputText}
                   onChange={e => setInputText(e.target.value)}
                   placeholder="Incolla qui il testo della ricevuta della domanda ATA III Fascia scaricata da Istanze Online..."
-                  style={{ width: '100%', padding: '10px 12px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 8, fontFamily: 'monospace' }}
+                  style={{ width: '100%', padding: '10px 12px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 8, fontFamily: 'monospace' }}
                 />
                 <button
                   type="button"
@@ -250,34 +250,34 @@ export function IstanzeOnlineImportModal({
             </div>
           ) : (
             <div>
-              <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', padding: 14, borderRadius: 10, marginBottom: 16 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#065f46', fontWeight: 700, fontSize: 14 }}>
-                  <CheckCircle2 size={18} color="#059669" />
+              <div style={{ background: 'var(--secondary-container)', border: '1px solid var(--outline-variant)', padding: 14, borderRadius: 10, marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--secondary)', fontWeight: 700, fontSize: 14 }}>
+                  <CheckCircle2 size={18} color="var(--secondary)" />
                   Domanda Analizzata con Successo! Verifica i dati estratti:
                 </div>
-                <div style={{ marginTop: 8, fontSize: 12, color: '#047857' }}>
+                <div style={{ marginTop: 8, fontSize: 12, color: 'var(--secondary)' }}>
                   Profili: <strong>{parsedData.profiles.join(', ')}</strong> {parsedData.fiscalCode && `· Codice Fiscale: ${parsedData.fiscalCode}`}
                 </div>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {parsedData.accessTitle && (
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
-                      <GraduationCap size={16} color="#2563eb" /> Titolo di Accesso Rilevato
+                  <div style={{ background: 'var(--surface-container-high)', border: '1px solid var(--outline-variant)', borderRadius: 8, padding: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: 'var(--on-surface)' }}>
+                      <GraduationCap size={16} color="var(--primary)" /> Titolo di Accesso Rilevato
                     </div>
-                    <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>
+                    <div style={{ fontSize: 12, color: 'var(--on-surface-variant)', marginTop: 4 }}>
                       {parsedData.accessTitle.title} &rarr; <strong>{parsedData.accessTitle.points.toFixed(2)} punti</strong> (voto {parsedData.accessTitle.score}/{parsedData.accessTitle.base})
                     </div>
                   </div>
                 )}
 
                 {parsedData.culturalTitles.length > 0 && (
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
-                      <FileText size={16} color="#059669" /> Titoli Culturali & Informatici ({parsedData.culturalTitles.length})
+                  <div style={{ background: 'var(--surface-container-high)', border: '1px solid var(--outline-variant)', borderRadius: 8, padding: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: 'var(--on-surface)' }}>
+                      <FileText size={16} color="var(--secondary)" /> Titoli Culturali & Informatici ({parsedData.culturalTitles.length})
                     </div>
-                    <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 12, color: '#475569' }}>
+                    <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 12, color: 'var(--on-surface-variant)' }}>
                       {parsedData.culturalTitles.map((ct, idx) => (
                         <li key={idx}>
                           {ct.title} (+{ct.points.toFixed(2)} pt)
@@ -288,11 +288,11 @@ export function IstanzeOnlineImportModal({
                 )}
 
                 {parsedData.services.length > 0 && (
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
-                      <Briefcase size={16} color="#d97706" /> Periodi di Servizio Rilevati ({parsedData.services.length})
+                  <div style={{ background: 'var(--surface-container-high)', border: '1px solid var(--outline-variant)', borderRadius: 8, padding: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: 'var(--on-surface)' }}>
+                      <Briefcase size={16} color="var(--tertiary)" /> Periodi di Servizio Rilevati ({parsedData.services.length})
                     </div>
-                    <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 12, color: '#475569' }}>
+                    <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 12, color: 'var(--on-surface-variant)' }}>
                       {parsedData.services.map((s, idx) => (
                         <li key={idx}>
                           {s.start} &rarr; {s.end} ({s.profile}) - {s.isStatale ? 'Scuola Statale' : 'Scuola Paritaria'}
@@ -303,11 +303,11 @@ export function IstanzeOnlineImportModal({
                 )}
 
                 {(parsedData.hasSpouse || (parsedData.childrenCount && parsedData.childrenCount > 0)) && (
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
-                      <Users2 size={16} color="#7c3aed" /> Preferenze e Famiglia
+                  <div style={{ background: 'var(--surface-container-high)', border: '1px solid var(--outline-variant)', borderRadius: 8, padding: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: 'var(--on-surface)' }}>
+                      <Users2 size={16} color="var(--primary)" /> Preferenze e Famiglia
                     </div>
-                    <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>
+                    <div style={{ fontSize: 12, color: 'var(--on-surface-variant)', marginTop: 4 }}>
                       {parsedData.hasSpouse && '• Coniuge a carico / ricongiungimento indicato'}
                       {parsedData.childrenCount && ` • Figli a carico: ${parsedData.childrenCount}`}
                     </div>
@@ -318,7 +318,7 @@ export function IstanzeOnlineImportModal({
           )}
         </div>
 
-        <div className="wizard-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', borderTop: '1px solid #e2e8f0' }}>
+        <div className="wizard-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', borderTop: '1px solid var(--outline-variant)' }}>
           {parsedData ? (
             <button
               type="button"

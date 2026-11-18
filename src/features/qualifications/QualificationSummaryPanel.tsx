@@ -65,13 +65,13 @@ export function QualificationSummaryPanel({ person }: QualificationSummaryPanelP
     <div className="qualification-summary-deck">
       <div className="qual-header-row">
         <div className="qual-header-title">
-          <Award size={20} color="#0d9488" />
+          <Award size={20} color="var(--primary)" />
           <span>Quadro Riepilogativo Titoli Culturali & Requisiti ATA (D.M. 89/2024)</span>
         </div>
         <span
           style={{
-            background: '#0f766e',
-            color: '#ffffff',
+            background: 'var(--primary)',
+            color: 'var(--surface)',
             fontSize: 12,
             fontWeight: 800,
             padding: '4px 10px',
@@ -85,7 +85,7 @@ export function QualificationSummaryPanel({ person }: QualificationSummaryPanelP
       <div className="qual-stats-grid">
         <div className="qual-stat-card">
           <div className="qual-stat-label">
-            <GraduationCap size={14} color="#0284c7" /> Titolo di Accesso
+            <GraduationCap size={14} color="var(--primary)" /> Titolo di Accesso
           </div>
           <div className="qual-stat-val">
             {accessTitle ? `${accessPoints.toFixed(2)} pt` : '0.00 pt'}
@@ -97,7 +97,7 @@ export function QualificationSummaryPanel({ person }: QualificationSummaryPanelP
 
         <div className="qual-stat-card">
           <div className="qual-stat-label">
-            <Laptop size={14} color="#7c3aed" /> Certif. Informatiche
+            <Laptop size={14} color="var(--primary)" /> Certif. Informatiche
           </div>
           <div className="qual-stat-val">{effectiveDigitalPoints.toFixed(2)} pt</div>
           <div className="qual-stat-sub">
@@ -107,7 +107,7 @@ export function QualificationSummaryPanel({ person }: QualificationSummaryPanelP
 
         <div className="qual-stat-card">
           <div className="qual-stat-label">
-            <BookOpen size={14} color="#d97706" /> Lauree & Qualifiche
+            <BookOpen size={14} color="var(--tertiary)" /> Lauree & Qualifiche
           </div>
           <div className="qual-stat-val">{(degreePoints + otherCulturalPoints).toFixed(2)} pt</div>
           <div className="qual-stat-sub">Laurea, Dattilografia, Concorsi</div>
@@ -115,9 +115,9 @@ export function QualificationSummaryPanel({ person }: QualificationSummaryPanelP
 
         <div className="qual-stat-card">
           <div className="qual-stat-label">
-            <ShieldCheck size={14} color="#059669" /> Stato CIAD (CCNL 2024)
+            <ShieldCheck size={14} color="var(--secondary)" /> Stato CIAD (CCNL 2024)
           </div>
-          <div className="qual-stat-val" style={{ color: hasCiad ? '#059669' : requiresCiad ? '#d97706' : '#64748b' }}>
+          <div className="qual-stat-val" style={{ color: hasCiad ? 'var(--secondary)' : requiresCiad ? 'var(--tertiary)' : 'var(--on-surface-variant)' }}>
             {hasCiad ? 'Conforme ✓' : requiresCiad ? 'Mancante ⚠' : 'Non Richiesto'}
           </div>
           <div className="qual-stat-sub">Accredia DigComp 2.2</div>
@@ -128,14 +128,14 @@ export function QualificationSummaryPanel({ person }: QualificationSummaryPanelP
         <div className={`ciad-alert-box ${hasCiad ? 'valid' : 'missing'}`}>
           {hasCiad ? (
             <>
-              <ShieldCheck size={18} color="#059669" style={{ flexShrink: 0 }} />
+              <ShieldCheck size={18} color="var(--secondary)" style={{ flexShrink: 0 }} />
               <div>
                 <strong>Requisito di Accesso CIAD Soddisfatto:</strong> Certificazione internazionale di alfabetizzazione digitale registrata e valida per l'inserimento nelle graduatorie ATA.
               </div>
             </>
           ) : (
             <>
-              <AlertTriangle size={18} color="#d97706" style={{ flexShrink: 0 }} />
+              <AlertTriangle size={18} color="var(--tertiary)" style={{ flexShrink: 0 }} />
               <div>
                 <strong>Attenzione CIAD Mancante (CCNL 18 gennaio 2024):</strong> Per il profilo {profile} la Certificazione Internazionale di Alfabetizzazione Digitale rilasciata da ente accreditato Accredia è requisito obbligatorio di accesso alle graduatorie.
               </div>

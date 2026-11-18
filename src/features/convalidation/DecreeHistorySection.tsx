@@ -50,8 +50,8 @@ export function DecreeHistorySection({
   return (
     <div className="decree-history-container">
       <div className="decree-history-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, color: '#334155' }}>
-          <History size={15} color="#116b62" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, color: 'var(--on-surface-variant)' }}>
+          <History size={15} color="var(--primary)" />
           <span>Storico Decreti e Convalide Pregresse ({history.length})</span>
         </div>
         <button
@@ -121,7 +121,7 @@ export function DecreeHistorySection({
 
       {isOpen && (
         <div className="decree-history-form">
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#1e293b', marginBottom: 8 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--on-surface)', marginBottom: 8 }}>
             Registra Decreto Precedente (es. Convalida del 2021 o 2017)
           </div>
           <div className="decree-form-grid">

@@ -15,7 +15,7 @@ export function ValidationHeader({ decree, onDecreeChange }: ValidationHeaderPro
       </p>
 
       <div className="decree-selector-strip">
-        <span style={{ fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>
           Normativa Applicata:
         </span>
         <button

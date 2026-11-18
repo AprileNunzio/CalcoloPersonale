@@ -57,10 +57,10 @@ export function FamilyMemberPicker({
 
       {source === 'archive' && (
         <div className="archive-search-container" style={{
-          background: 'var(--color-bg-secondary, #f8fafc)',
+          background: 'var(--color-bg-secondary, var(--surface-container-high))',
           padding: '12px 14px',
           borderRadius: 8,
-          border: '1px solid var(--color-border, #e2e8f0)',
+          border: '1px solid var(--color-border, var(--outline-variant))',
         }}>
           {selectedPerson ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -69,8 +69,8 @@ export function FamilyMemberPicker({
                   width: 34,
                   height: 34,
                   borderRadius: '50%',
-                  background: 'var(--color-primary-light, #eff6ff)',
-                  color: 'var(--color-primary, #2563eb)',
+                  background: 'var(--primary-container)',
+                  color: 'var(--primary)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -80,7 +80,7 @@ export function FamilyMemberPicker({
                 </div>
                 <div>
                   <strong>{selectedPerson.lastName} {selectedPerson.firstName}</strong>
-                  <div style={{ fontSize: '12px', color: 'var(--color-text-muted, #64748b)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-muted, var(--on-surface-variant))' }}>
                     {selectedPerson.fiscalCode ? `${selectedPerson.fiscalCode} · ` : ''}
                     {selectedPerson.birthDate ? `${t('birthDate')}: ${selectedPerson.birthDate}` : ''}
                   </div>
@@ -103,7 +103,7 @@ export function FamilyMemberPicker({
                   left: 10,
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  color: 'var(--color-text-muted, #94a3b8)',
+                  color: 'var(--on-surface-variant)',
                 }} />
                 <input
                   type="text"
@@ -116,7 +116,7 @@ export function FamilyMemberPicker({
 
               <div style={{ maxHeight: 180, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {filteredPeople.length === 0 ? (
-                  <p style={{ fontSize: '13px', color: 'var(--color-text-muted, #94a3b8)', margin: '8px 4px' }}>
+                  <p style={{ fontSize: '13px', color: 'var(--on-surface-variant)', margin: '8px 4px' }}>
                     {t('noResults')}
                   </p>
                 ) : (
@@ -137,14 +137,14 @@ export function FamilyMemberPicker({
                         cursor: 'pointer',
                         color: 'inherit',
                       }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg-hover, #f1f5f9)')}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-bg-hover, var(--outline-variant))')}
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                       <div>
                         <div style={{ fontWeight: 600, fontSize: '13px' }}>
                           {person.lastName} {person.firstName}
                         </div>
-                        <div style={{ fontSize: '11px', color: 'var(--color-text-muted, #64748b)' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--color-text-muted, var(--on-surface-variant))' }}>
                           {person.fiscalCode || ''} {person.birthDate ? `· ${person.birthDate}` : ''}
                         </div>
                       </div>

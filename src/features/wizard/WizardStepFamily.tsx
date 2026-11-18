@@ -44,10 +44,10 @@ export function WizardStepFamily({
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {/* SPOUSE SECTION */}
-        <div className="panel" style={{ padding: 20, borderLeft: '4px solid #e11d48' }}>
+        <div className="panel" style={{ padding: 20, borderLeft: '4px solid var(--primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Heart size={20} color="#e11d48" />
+              <Heart size={20} color="var(--primary)" />
               <h4 style={{ margin: 0, fontSize: 15 }}>Coniuge / Partner convivente</h4>
             </div>
             <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer', margin: 0 }}>
@@ -87,9 +87,9 @@ export function WizardStepFamily({
         </div>
 
         {/* CHILDREN SECTION */}
-        <div className="panel" style={{ padding: 20, borderLeft: '4px solid #2563eb' }}>
+        <div className="panel" style={{ padding: 20, borderLeft: '4px solid var(--primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            <Baby size={20} color="#2563eb" />
+            <Baby size={20} color="var(--primary)" />
             <h4 style={{ margin: 0, fontSize: 15 }}>Figli a Carico & Congedo Parentale</h4>
           </div>
           <div className="fields" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>

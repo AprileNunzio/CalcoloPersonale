@@ -16,7 +16,7 @@ export function WizardStepWelcome() {
       <div className="dash-cards-grid">
         <div className="panel" style={{ padding: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <div style={{ background: '#e6f4f1', color: '#116b62', padding: 8, borderRadius: 10 }}>
+            <div style={{ background: 'var(--primary-container)', color: 'var(--primary)', padding: 8, borderRadius: 10 }}>
               <Briefcase size={20} />
             </div>
             <h3 style={{ margin: 0, fontSize: 16 }}>Cos’è il Personale ATA?</h3>
@@ -28,7 +28,7 @@ export function WizardStepWelcome() {
 
         <div className="panel" style={{ padding: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <div style={{ background: '#eff6ff', color: '#2563eb', padding: 8, borderRadius: 10 }}>
+            <div style={{ background: 'var(--primary-container)', color: 'var(--primary)', padding: 8, borderRadius: 10 }}>
               <Calculator size={20} />
             </div>
             <h3 style={{ margin: 0, fontSize: 16 }}>Come Funziona il Punteggio?</h3>
@@ -40,7 +40,7 @@ export function WizardStepWelcome() {
 
         <div className="panel" style={{ padding: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <div style={{ background: '#fdf2f8', color: '#db2777', padding: 8, borderRadius: 10 }}>
+            <div style={{ background: 'var(--tertiary-container)', color: 'var(--primary)', padding: 8, borderRadius: 10 }}>
               <ShieldCheck size={20} />
             </div>
             <h3 style={{ margin: 0, fontSize: 16 }}>Nuovo CCNL 2024 & CIAD</h3>
@@ -52,7 +52,7 @@ export function WizardStepWelcome() {
       </div>
 
       <div className="wizard-info-callout" style={{ marginTop: 24 }}>
-        <HelpCircle size={22} style={{ flexShrink: 0, color: '#116b62' }} />
+        <HelpCircle size={22} style={{ flexShrink: 0, color: 'var(--primary)' }} />
         <div>
           <h4>Cosa ti serve per iniziare?</h4>
           <p>

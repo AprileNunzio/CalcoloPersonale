@@ -89,19 +89,19 @@ export function CareerTimelineGantt({ person, targetProfile = 'CS' }: CareerTime
   }, [segments, filterProfile]);
 
   const getProfileColor = (prof: string, isDocente: boolean) => {
-    if (isDocente) return '#d97706'; // Amber for docente
+    if (isDocente) return 'var(--tertiary)'; // Amber for docente
     switch (prof.toUpperCase()) {
-      case 'CS': return '#059669'; // Green
-      case 'AA': return '#2563eb'; // Blue
-      case 'AT': return '#7c3aed'; // Purple
-      case 'OS': return '#0284c7'; // Sky
-      default: return '#475569';   // Slate
+      case 'CS': return 'var(--secondary)'; // Green
+      case 'AA': return 'var(--primary)'; // Blue
+      case 'AT': return 'var(--primary)'; // Purple
+      case 'OS': return 'var(--primary)'; // Sky
+      default: return 'var(--on-surface-variant)';   // Slate
     }
   };
 
   if (segments.length === 0) {
     return (
-      <div style={{ background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: 8, padding: '24px 16px', textAlign: 'center', color: '#64748b' }}>
+      <div style={{ background: 'var(--surface-container-high)', border: '1px dashed var(--outline-variant)', borderRadius: 8, padding: '24px 16px', textAlign: 'center', color: 'var(--on-surface-variant)' }}>
         <Calendar size={28} style={{ opacity: 0.5, marginBottom: 8 }} />
         <p style={{ margin: 0, fontSize: 13 }}>Nessun servizio registrato. Inserisci i tuoi contratti nella sezione "Servizi" per visualizzare la timeline grafica della carriera.</p>
       </div>
@@ -109,26 +109,26 @@ export function CareerTimelineGantt({ person, targetProfile = 'CS' }: CareerTime
   }
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10, padding: 16 }}>
+    <div style={{ background: 'var(--surface)', border: '1px solid var(--outline-variant)', borderRadius: 10, padding: 16 }}>
       {/* HEADER & FILTERS */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
         <div>
-          <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8, color: '#0f172a' }}>
-            <Calendar size={18} color="#2563eb" /> Timeline Grafica Carriera ATA & Traguardo 24 Mesi
+          <h4 style={{ margin: 0, fontSize: 15, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--on-surface)' }}>
+            <Calendar size={18} color="var(--primary)" /> Timeline Grafica Carriera ATA & Traguardo 24 Mesi
           </h4>
-          <span style={{ fontSize: 11, color: '#64748b' }}>
+          <span style={{ fontSize: 11, color: 'var(--on-surface-variant)' }}>
             Visualizzazione cronologica per anno scolastico (1 Settembre - 31 Agosto) con calcolo soglia 706 giorni.
           </span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
-          <span style={{ color: '#475569', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+          <span style={{ color: 'var(--on-surface-variant)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
             <Filter size={14} /> Filtra Profilo:
           </span>
           <select
             value={filterProfile}
             onChange={e => setFilterProfile(e.target.value)}
-            style={{ padding: '4px 8px', fontSize: 12, border: '1px solid #cbd5e1', borderRadius: 6 }}
+            style={{ padding: '4px 8px', fontSize: 12, border: '1px solid var(--outline-variant)', borderRadius: 6 }}
           >
             <option value="all">Tutti i Profili</option>
             <option value="CS">Collaboratore Scolastico (CS)</option>
@@ -140,22 +140,22 @@ export function CareerTimelineGantt({ person, targetProfile = 'CS' }: CareerTime
       </div>
 
       {/* 24 MONTHS BADGE */}
-      <div style={{ background: milestoneHitIndex !== -1 ? '#ecfdf5' : '#eff6ff', border: `1px solid ${milestoneHitIndex !== -1 ? '#a7f3d0' : '#bfdbfe'}`, padding: '10px 14px', borderRadius: 8, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ background: milestoneHitIndex !== -1 ? 'var(--secondary-container)' : 'var(--primary-container)', border: `1px solid ${milestoneHitIndex !== -1 ? 'var(--outline-variant)' : 'var(--outline-variant)'}`, padding: '10px 14px', borderRadius: 8, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {milestoneHitIndex !== -1 ? (
-            <Award size={22} color="#059669" />
+            <Award size={22} color="var(--secondary)" />
           ) : (
-            <Sparkles size={22} color="#2563eb" />
+            <Sparkles size={22} color="var(--primary)" />
           )}
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: milestoneHitIndex !== -1 ? '#065f46' : '#1e40af' }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: milestoneHitIndex !== -1 ? 'var(--secondary)' : 'var(--primary)' }}>
               {milestoneHitIndex !== -1 ? (
                 `Traguardo 24 Mesi RAGGIUNTO (${cumulativeDays} / 706 giorni maturate)`
               ) : (
                 `Progressione verso la 1ª Fascia ATA (24 Mesi): ${cumulativeDays} / 706 giorni (~${Math.max(0, 706 - cumulativeDays)} gg rimanenti)`
               )}
             </div>
-            <span style={{ fontSize: 11, color: '#64748b' }}>
+            <span style={{ fontSize: 11, color: 'var(--on-surface-variant)' }}>
               {milestoneHitIndex !== -1 ? (
                 `Soglia superata nel contratto: "${segments[milestoneHitIndex].school}" (${segments[milestoneHitIndex].schoolYear})`
               ) : (
@@ -172,12 +172,12 @@ export function CareerTimelineGantt({ person, targetProfile = 'CS' }: CareerTime
           const totalDaysInYear = list.reduce((acc, c) => acc + c.days, 0);
 
           return (
-            <div key={sYear} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
+            <div key={sYear} style={{ background: 'var(--surface-container-high)', border: '1px solid var(--outline-variant)', borderRadius: 8, padding: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--on-surface)' }}>
                   Anno Scolastico {sYear}
                 </span>
-                <span style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>
+                <span style={{ fontSize: 11, color: 'var(--on-surface-variant)', fontWeight: 600 }}>
                   {totalDaysInYear} giorni totali coperti ({list.length} contratt{list.length === 1 ? 'o' : 'i'})
                 </span>
               </div>
@@ -192,8 +192,8 @@ export function CareerTimelineGantt({ person, targetProfile = 'CS' }: CareerTime
                     <div
                       key={seg.id}
                       style={{
-                        background: '#fff',
-                        border: `1px solid ${isMilestone ? '#fbbf24' : '#cbd5e1'}`,
+                        background: 'var(--surface)',
+                        border: `1px solid ${isMilestone ? 'var(--tertiary)' : 'var(--outline-variant)'}`,
                         borderLeft: `5px solid ${color}`,
                         borderRadius: 6,
                         padding: '8px 12px',
@@ -205,19 +205,19 @@ export function CareerTimelineGantt({ person, targetProfile = 'CS' }: CareerTime
                     >
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ fontSize: 12, fontWeight: 700, color: '#0f172a' }}>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--on-surface)' }}>
                             {seg.school}
                           </span>
-                          <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 4, background: color, color: '#fff', fontWeight: 700 }}>
+                          <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 4, background: color, color: 'var(--surface)', fontWeight: 700 }}>
                             {seg.isDocente ? 'DOCENTE' : seg.profile}
                           </span>
                           {isMilestone && (
-                            <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 4, background: '#fef3c7', color: '#b45309', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 4, background: 'var(--tertiary-container)', color: 'var(--tertiary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
                               ★ Traguardo 24M Raggiunto Qui!
                             </span>
                           )}
                         </div>
-                        <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                        <div style={{ fontSize: 11, color: 'var(--on-surface-variant)', marginTop: 2 }}>
                           Dal {new Date(seg.start).toLocaleDateString('it-IT')} al {new Date(seg.end).toLocaleDateString('it-IT')} · {seg.days} giorni di calendario
                         </div>
                       </div>
@@ -226,7 +226,7 @@ export function CareerTimelineGantt({ person, targetProfile = 'CS' }: CareerTime
                         <span style={{ fontSize: 12, fontWeight: 700, color }}>
                           {seg.isDocente ? 'Servizio Docente' : seg.isSpecific ? 'Servizio Specifico' : 'Altro ATA'}
                         </span>
-                        <div style={{ fontSize: 10, color: '#94a3b8' }}>
+                        <div style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>
                           {seg.isStatale ? 'Scuola Statale' : 'Scuola Paritaria'}
                         </div>
                       </div>

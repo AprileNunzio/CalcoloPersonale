@@ -45,7 +45,7 @@ export function SalaryControls({
         </h4>
 
         <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>
             Profilo Professionale
           </label>
           <select
@@ -54,7 +54,7 @@ export function SalaryControls({
               setProfile(e.target.value);
               setIsManualOverride(true);
             }}
-            style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1' }}
+            style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--outline-variant)' }}
           >
             {ATA_PROFILES.map(p => (
               <option key={p.code} value={p.code}>
@@ -67,7 +67,7 @@ export function SalaryControls({
 
         <div>
           <div className="salary-slider-row">
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Orario Settimanale</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Orario Settimanale</label>
             <strong>{weeklyHours} ore / sett.</strong>
           </div>
           <input
@@ -82,7 +82,7 @@ export function SalaryControls({
             }}
             style={{ width: '100%' }}
           />
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#94a3b8' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--on-surface-variant)' }}>
             <span>Spezzone (6h)</span>
             <span>Metà tempo ({profile === 'DOCENTE' ? '9h' : '18h'})</span>
             <span>Tempo Pieno ({profile === 'DOCENTE' ? '18h' : '36h'})</span>
@@ -96,7 +96,7 @@ export function SalaryControls({
         </h4>
 
         <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>
             Tipologia Contratto / Incarico
           </label>
           <select
@@ -110,7 +110,7 @@ export function SalaryControls({
               if (ct === 'term') setMonthsWorkedInYear(10);
               if (ct === 'short') setMonthsWorkedInYear(4);
             }}
-            style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1' }}
+            style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--outline-variant)' }}
           >
             <option value="permanent">Tempo Indeterminato / Ruolo (12 mesi + 13ª, comporto 18 mesi)</option>
             <option value="annual">Annuale fino al 31 agosto (12 mesi, TFR a termine INPS)</option>
@@ -121,7 +121,7 @@ export function SalaryControls({
 
         <div>
           <div className="salary-slider-row">
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Mesi Lavorati nell'Anno</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Mesi Lavorati nell'Anno</label>
             <strong>{monthsWorkedInYear} mesi</strong>
           </div>
           <input
@@ -145,7 +145,7 @@ export function SalaryControls({
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>
               Giorni Malattia nel Mese
             </label>
             <input
@@ -157,11 +157,11 @@ export function SalaryControls({
                 setSicknessDaysInMonth(parseInt(e.target.value, 10) || 0);
                 setIsManualOverride(true);
               }}
-              style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}
+              style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }}
             />
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>
               Giorni Sciopero
             </label>
             <input
@@ -173,13 +173,13 @@ export function SalaryControls({
                 setStrikeDaysInMonth(parseInt(e.target.value, 10) || 0);
                 setIsManualOverride(true);
               }}
-              style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}
+              style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }}
             />
           </div>
         </div>
 
         <div>
-          <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
+          <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>
             Figli a Carico (Assegno Unico INPS)
           </label>
           <input
@@ -191,7 +191,7 @@ export function SalaryControls({
               setDependentChildrenCount(parseInt(e.target.value, 10) || 0);
               setIsManualOverride(true);
             }}
-            style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}
+            style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }}
           />
         </div>
       </div>

@@ -15,9 +15,9 @@ export function SalaryBreakdownTable({
   strikeDaysInMonth,
 }: SalaryBreakdownTableProps) {
   return (
-    <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, padding: 18 }}>
+    <div style={{ background: 'white', border: '1px solid var(--outline-variant)', borderRadius: 12, padding: 18 }}>
       <h4 style={{ margin: '0 0 14px 0', fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Coins size={18} color="#059669" /> Voci del Cedolino NoiPA & Ritenute di Legge (Fascia {result.fascia})
+        <Coins size={18} color="var(--secondary)" /> Voci del Cedolino NoiPA & Ritenute di Legge (Fascia {result.fascia})
       </h4>
 
       <table className="salary-breakdown-table">
@@ -47,7 +47,7 @@ export function SalaryBreakdownTable({
 
           {result.sicknessDeductions > 0 && (
             <tr>
-              <td style={{ color: '#ef4444' }}><strong>Trattenute per Malattia</strong></td>
+              <td style={{ color: 'var(--error)' }}><strong>Trattenute per Malattia</strong></td>
               <td className="muted">
                 {result.sicknessRuleApplied} ({sicknessDaysInMonth} gg)
               </td>
@@ -57,7 +57,7 @@ export function SalaryBreakdownTable({
 
           {result.strikeDeductions > 0 && (
             <tr>
-              <td style={{ color: '#ef4444' }}><strong>Trattenuta Sciopero</strong></td>
+              <td style={{ color: 'var(--error)' }}><strong>Trattenuta Sciopero</strong></td>
               <td className="muted">Decurtazione per astensione dal lavoro ({strikeDaysInMonth} gg)</td>
               <td style={{ textAlign: 'right' }} className="salary-deduction-badge">- € {result.strikeDeductions.toFixed(2)}</td>
             </tr>
@@ -83,7 +83,7 @@ export function SalaryBreakdownTable({
 
           {result.cuneoTaxRelief > 0 && (
             <tr>
-              <td style={{ color: '#10b981' }}><strong>Esonero Contributivo (Cuneo Fiscale)</strong></td>
+              <td style={{ color: 'var(--secondary)' }}><strong>Esonero Contributivo (Cuneo Fiscale)</strong></td>
               <td className="muted">Sgravio contributivo del 6% o 7% a sostegno dei redditi medio-bassi</td>
               <td style={{ textAlign: 'right' }} className="salary-credit-badge">+ € {result.cuneoTaxRelief.toFixed(2)}</td>
             </tr>
@@ -92,7 +92,7 @@ export function SalaryBreakdownTable({
           <tr>
             <td><strong>NETTO IN BUSTA PAGA</strong></td>
             <td className="muted">Stipendio effettivo accreditato sul conto corrente tramite NoiPA</td>
-            <td style={{ textAlign: 'right', fontSize: 16, color: '#059669' }}>€ {result.monthlyNetSalary.toFixed(2)}</td>
+            <td style={{ textAlign: 'right', fontSize: 16, color: 'var(--secondary)' }}>€ {result.monthlyNetSalary.toFixed(2)}</td>
           </tr>
         </tbody>
       </table>

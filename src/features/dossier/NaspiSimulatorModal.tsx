@@ -68,25 +68,25 @@ export function NaspiSimulatorModal({ person, onClose }: NaspiSimulatorModalProp
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
-      <div style={{ background: '#fff', borderRadius: 12, maxWidth: 840, width: '100%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, maxWidth: 840, width: '100%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--outline-variant)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Banknote color="#059669" size={24} />
+            <Banknote color="var(--secondary)" size={24} />
             <div>
-              <h3 style={{ margin: 0, fontSize: 16, color: '#0f172a' }}>Simulatore Indennità di Disoccupazione NASpI per Supplenti ATA</h3>
-              <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>Stima durata, importo mensile, decorrenza e décalage 3% (INPS D.Lgs. 22/2015)</p>
+              <h3 style={{ margin: 0, fontSize: 16, color: 'var(--on-surface)' }}>Simulatore Indennità di Disoccupazione NASpI per Supplenti ATA</h3>
+              <p style={{ margin: 0, fontSize: 12, color: 'var(--on-surface-variant)' }}>Stima durata, importo mensile, decorrenza e décalage 3% (INPS D.Lgs. 22/2015)</p>
             </div>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--on-surface-variant)' }}>
             <X size={20} />
           </button>
         </div>
 
         <div style={{ padding: '16px 20px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
           {detected.isPermanent && (
-            <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-              <AlertCircle color="#dc2626" size={20} style={{ flexShrink: 0, marginTop: 2 }} />
-              <div style={{ fontSize: 12, color: '#991b1b', lineHeight: 1.5 }}>
+            <div style={{ background: 'var(--error-container)', border: '1px solid var(--error)', borderRadius: 8, padding: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              <AlertCircle color="var(--error)" size={20} style={{ flexShrink: 0, marginTop: 2 }} />
+              <div style={{ fontSize: 12, color: 'var(--error)', lineHeight: 1.5 }}>
                 <strong>Attenzione Contratto a Tempo Indeterminato:</strong> L'ultimo servizio registrato è a tempo indeterminato (Ruolo). Il personale di ruolo non ha accesso alla NASpI in virtù della continuità dell'impiego pubblico. Questa simulazione è attiva solo a scopo informativo per eventuali periodi pregressi a tempo determinato.
               </div>
             </div>
@@ -94,37 +94,37 @@ export function NaspiSimulatorModal({ person, onClose }: NaspiSimulatorModalProp
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Data Fine Contratto (30/06 o supplenza)</label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Data Fine Contratto (30/06 o supplenza)</label>
               <input
                 type="date"
                 value={terminationDate}
                 onChange={e => setTerminationDate(e.target.value)}
-                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4 }}
+                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4 }}
               />
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Settimane Contribuite (ultimi 4 anni)</label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Settimane Contribuite (ultimi 4 anni)</label>
               <input
                 type="number"
                 min={0}
                 max={208}
                 value={weeksWorked}
                 onChange={e => setWeeksWorked(Number(e.target.value))}
-                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4 }}
+                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4 }}
               />
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Retribuzione Lorda Mensile Media (€)</label>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)' }}>Retribuzione Lorda Mensile Media (€)</label>
               <input
                 type="number"
                 step={50}
                 value={grossMonthlyWage}
                 onChange={e => setGrossMonthlyWage(Number(e.target.value))}
-                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 6, marginTop: 4 }}
+                style={{ width: '100%', padding: '6px 10px', fontSize: 13, border: '1px solid var(--outline-variant)', borderRadius: 6, marginTop: 4 }}
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 14 }}>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#475569', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
                 <input
                   type="checkbox"
                   checked={ageOver55}
@@ -136,60 +136,60 @@ export function NaspiSimulatorModal({ person, onClose }: NaspiSimulatorModalProp
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-            <div style={{ background: isEligible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${isEligible ? '#a7f3d0' : '#fecaca'}`, padding: 12, borderRadius: 8 }}>
-              <span style={{ fontSize: 11, color: isEligible ? '#065f46' : '#991b1b', textTransform: 'uppercase', fontWeight: 600 }}>Diritto NASpI</span>
-              <div style={{ fontSize: 18, fontWeight: 700, color: isEligible ? '#047857' : '#dc2626', marginTop: 4 }}>
+            <div style={{ background: isEligible ? 'var(--secondary-container)' : 'var(--error-container)', border: `1px solid ${isEligible ? 'var(--outline-variant)' : 'var(--error)'}`, padding: 12, borderRadius: 8 }}>
+              <span style={{ fontSize: 11, color: isEligible ? 'var(--secondary)' : 'var(--error)', textTransform: 'uppercase', fontWeight: 600 }}>Diritto NASpI</span>
+              <div style={{ fontSize: 18, fontWeight: 700, color: isEligible ? 'var(--secondary)' : 'var(--error)', marginTop: 4 }}>
                 {detected.isPermanent ? 'NON APPLICABILE (Ruolo)' : isEligible ? 'IDONEO (Requisiti ok)' : 'NON IDONEO (< 13 sett.)'}
               </div>
-              <small style={{ fontSize: 10, color: '#64748b' }}>{weeksWorked} sett. maturate / 13 min</small>
+              <small style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>{weeksWorked} sett. maturate / 13 min</small>
             </div>
 
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', padding: 12, borderRadius: 8 }}>
-              <span style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', fontWeight: 600 }}>Durata Spettante</span>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', marginTop: 4 }}>
+            <div style={{ background: 'var(--surface-container-high)', border: '1px solid var(--outline-variant)', padding: 12, borderRadius: 8 }}>
+              <span style={{ fontSize: 11, color: 'var(--on-surface-variant)', textTransform: 'uppercase', fontWeight: 600 }}>Durata Spettante</span>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--on-surface)', marginTop: 4 }}>
                 {durationWeeks} sett. (~{durationMonths} mesi)
               </div>
-              <small style={{ fontSize: 10, color: '#64748b' }}>50% delle settimane lavorate</small>
+              <small style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>50% delle settimane lavorate</small>
             </div>
 
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', padding: 12, borderRadius: 8 }}>
-              <span style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', fontWeight: 600 }}>Importo 1° Mese (Lordo)</span>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#059669', marginTop: 4 }}>
+            <div style={{ background: 'var(--surface-container-high)', border: '1px solid var(--outline-variant)', padding: 12, borderRadius: 8 }}>
+              <span style={{ fontSize: 11, color: 'var(--on-surface-variant)', textTransform: 'uppercase', fontWeight: 600 }}>Importo 1° Mese (Lordo)</span>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--secondary)', marginTop: 4 }}>
                 € {baseMonthlyNaspi.toFixed(2)}
               </div>
-              <small style={{ fontSize: 10, color: '#64748b' }}>Stima Netta: ~€ {(baseMonthlyNaspi * 0.82).toFixed(2)}</small>
+              <small style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>Stima Netta: ~€ {(baseMonthlyNaspi * 0.82).toFixed(2)}</small>
             </div>
 
-            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', padding: 12, borderRadius: 8 }}>
-              <span style={{ fontSize: 11, color: '#1e40af', textTransform: 'uppercase', fontWeight: 600 }}>Totale Stimato Erogato</span>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#1d4ed8', marginTop: 4 }}>
+            <div style={{ background: 'var(--primary-container)', border: '1px solid var(--outline-variant)', padding: 12, borderRadius: 8 }}>
+              <span style={{ fontSize: 11, color: 'var(--primary)', textTransform: 'uppercase', fontWeight: 600 }}>Totale Stimato Erogato</span>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--primary)', marginTop: 4 }}>
                 € {cumulativeTotal.toFixed(2)}
               </div>
-              <small style={{ fontSize: 10, color: '#64748b' }}>Complessivo su {monthlyProjection.length} mensilità</small>
+              <small style={{ fontSize: 10, color: 'var(--on-surface-variant)' }}>Complessivo su {monthlyProjection.length} mensilità</small>
             </div>
           </div>
 
           <div>
-            <h4 style={{ margin: '8px 0', fontSize: 13, color: '#334155', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Calendar size={15} color="#2563eb" /> Prospetto Mensile con Décalage Progressivo (-3% dal {decalageStartMonth}° mese)
+            <h4 style={{ margin: '8px 0', fontSize: 13, color: 'var(--on-surface-variant)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Calendar size={15} color="var(--primary)" /> Prospetto Mensile con Décalage Progressivo (-3% dal {decalageStartMonth}° mese)
             </h4>
-            <div style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: 6 }}>
+            <div style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid var(--outline-variant)', borderRadius: 6 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, textAlign: 'left' }}>
-                <thead style={{ background: '#f1f5f9', position: 'sticky', top: 0 }}>
+                <thead style={{ background: 'var(--surface-container-highest)', position: 'sticky', top: 0 }}>
                   <tr>
-                    <th style={{ padding: '6px 10px', borderBottom: '1px solid #cbd5e1' }}>Mensilità</th>
-                    <th style={{ padding: '6px 10px', borderBottom: '1px solid #cbd5e1' }}>Importo Lordo (€)</th>
-                    <th style={{ padding: '6px 10px', borderBottom: '1px solid #cbd5e1' }}>Stima Netta Indicativa (€)</th>
-                    <th style={{ padding: '6px 10px', borderBottom: '1px solid #cbd5e1' }}>Stato Variazione</th>
+                    <th style={{ padding: '6px 10px', borderBottom: '1px solid var(--outline-variant)' }}>Mensilità</th>
+                    <th style={{ padding: '6px 10px', borderBottom: '1px solid var(--outline-variant)' }}>Importo Lordo (€)</th>
+                    <th style={{ padding: '6px 10px', borderBottom: '1px solid var(--outline-variant)' }}>Stima Netta Indicativa (€)</th>
+                    <th style={{ padding: '6px 10px', borderBottom: '1px solid var(--outline-variant)' }}>Stato Variazione</th>
                   </tr>
                 </thead>
                 <tbody>
                   {monthlyProjection.map(p => (
-                    <tr key={p.month} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <tr key={p.month} style={{ borderBottom: '1px solid var(--outline-variant)' }}>
                       <td style={{ padding: '6px 10px', fontWeight: 600 }}>{p.month}° Mese</td>
-                      <td style={{ padding: '6px 10px', color: '#059669', fontWeight: 700 }}>€ {p.gross.toFixed(2)}</td>
+                      <td style={{ padding: '6px 10px', color: 'var(--secondary)', fontWeight: 700 }}>€ {p.gross.toFixed(2)}</td>
                       <td style={{ padding: '6px 10px' }}>€ {p.netEst.toFixed(2)}</td>
-                      <td style={{ padding: '6px 10px', fontSize: 11, color: p.month >= decalageStartMonth ? '#d97706' : '#64748b' }}>
+                      <td style={{ padding: '6px 10px', fontSize: 11, color: p.month >= decalageStartMonth ? 'var(--tertiary)' : 'var(--on-surface-variant)' }}>
                         {p.month >= decalageStartMonth ? 'Riduzione -3% applicata' : 'Pieno importo (75%)'}
                       </td>
                     </tr>
@@ -199,9 +199,9 @@ export function NaspiSimulatorModal({ person, onClose }: NaspiSimulatorModalProp
             </div>
           </div>
 
-          <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-            <AlertCircle color="#d97706" size={20} style={{ flexShrink: 0, marginTop: 2 }} />
-            <div style={{ fontSize: 12, color: '#92400e', lineHeight: 1.5 }}>
+          <div style={{ background: 'var(--tertiary-container)', border: '1px solid var(--outline-variant)', borderRadius: 8, padding: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <AlertCircle color="var(--tertiary)" size={20} style={{ flexShrink: 0, marginTop: 2 }} />
+            <div style={{ fontSize: 12, color: 'var(--on-tertiary-container)', lineHeight: 1.5 }}>
               <strong>Scadenze Fondamentali INPS per il Personale della Scuola:</strong>
               <div style={{ marginTop: 4 }}>
                 • <strong>Decorrenza immediata (dall'8° giorno):</strong> presentare domanda entro il <strong>{decorrenza8Days}</strong>.
@@ -213,7 +213,7 @@ export function NaspiSimulatorModal({ person, onClose }: NaspiSimulatorModalProp
           </div>
         </div>
 
-        <div style={{ padding: '12px 20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <div style={{ padding: '12px 20px', borderTop: '1px solid var(--outline-variant)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
           <button type="button" onClick={onClose} className="primary">
             Chiudi Simulatore
           </button>

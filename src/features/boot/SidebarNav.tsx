@@ -47,7 +47,7 @@ export function SidebarNav({
     <aside className={`sidebar ${collapsed ? 'icon-only' : ''}`}>
       <div className="brand">
         <div className="brand-icon">
-          <BriefcaseBusiness />
+          <BriefcaseBusiness size={18} />
         </div>
         {!collapsed && <strong>{t('app')}</strong>}
         <button

@@ -63,7 +63,7 @@ export function ServiceSchoolSelector({
           className="link-style-btn"
           style={{
             fontSize: 12,
-            color: '#0d9488',
+            color: 'var(--primary)',
             background: 'none',
             border: 'none',
             cursor: 'pointer',

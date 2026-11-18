@@ -158,11 +158,11 @@ export function RecordEditForm({
           <div className="modern-form-title-col">
             <div className="modern-form-icon">
               {draft.kind === 'service' ? (
-                <Briefcase size={22} color="#116b62" />
+                <Briefcase size={22} color="var(--primary)" />
               ) : draft.kind === 'qualification' ? (
-                <Award size={22} color="#0d9488" />
+                <Award size={22} color="var(--primary)" />
               ) : (
-                <HeartPulse size={22} color="#ea580c" />
+                <HeartPulse size={22} color="var(--tertiary)" />
               )}
             </div>
             <div>
@@ -350,7 +350,7 @@ export function RecordEditForm({
           {draft.kind === 'service' && (
             <div className="wide" style={{ gridColumn: '1 / -1', marginTop: -6, marginBottom: 4 }}>
               <div className="date-presets-bar">
-                <span style={{ fontSize: 11, color: '#64748b', fontWeight: 650 }}>Scorciatoie:</span>
+                <span style={{ fontSize: 11, color: 'var(--on-surface-variant)', fontWeight: 650 }}>Scorciatoie:</span>
                 <button
                   type="button"
                   className="date-preset-chip"

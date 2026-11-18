@@ -49,7 +49,7 @@ export function ManualSchoolModal({
         <div className="manual-school-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div className="manual-school-icon-box">
-              <School size={20} color="#116b62" />
+              <School size={20} color="var(--primary)" />
             </div>
             <div>
               <h3>Inserimento Scuola Storica o Personalizzata</h3>
@@ -63,7 +63,7 @@ export function ManualSchoolModal({
 
         <form onSubmit={handleSubmit} className="manual-school-form">
           <div className="manual-school-tip">
-            <AlertCircle size={16} color="#0d9488" style={{ flexShrink: 0 }} />
+            <AlertCircle size={16} color="var(--primary)" style={{ flexShrink: 0 }} />
             <span>
               I codici storici utilizzati negli anni passati (es. 2008 o antecedenti) sono pienamente validi per il computo dell'anzianità di servizio e delle graduatorie ATA.
             </span>
@@ -120,7 +120,7 @@ export function ManualSchoolModal({
           </div>
 
           <div className="checkbox-row" style={{ marginTop: 4 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: '#334155' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: 'var(--on-surface-variant)' }}>
               <input
                 type="checkbox"
                 checked={isParitaria}

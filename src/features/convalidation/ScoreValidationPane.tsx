@@ -168,7 +168,7 @@ export function ScoreValidationPane({
       <ValidationHeader decree={decree} onDecreeChange={setDecree} />
 
       {feedback && (
-        <div style={{ padding: '10px 16px', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 10, color: '#047857', fontWeight: 600, fontSize: 13 }}>
+        <div style={{ padding: '10px 16px', background: 'var(--secondary-container)', border: '1px solid var(--outline-variant)', borderRadius: 10, color: 'var(--secondary)', fontWeight: 600, fontSize: 13 }}>
           {feedback}
         </div>
       )}
@@ -189,7 +189,7 @@ export function ScoreValidationPane({
                   <ProfileBadge3d code={prof.code} size={36} />
                   <div>
                     <h3>{prof.label} ({prof.code})</h3>
-                    <div style={{ fontSize: 12, color: '#64748b' }}>
+                    <div style={{ fontSize: 12, color: 'var(--on-surface-variant)' }}>
                       {prof.isIncrementalBase ? (
                         <span>
                           Base convalidata + {prof.subsequentDays ?? 0} gg maturati successivamente
@@ -320,7 +320,7 @@ export function ScoreValidationPane({
                         onClick={() => handleFieldChange(prof.code, 'isIncrementalBase', false)}
                       >
                         <div className="val-mode-title">
-                          <ShieldCheck size={16} color={!form.isIncrementalBase ? '#116b62' : '#64748b'} />
+                          <ShieldCheck size={16} color={!form.isIncrementalBase ? 'var(--primary)' : 'var(--on-surface-variant)'} />
                           <span>Punteggio Totale Fisso</span>
                         </div>
                         <p>Il decreto determina l'intero punteggio finale senza ulteriori aggiunte automatiche.</p>
@@ -331,7 +331,7 @@ export function ScoreValidationPane({
                         onClick={() => handleFieldChange(prof.code, 'isIncrementalBase', true)}
                       >
                         <div className="val-mode-title">
-                          <Layers size={16} color={form.isIncrementalBase ? '#116b62' : '#64748b'} />
+                          <Layers size={16} color={form.isIncrementalBase ? 'var(--primary)' : 'var(--on-surface-variant)'} />
                           <span>Base Consolidata + Calcolo Incrementale</span>
                         </div>
                         <p>Il decreto fissa la base fino alla data indicata; il software calcola in automatico solo i contratti e i titoli maturati dopo.</p>
@@ -352,7 +352,7 @@ export function ScoreValidationPane({
 
                       {form.isIncrementalBase && (
                         <div className="val-field-group highlight-border">
-                          <label style={{ color: '#047857', fontWeight: 700 }}>
+                          <label style={{ color: 'var(--secondary)', fontWeight: 700 }}>
                             <CalendarClock size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />
                             Data di Consolidamento (fino al)
                           </label>

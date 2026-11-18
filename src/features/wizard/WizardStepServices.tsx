@@ -46,7 +46,7 @@ export function WizardStepServices({
       </div>
 
       {/* ADD SERVICE FORM */}
-      <div className="panel" style={{ padding: 20, marginBottom: 20, background: '#f8faf9' }}>
+      <div className="panel" style={{ padding: 20, marginBottom: 20, background: 'var(--surface-container-high)' }}>
         <h4 style={{ margin: '0 0 12px', fontSize: 14 }}>Aggiungi Periodo di Lavoro</h4>
         <div className="fields" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
           <label>
@@ -105,7 +105,7 @@ export function WizardStepServices({
             <button
               type="button"
               onClick={handleAddService}
-              style={{ width: '100%', height: 42, background: '#116b62' }}
+              style={{ width: '100%', height: 42, background: 'var(--primary)' }}
             >
               <Plus size={16} /> Aggiungi Contratto
             </button>
@@ -116,8 +116,8 @@ export function WizardStepServices({
       {/* LIST OF SERVICES */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {services.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '30px 20px', border: '1.5px dashed #cbd5e1', borderRadius: 12 }}>
-            <Clock size={32} color="#94a3b8" style={{ marginBottom: 6 }} />
+          <div style={{ textAlign: 'center', padding: '30px 20px', border: '1.5px dashed var(--outline-variant)', borderRadius: 12 }}>
+            <Clock size={32} color="var(--on-surface-variant)" style={{ marginBottom: 6 }} />
             <p className="muted" style={{ margin: 0, fontSize: 13 }}>
               Nessun servizio registrato finora. Se hai già lavorato nella scuola, inserisci i tuoi contratti sopra per calcolare i punti!
             </p>
@@ -137,17 +137,17 @@ export function WizardStepServices({
             >
               <div>
                 <strong>{s.schoolName}</strong>
-                <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: 'var(--on-surface-variant)', marginTop: 2 }}>
                   {s.start} → {s.end} · {s.isStatale ? 'Statale' : 'Paritaria'} · Profilo {s.profile}
                   {s.profile === selectedProfile ? ' (Specifico)' : ' (Aspecifico)'}
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#059669' }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--secondary)' }}>
                     +{s.pointsCalculated} pt
                   </span>
-                  <small style={{ display: 'block', fontSize: 11, color: '#64748b' }}>
+                  <small style={{ display: 'block', fontSize: 11, color: 'var(--on-surface-variant)' }}>
                     {s.monthsCalculated} {s.monthsCalculated === 1 ? 'mese' : 'mesi'}
                   </small>
                 </div>

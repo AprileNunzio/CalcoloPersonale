@@ -190,7 +190,7 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
       </div>
 
       {successMsg && (
-        <div style={{ background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', padding: '10px 14px', borderRadius: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div style={{ background: 'var(--secondary-container)', color: 'var(--secondary)', border: '1px solid var(--outline-variant)', padding: '10px 14px', borderRadius: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
           <CheckCircle2 size={18} />
           <span>{successMsg}</span>
         </div>
@@ -198,21 +198,21 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
 
       {/* STRATEGIC KPIS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
-        <div style={{ background: 'white', padding: 14, borderRadius: 10, border: '1px solid #e2e8f0' }}>
+        <div style={{ background: 'white', padding: 14, borderRadius: 10, border: '1px solid var(--outline-variant)' }}>
           <small className="muted" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Istituti Comprensivi (IC)</small>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#16a34a' }}>{icCount} scuole</div>
+          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--secondary)' }}>{icCount} scuole</div>
           <small className="muted" style={{ fontSize: 11 }}>Massima concentrazione posti Collaboratore Scolastico</small>
         </div>
 
-        <div style={{ background: 'white', padding: 14, borderRadius: 10, border: '1px solid #e2e8f0' }}>
+        <div style={{ background: 'white', padding: 14, borderRadius: 10, border: '1px solid var(--outline-variant)' }}>
           <small className="muted" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Istituti Tecnici & Prof.</small>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#d97706' }}>{superioreCount} scuole</div>
+          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--tertiary)' }}>{superioreCount} scuole</div>
           <small className="muted" style={{ fontSize: 11 }}>Laboratori per Assistenti Tecnici (AT) e Cuochi</small>
         </div>
 
-        <div style={{ background: 'white', padding: 14, borderRadius: 10, border: '1px solid #e2e8f0' }}>
+        <div style={{ background: 'white', padding: 14, borderRadius: 10, border: '1px solid var(--outline-variant)' }}>
           <small className="muted" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Licei Statali</small>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#4f46e5' }}>{liceoCount} scuole</div>
+          <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--primary)' }}>{liceoCount} scuole</div>
           <small className="muted" style={{ fontSize: 11 }}>Posti per Assistenti Amministrativi e CS</small>
         </div>
       </div>
@@ -230,7 +230,7 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
             placeholder="Cerca per nome scuola, comune o codice meccanografico..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #cbd5e1' }}
+            style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid var(--outline-variant)' }}
           />
 
           <div className="schools30-list">
@@ -252,7 +252,7 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
                           {cat === 'ic' ? 'I.C.' : cat === 'superiore' ? 'Tecnico/Prof.' : cat === 'liceo' ? 'Liceo' : 'Altro'}
                         </span>
                         <strong style={{ fontSize: 12 }}>{school.code}</strong>
-                        <span style={{ fontSize: 12, color: '#64748b' }}>· {school.municipality}</span>
+                        <span style={{ fontSize: 12, color: 'var(--on-surface-variant)' }}>· {school.municipality}</span>
                       </div>
                       <div style={{ fontSize: 13, fontWeight: 600 }}>{school.name}</div>
                     </div>
@@ -305,7 +305,7 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
                           {school.typeCategory === 'ic' ? 'I.C.' : school.typeCategory === 'superiore' ? 'Tecnico' : 'Liceo'}
                         </span>
                         <strong style={{ fontSize: 12 }}>{school.code}</strong>
-                        <span style={{ fontSize: 12, color: '#64748b' }}>· {school.municipality}</span>
+                        <span style={{ fontSize: 12, color: 'var(--on-surface-variant)' }}>· {school.municipality}</span>
                       </div>
                       <div style={{ fontSize: 13, fontWeight: 600 }}>{school.name}</div>
                     </div>
@@ -327,23 +327,23 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
       </div>
 
       {/* REGISTRO CONVOCAZIONI */}
-      <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 14, padding: 18 }}>
+      <div style={{ background: 'white', border: '1px solid var(--outline-variant)', borderRadius: 14, padding: 18 }}>
         <h4 style={{ margin: '0 0 14px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
           <Calendar size={18} /> Registro Personale delle Convocazioni Ricevute
         </h4>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr)) auto', gap: 10, alignItems: 'end', background: '#f8fafc', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr)) auto', gap: 10, alignItems: 'end', background: 'var(--surface-container-high)', padding: 12, borderRadius: 8, border: '1px solid var(--outline-variant)' }}>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>Data Ricezione</label>
-            <input type="date" value={newConvDate} onChange={e => setNewConvDate(e.target.value)} style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }} />
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>Data Ricezione</label>
+            <input type="date" value={newConvDate} onChange={e => setNewConvDate(e.target.value)} style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }} />
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>Scuola / Istituto</label>
-            <input type="text" placeholder="es. I.C. De Amicis" value={newConvSchool} onChange={e => setNewConvSchool(e.target.value)} style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }} />
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>Scuola / Istituto</label>
+            <input type="text" placeholder="es. I.C. De Amicis" value={newConvSchool} onChange={e => setNewConvSchool(e.target.value)} style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }} />
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>Tipo Contratto</label>
-            <select value={newConvContract} onChange={e => setNewConvContract(e.target.value)} style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>Tipo Contratto</label>
+            <select value={newConvContract} onChange={e => setNewConvContract(e.target.value)} style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }}>
               <option value="30_giugno">Fino al 30 giugno</option>
               <option value="31_agosto">Annuale 31 agosto</option>
               <option value="breve">Supplenza breve</option>
@@ -351,8 +351,8 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
             </select>
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>Esito</label>
-            <select value={newConvStatus} onChange={e => setNewConvStatus(e.target.value as 'accepted' | 'refused' | 'pending')} style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>Esito</label>
+            <select value={newConvStatus} onChange={e => setNewConvStatus(e.target.value as 'accepted' | 'refused' | 'pending')} style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }}>
               <option value="accepted">Accettata</option>
               <option value="refused">Rifiutata / Rinuncia</option>
               <option value="pending">In attesa di riscontro</option>
@@ -388,8 +388,8 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
                       borderRadius: 12,
                       fontSize: 11,
                       fontWeight: 700,
-                      background: c.status === 'accepted' ? '#dcfce7' : c.status === 'refused' ? '#fee2e2' : '#fef3c7',
-                      color: c.status === 'accepted' ? '#15803d' : c.status === 'refused' ? '#b91c1c' : '#b45309',
+                      background: c.status === 'accepted' ? 'var(--secondary-container)' : c.status === 'refused' ? 'var(--error-container)' : 'var(--tertiary-container)',
+                      color: c.status === 'accepted' ? 'var(--secondary)' : c.status === 'refused' ? 'var(--error)' : 'var(--tertiary)',
                     }}>
                       {c.status === 'accepted' ? 'Accettata' : c.status === 'refused' ? 'Rinunciata' : 'In attesa'}
                     </span>

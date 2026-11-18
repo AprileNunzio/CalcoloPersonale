@@ -14,7 +14,7 @@ export function TfrHistoryCard({ tfrData }: TfrHistoryCardProps) {
     <div className="tfr-history-card">
       <div className="tfr-card-header">
         <div className="tfr-card-title">
-          <PiggyBank size={22} color="#0d9488" />
+          <PiggyBank size={22} color="var(--primary)" />
           <div>
             <h4>Trattamento di Fine Rapporto (TFR) Storico Pluriennale</h4>
             <span className="tfr-subtitle">
@@ -81,7 +81,7 @@ export function TfrHistoryCard({ tfrData }: TfrHistoryCardProps) {
                       <td>{item.monthsCount} mesi</td>
                       <td>€ {item.grossUsefulSalary.toFixed(2)}</td>
                       <td><strong>€ {item.tfrGross.toFixed(2)}</strong></td>
-                      <td style={{ color: '#059669', fontWeight: 700 }}>€ {item.tfrNetEstimated.toFixed(2)}</td>
+                      <td style={{ color: 'var(--secondary)', fontWeight: 700 }}>€ {item.tfrNetEstimated.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -92,7 +92,7 @@ export function TfrHistoryCard({ tfrData }: TfrHistoryCardProps) {
       )}
 
       <div className="tfr-info-footer">
-        <Info size={15} style={{ flexShrink: 0, color: '#0d9488' }} />
+        <Info size={15} style={{ flexShrink: 0, color: 'var(--primary)' }} />
         <span>
           <strong>Come viene liquidato il TFR nella Scuola:</strong> Per i supplenti temporanei o fino al 30 giugno/31 agosto, il modello TFR-1 viene inviato telematicamente dalla scuola tramite NoiPA all'INPS Gestione Dipendenti Pubblici. L'accredito avviene automaticamente sul proprio IBAN senza necessità di presentare domanda cartacea.
         </span>

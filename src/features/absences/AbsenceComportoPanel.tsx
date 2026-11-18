@@ -74,13 +74,13 @@ export function AbsenceComportoPanel({ person }: Person extends { records: infer
     <div className="absence-comporto-deck">
       <div className="absence-header-row">
         <div className="absence-header-title">
-          <HeartPulse size={20} color="#ea580c" />
+          <HeartPulse size={20} color="var(--tertiary)" />
           <span>Monitoraggio Periodo di Comporto & Spettanze Contrattuali (CCNL 18/01/2024)</span>
         </div>
         <span
           style={{
-            background: isRuolo ? '#7e22ce' : '#0284c7',
-            color: '#ffffff',
+            background: isRuolo ? 'var(--primary)' : 'var(--primary)',
+            color: 'var(--surface)',
             fontSize: 11.5,
             fontWeight: 700,
             padding: '3px 8px',
@@ -94,7 +94,7 @@ export function AbsenceComportoPanel({ person }: Person extends { records: infer
       <div className="absence-kpi-grid">
         <div className="absence-kpi-card">
           <div className="absence-kpi-label">
-            <HeartPulse size={14} color="#ea580c" /> Malattia Fruita
+            <HeartPulse size={14} color="var(--tertiary)" /> Malattia Fruita
           </div>
           <div className="absence-kpi-val">{sicknessDays} gg</div>
           <div className="absence-kpi-sub">su {maxComportoDays} giorni max triennio</div>
@@ -102,7 +102,7 @@ export function AbsenceComportoPanel({ person }: Person extends { records: infer
 
         <div className="absence-kpi-card">
           <div className="absence-kpi-label">
-            <Palmtree size={14} color="#059669" /> Ferie Residue
+            <Palmtree size={14} color="var(--secondary)" /> Ferie Residue
           </div>
           <div className="absence-kpi-val">{holidaysRemaining} gg</div>
           <div className="absence-kpi-sub">{holidaysUsed} gg fruiti su {totalHolidaysAllowed}</div>
@@ -110,7 +110,7 @@ export function AbsenceComportoPanel({ person }: Person extends { records: infer
 
         <div className="absence-kpi-card">
           <div className="absence-kpi-label">
-            <Stethoscope size={14} color="#2563eb" /> Visite Mediche
+            <Stethoscope size={14} color="var(--primary)" /> Visite Mediche
           </div>
           <div className="absence-kpi-val">{medicalHoursRemaining} h</div>
           <div className="absence-kpi-sub">{medicalVisitsHours}h fruite su 18h annue</div>
@@ -118,9 +118,9 @@ export function AbsenceComportoPanel({ person }: Person extends { records: infer
 
         <div className="absence-kpi-card">
           <div className="absence-kpi-label">
-            <ShieldCheck size={14} color="#7c3aed" /> Fascia Retributiva
+            <ShieldCheck size={14} color="var(--primary)" /> Fascia Retributiva
           </div>
-          <div className="absence-kpi-val" style={{ fontSize: 13, color: '#581c87' }}>
+          <div className="absence-kpi-val" style={{ fontSize: 13, color: 'var(--primary)' }}>
             {currentEconomicBand}
           </div>
           <div className="absence-kpi-sub">
@@ -131,10 +131,10 @@ export function AbsenceComportoPanel({ person }: Person extends { records: infer
 
       <div className="comporto-progress-box">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
-          <strong style={{ color: '#0f172a' }}>
+          <strong style={{ color: 'var(--on-surface)' }}>
             Avanzamento Periodo di Comporto per Malattia ({comportoPercent}%)
           </strong>
-          <span style={{ color: remainingComportoDays < 30 ? '#dc2626' : '#64748b', fontWeight: 650 }}>
+          <span style={{ color: remainingComportoDays < 30 ? 'var(--error)' : 'var(--on-surface-variant)', fontWeight: 650 }}>
             {remainingComportoDays} giorni residui prima del superamento comporto
           </span>
         </div>
@@ -144,7 +144,7 @@ export function AbsenceComportoPanel({ person }: Person extends { records: infer
             style={{ width: `${comportoPercent}%` }}
           />
         </div>
-        <small style={{ fontSize: 11, color: '#64748b' }}>
+        <small style={{ fontSize: 11, color: 'var(--on-surface-variant)' }}>
           {isRuolo
             ? 'CCNL Art. 17: I primi 9 mesi sono retribuiti al 100%, 3 mesi al 90%, successivi 6 mesi al 50%. Superati i 18 mesi è possibile richiedere ulteriori 18 mesi non retribuiti.'
             : 'CCNL Art. 19: Per i contratti fino al 30/06 o 31/08 il comporto è di 9 mesi nel triennio (1° mese 100%, 2°-3° mese 50%). Per supplenze brevi: max 30 gg/anno al 50%.'}

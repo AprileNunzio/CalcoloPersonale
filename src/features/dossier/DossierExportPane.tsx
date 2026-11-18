@@ -132,9 +132,9 @@ export function DossierExportPane({ person }: { person: Person }) {
       <div className="dossier-actions-bar">
         <div>
           <h3 style={{ margin: 0, fontSize: 17, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <FileText size={20} color="#2563eb" /> Scheda Fascicolo per Sindacati/Patronati & Strumenti ATA
+            <FileText size={20} color="var(--primary)" /> Scheda Fascicolo per Sindacati/Patronati & Strumenti ATA
           </h3>
-          <p style={{ margin: '4px 0 0 0', fontSize: 12, color: '#64748b' }}>
+          <p style={{ margin: '4px 0 0 0', fontSize: 12, color: 'var(--on-surface-variant)' }}>
             Genera il prospetto riepilogativo ufficiale del punteggio e dei titoli per verifiche, reclami, NASpI o patronato.
           </p>
         </div>
@@ -153,7 +153,7 @@ export function DossierExportPane({ person }: { person: Person }) {
             type="button"
             className="secondary"
             onClick={() => setShowReclamoModal(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#dc2626' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--error)' }}
           >
             <FileWarning size={16} /> Reclamo Graduatoria
           </button>
@@ -162,7 +162,7 @@ export function DossierExportPane({ person }: { person: Person }) {
             type="button"
             className="secondary"
             onClick={() => setShowNaspiModal(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#059669' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--secondary)' }}
           >
             <Banknote size={16} /> Simulatore NASpI
           </button>
@@ -218,14 +218,14 @@ export function DossierExportPane({ person }: { person: Person }) {
       )}
 
       {feedbackMsg && (
-        <div style={{ background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', padding: '10px 14px', borderRadius: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div style={{ background: 'var(--secondary-container)', color: 'var(--secondary)', border: '1px solid var(--outline-variant)', padding: '10px 14px', borderRadius: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
           <CheckCircle2 size={18} />
           <span>{feedbackMsg}</span>
         </div>
       )}
 
       {errorMsg && (
-        <div style={{ background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca', padding: '10px 14px', borderRadius: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div style={{ background: 'var(--error-container)', color: 'var(--error)', border: '1px solid var(--error)', padding: '10px 14px', borderRadius: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
           <AlertCircle size={18} />
           <span>{errorMsg}</span>
         </div>
@@ -298,10 +298,10 @@ export function DossierExportPane({ person }: { person: Person }) {
                   <td style={{ textAlign: 'right' }}>{ps.baseAccessScore.toFixed(2)} pt</td>
                   <td style={{ textAlign: 'right' }}>{ps.specificServiceScore.toFixed(2)} pt</td>
                   <td style={{ textAlign: 'right' }}>{ps.otherServiceScore.toFixed(2)} pt</td>
-                  <td style={{ textAlign: 'right', color: '#059669', fontSize: 13, fontWeight: 700 }}>
+                  <td style={{ textAlign: 'right', color: 'var(--secondary)', fontSize: 13, fontWeight: 700 }}>
                     {ps.effectiveScore.toFixed(2)} pt
                     {ps.useValidatedScore && (
-                      <div style={{ fontSize: 10, color: '#047857', fontWeight: 600 }}>
+                      <div style={{ fontSize: 10, color: 'var(--secondary)', fontWeight: 600 }}>
                         ✓ Convalidato da Decreto Scuola {ps.validationDecree ? `(${ps.validationDecree})` : ''}
                       </div>
                     )}
@@ -315,24 +315,24 @@ export function DossierExportPane({ person }: { person: Person }) {
         {/* 3. SITUAZIONE 1ª FASCIA (24 MESI ATA) */}
         <div className="dossier-section">
           <div className="dossier-section-title">3. Verifica Requisiti Graduatoria 24 Mesi ATA (Art. 554 D.Lgs. 297/94)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, background: '#f8fafc', padding: 12, borderRadius: 8, border: '1px solid #cbd5e1' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, background: 'var(--surface-container-high)', padding: 12, borderRadius: 8, border: '1px solid var(--outline-variant)' }}>
             <div>
-              <span style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase' }}>Giorni Validi Maturati</span>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a' }}>{firstTier.totalDays} / 706 gg</div>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>Giorni Validi Maturati</span>
+              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--on-surface)' }}>{firstTier.totalDays} / 706 gg</div>
             </div>
             <div>
-              <span style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase' }}>Stato Idoneità 24M</span>
-              <div style={{ fontSize: 16, fontWeight: 700, color: firstTier.isEligible ? '#15803d' : '#b45309' }}>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>Stato Idoneità 24M</span>
+              <div style={{ fontSize: 16, fontWeight: 700, color: firstTier.isEligible ? 'var(--secondary)' : 'var(--tertiary)' }}>
                 {firstTier.isEligible ? 'RAGGIUNTO (Idoneo)' : `Mancano ${firstTier.remainingDays} gg`}
               </div>
             </div>
             <div>
-              <span style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase' }}>Servizio Docente Escluso</span>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#64748b' }}>{firstTier.docenteDays} gg</div>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>Servizio Docente Escluso</span>
+              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--on-surface-variant)' }}>{firstTier.docenteDays} gg</div>
             </div>
             <div>
-              <span style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase' }}>Finestra Utile Stimata</span>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#2563eb', marginTop: 3 }}>{firstTier.projectedWindow}</div>
+              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>Finestra Utile Stimata</span>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)', marginTop: 3 }}>{firstTier.projectedWindow}</div>
             </div>
           </div>
         </div>
@@ -359,7 +359,7 @@ export function DossierExportPane({ person }: { person: Person }) {
           </div>
         </div>
 
-        <div style={{ marginTop: 30, display: 'flex', justifyContent: 'space-between', fontSize: 12, borderTop: '1px solid #cbd5e1', paddingTop: 16 }}>
+        <div style={{ marginTop: 30, display: 'flex', justifyContent: 'space-between', fontSize: 12, borderTop: '1px solid var(--outline-variant)', paddingTop: 16 }}>
           <div>Firma del Candidato: ___________________________</div>
           <div>Timbro / Visto di conformità: ___________________________</div>
         </div>

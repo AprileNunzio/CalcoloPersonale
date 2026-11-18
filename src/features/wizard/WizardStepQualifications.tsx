@@ -45,7 +45,7 @@ export function WizardStepQualifications({
             display: 'flex',
             alignItems: 'flex-start',
             gap: 14,
-            borderColor: hasCiad ? '#10b981' : '#dfe9e5',
+            borderColor: hasCiad ? 'var(--secondary)' : 'var(--outline-variant)',
           }}
         >
           <input
@@ -56,7 +56,7 @@ export function WizardStepQualifications({
             style={{ width: 20, height: 20, marginTop: 3 }}
           />
           <div style={{ flex: 1 }}>
-            <label htmlFor="chk-ciad" style={{ fontSize: 15, fontWeight: 700, color: '#163c35', cursor: 'pointer' }}>
+            <label htmlFor="chk-ciad" style={{ fontSize: 15, fontWeight: 700, color: 'var(--on-surface)', cursor: 'pointer' }}>
               Certificazione Internazionale di Alfabetizzazione Digitale (CIAD - Accredia)
             </label>
             <p className="muted" style={{ fontSize: 13, margin: '4px 0 0' }}>
@@ -65,7 +65,7 @@ export function WizardStepQualifications({
                 : 'Requisito D’ACCESSO OBBLIGATORIO ai sensi del CCNL 2024 per AA, AT, OS, Cuoco, ecc. Senza CIAD si decade dalla graduatoria se non acquisita entro 1 anno.'}
             </p>
           </div>
-          <span style={{ fontSize: 12, fontWeight: 700, color: hasCiad ? '#059669' : '#6b7280' }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: hasCiad ? 'var(--secondary)' : 'var(--on-surface-variant)' }}>
             {hasCiad ? 'Posseduta ✓' : 'Non posseduta'}
           </span>
         </div>
@@ -88,14 +88,14 @@ export function WizardStepQualifications({
             style={{ width: 20, height: 20, marginTop: 3 }}
           />
           <div style={{ flex: 1 }}>
-            <label htmlFor="chk-cert" style={{ fontSize: 15, fontWeight: 700, color: '#163c35', cursor: 'pointer' }}>
+            <label htmlFor="chk-cert" style={{ fontSize: 15, fontWeight: 700, color: 'var(--on-surface)', cursor: 'pointer' }}>
               Certificazione Informatica aggiuntiva (EIPASS, ICDL/ECDL, PEKIT, IDCERT, DigComp)
             </label>
             <p className="muted" style={{ fontSize: 13, margin: '4px 0 0' }}>
               Valutabile per una sola certificazione: assegna <strong>+{selectedProfile === 'CS' ? '0.30' : '0.60'} punti</strong>.
             </p>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#116b62' }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)' }}>
             +{selectedProfile === 'CS' ? '0.30' : '0.60'} pt
           </span>
         </div>
@@ -109,8 +109,8 @@ export function WizardStepQualifications({
               display: 'flex',
               alignItems: 'flex-start',
               gap: 14,
-              background: '#f0fdf4',
-              borderColor: '#86efac',
+              background: 'var(--secondary-container)',
+              borderColor: 'var(--outline-variant)',
             }}
           >
             <input
@@ -121,14 +121,14 @@ export function WizardStepQualifications({
               style={{ width: 20, height: 20, marginTop: 3 }}
             />
             <div style={{ flex: 1 }}>
-              <label htmlFor="chk-datt" style={{ fontSize: 15, fontWeight: 700, color: '#14532d', cursor: 'pointer' }}>
+              <label htmlFor="chk-datt" style={{ fontSize: 15, fontWeight: 700, color: 'var(--secondary)', cursor: 'pointer' }}>
                 Corso di Addestramento Professionale per la Dattilografia (Solo per AA)
               </label>
               <p className="muted" style={{ fontSize: 13, margin: '4px 0 0' }}>
                 Assegna <strong>+1.00 punto intero</strong> per la graduatoria di Assistente Amministrativo (se rilasciato da Ente Pubblico o consorzio abilitato).
               </p>
             </div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#059669' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--secondary)' }}>
               +1.00 pt
             </span>
           </div>
@@ -152,14 +152,14 @@ export function WizardStepQualifications({
             style={{ width: 20, height: 20, marginTop: 3 }}
           />
           <div style={{ flex: 1 }}>
-            <label htmlFor="chk-degree" style={{ fontSize: 15, fontWeight: 700, color: '#163c35', cursor: 'pointer' }}>
+            <label htmlFor="chk-degree" style={{ fontSize: 15, fontWeight: 700, color: 'var(--on-surface)', cursor: 'pointer' }}>
               Diploma di Laurea (Triennale, Magistrale o Vecchio Ordinamento)
             </label>
             <p className="muted" style={{ fontSize: 13, margin: '4px 0 0' }}>
               Assegna <strong>+2.00 punti</strong> per Assistente Amministrativo e Assistente Tecnico.
             </p>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#116b62' }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)' }}>
             +2.00 pt
           </span>
         </div>
@@ -182,14 +182,14 @@ export function WizardStepQualifications({
             style={{ width: 20, height: 20, marginTop: 3 }}
           />
           <div style={{ flex: 1 }}>
-            <label htmlFor="chk-contest" style={{ fontSize: 15, fontWeight: 700, color: '#163c35', cursor: 'pointer' }}>
+            <label htmlFor="chk-contest" style={{ fontSize: 15, fontWeight: 700, color: 'var(--on-surface)', cursor: 'pointer' }}>
               Idoneità in precedente concorso pubblico per il medesimo profilo
             </label>
             <p className="muted" style={{ fontSize: 13, margin: '4px 0 0' }}>
               Assegna <strong>+1.00 punto</strong>.
             </p>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#116b62' }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)' }}>
             +1.00 pt
           </span>
         </div>

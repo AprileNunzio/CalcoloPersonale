@@ -22,15 +22,15 @@ import './familyCard.css';
 function getRelationIcon(rel: FamilyRelation) {
   switch (rel) {
     case 'spouse':
-      return <Heart size={16} color="#e11d48" />;
+      return <Heart size={16} color="var(--primary)" />;
     case 'child':
-      return <Baby size={16} color="#2563eb" />;
+      return <Baby size={16} color="var(--primary)" />;
     case 'parent':
-      return <Users size={16} color="#059669" />;
+      return <Users size={16} color="var(--secondary)" />;
     case 'sibling':
-      return <UserCheck size={16} color="#7c3aed" />;
+      return <UserCheck size={16} color="var(--primary)" />;
     default:
-      return <User size={16} color="#64748b" />;
+      return <User size={16} color="var(--on-surface-variant)" />;
   }
 }
 

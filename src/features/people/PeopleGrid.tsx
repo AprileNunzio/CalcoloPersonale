@@ -75,15 +75,15 @@ export function PeopleGrid({
 
           <div className="hero-stats-strip">
             <div className="hero-stat-pill">
-              <Users size={14} color="#116b62" />
+              <Users size={14} color="var(--primary)" />
               <span><strong>{people.length}</strong> {people.length === 1 ? 'fascicolo' : 'fascicoli'}</span>
             </div>
             <div className="hero-stat-pill">
-              <BriefcaseBusiness size={14} color="#2563eb" />
+              <BriefcaseBusiness size={14} color="var(--primary)" />
               <span><strong>{totalServicesAcrossAll}</strong> servizi registrati</span>
             </div>
             <div className="hero-stat-pill">
-              <GraduationCap size={14} color="#059669" />
+              <GraduationCap size={14} color="var(--secondary)" />
               <span><strong>{totalQualsAcrossAll}</strong> titoli e certificazioni</span>
             </div>
           </div>
@@ -246,7 +246,7 @@ export function PeopleGrid({
               <div className="card-kpi-grid">
                 <div className="card-kpi-tile">
                   <div className="tile-title">
-                    <Award size={13} color="#116b62" />
+                    <Award size={13} color="var(--primary)" />
                     <span>Punteggio ATA</span>
                   </div>
                   <div className="tile-number">
@@ -272,7 +272,7 @@ export function PeopleGrid({
 
                 <div className="card-kpi-tile">
                   <div className="tile-title">
-                    <BriefcaseBusiness size={13} color="#2563eb" />
+                    <BriefcaseBusiness size={13} color="var(--primary)" />
                     <span>Servizio ATA (24M)</span>
                   </div>
                   <div className="tile-number">

@@ -155,12 +155,12 @@ export function QualificationPresetSelector({
   };
 
   return (
-    <div className="qualification-preset-block" style={{ gridColumn: '1 / -1', background: '#f8fafc', padding: 14, borderRadius: 10, border: '1.5px solid #cbd5e1', marginBottom: 14 }}>
+    <div className="qualification-preset-block" style={{ gridColumn: '1 / -1', background: 'var(--surface-container-high)', padding: 14, borderRadius: 10, border: '1.5px solid var(--outline-variant)', marginBottom: 14 }}>
       <FormField label="Seleziona Modello Titolo / Certificazione ATA (D.M. 89/2024)" tip="Scegli un modello conforme alle tabelle ministeriali per calcolare automaticamente il punteggio esatto.">
         <select
           value={selectedPreset}
           onChange={e => applyPreset(e.target.value)}
-          style={{ fontWeight: 700, color: '#1e293b' }}
+          style={{ fontWeight: 700, color: 'var(--on-surface)' }}
         >
           <option value="diploma">🎓 Diploma di Maturità / Titolo di Accesso (Calcolo voto ministeriale base 10)</option>
           <option value="ciad">🛡️ CIAD - Certificazione Alfabetizzazione Digitale (Obbligatorio CCNL 2024)</option>
@@ -175,9 +175,9 @@ export function QualificationPresetSelector({
       </FormField>
 
       {selectedPreset === 'diploma' && (
-        <div style={{ marginTop: 10, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 10, alignItems: 'center', background: '#ffffff', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
+        <div style={{ marginTop: 10, display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 10, alignItems: 'center', background: 'var(--surface)', padding: 12, borderRadius: 8, border: '1px solid var(--outline-variant)' }}>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>
               Voto Conseguito
             </label>
             <input
@@ -186,18 +186,18 @@ export function QualificationPresetSelector({
               max={scoreBase || 100}
               value={scoreAchieved}
               onChange={e => handleScoreChange(parseFloat(e.target.value) || 0, scoreBase, hasHonors)}
-              style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}
+              style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }}
             />
           </div>
 
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--on-surface-variant)', display: 'block', marginBottom: 4 }}>
               Base del Voto
             </label>
             <select
               value={scoreBase}
               onChange={e => handleScoreChange(scoreAchieved, parseInt(e.target.value, 10), hasHonors)}
-              style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1' }}
+              style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid var(--outline-variant)' }}
             >
               <option value={100}>in centesimi (100/100)</option>
               <option value={60}>in sessantesimi (60/60)</option>
@@ -207,8 +207,8 @@ export function QualificationPresetSelector({
           </div>
 
           <div style={{ textAlign: 'center', paddingLeft: 8 }}>
-            <span style={{ fontSize: 10, color: '#64748b', display: 'block' }}>Punteggio Decimi</span>
-            <strong style={{ fontSize: 18, color: '#059669' }}>
+            <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', display: 'block' }}>Punteggio Decimi</span>
+            <strong style={{ fontSize: 18, color: 'var(--secondary)' }}>
               {((scoreAchieved / (scoreBase || 100)) * 10).toFixed(2)} pt
             </strong>
           </div>
@@ -216,7 +216,7 @@ export function QualificationPresetSelector({
       )}
 
       {selectedPreset === 'ciad' && (
-        <div style={{ marginTop: 10, background: '#ffffff', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
+        <div style={{ marginTop: 10, background: 'var(--surface)', padding: 12, borderRadius: 8, border: '1px solid var(--outline-variant)' }}>
           <FormField label="Ente Rilasciante Accreditato Accredia" tip="La CIAD deve essere registrata presso Accredia sotto norma DigComp 2.2">
             <select
               value={ciadEntity}
@@ -244,7 +244,7 @@ export function QualificationPresetSelector({
       )}
 
       {selectedPreset === 'language' && (
-        <div style={{ marginTop: 10, background: '#ffffff', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
+        <div style={{ marginTop: 10, background: 'var(--surface)', padding: 12, borderRadius: 8, border: '1px solid var(--outline-variant)' }}>
           <FormField label="Livello Quadro Comune Europeo di Riferimento (QCER)">
             <select
               value={languageLevel}

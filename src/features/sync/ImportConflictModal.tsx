@@ -134,28 +134,28 @@ export function ImportConflictModal({
 
           <div className="sync-summary-grid">
             <div className="sync-stat-card new">
-              <PlusCircle size={22} color="#34d399" />
+              <PlusCircle size={22} color="var(--secondary)" />
               <div>
                 <div className="sync-stat-num">{diff.summary.newRecords}</div>
                 <div className="sync-stat-label">Nuovi Record da Importare</div>
               </div>
             </div>
             <div className="sync-stat-card modified">
-              <AlertTriangle size={22} color="#fbbf24" />
+              <AlertTriangle size={22} color="var(--tertiary)" />
               <div>
                 <div className="sync-stat-num">{diff.summary.modifiedRecords}</div>
                 <div className="sync-stat-label">Record con Discrepanze</div>
               </div>
             </div>
             <div className="sync-stat-card identical">
-              <UserCheck size={22} color="#94a3b8" />
+              <UserCheck size={22} color="var(--on-surface-variant)" />
               <div>
                 <div className="sync-stat-num">{diff.summary.identityChanges}</div>
                 <div className="sync-stat-label">Campi Anagrafici Diversi</div>
               </div>
             </div>
             <div className="sync-stat-card identical">
-              <FileSpreadsheet size={22} color="#64748b" />
+              <FileSpreadsheet size={22} color="var(--on-surface-variant)" />
               <div>
                 <div className="sync-stat-num">{diff.summary.identicalRecords}</div>
                 <div className="sync-stat-label">Record Già Identici</div>
@@ -188,7 +188,7 @@ export function ImportConflictModal({
 
           {activeTab === 'summary' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ fontSize: '0.86rem', color: '#cbd5e1', lineHeight: '1.5' }}>
+              <div style={{ fontSize: '0.86rem', color: 'var(--outline-variant)', lineHeight: '1.5' }}>
                 {diff.isExistingPerson ? (
                   <>
                     Il file importato contiene dati per <strong>{personName}</strong> che differiscono da quelli
@@ -298,12 +298,12 @@ export function ImportConflictModal({
                         </div>
                       )}
                       {rec.status === 'new_in_import' && (
-                        <span style={{ fontSize: '0.75rem', color: '#34d399', fontWeight: 600 }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--secondary)', fontWeight: 600 }}>
                           Verrà aggiunto (+1)
                         </span>
                       )}
                       {rec.status === 'identical' && (
-                        <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Già allineato</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--on-surface-variant)' }}>Già allineato</span>
                       )}
                     </div>
 

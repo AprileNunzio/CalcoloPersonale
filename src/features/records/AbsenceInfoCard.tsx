@@ -40,7 +40,7 @@ export function AbsenceInfoCard({
       </div>
 
       <div style={{ margin: '10px 0 14px 0' }}>
-        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-text-muted, #64748b)', marginBottom: 6 }}>
+        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-text-muted, var(--on-surface-variant))', marginBottom: 6 }}>
           {t('contractTypeLabel')}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -89,20 +89,20 @@ export function AbsenceInfoCard({
         </div>
 
         {info.visiteFiscaliKey && (
-          <div className="absence-statutory-item wide" style={{ borderLeft: '3px solid #3b82f6' }}>
-            <Clock size={15} color="#2563eb" />
+          <div className="absence-statutory-item wide" style={{ borderLeft: '3px solid var(--primary)' }}>
+            <Clock size={15} color="var(--primary)" />
             <div>
-              <small style={{ color: '#1d4ed8' }}>{t('visiteFiscaliHours')}</small>
+              <small style={{ color: 'var(--primary)' }}>{t('visiteFiscaliHours')}</small>
               <p style={{ margin: 0, fontSize: '12px' }}>{t(info.visiteFiscaliKey)}</p>
             </div>
           </div>
         )}
 
         {info.decurtazioneBrunettaKey && (
-          <div className="absence-statutory-item wide" style={{ borderLeft: '3px solid #f59e0b' }}>
-            <AlertTriangle size={15} color="#d97706" />
+          <div className="absence-statutory-item wide" style={{ borderLeft: '3px solid var(--tertiary)' }}>
+            <AlertTriangle size={15} color="var(--tertiary)" />
             <div>
-              <small style={{ color: '#b45309' }}>{t('brunettaCutTitle')}</small>
+              <small style={{ color: 'var(--tertiary)' }}>{t('brunettaCutTitle')}</small>
               <p style={{ margin: 0, fontSize: '12px' }}>{t(info.decurtazioneBrunettaKey)}</p>
             </div>
           </div>
