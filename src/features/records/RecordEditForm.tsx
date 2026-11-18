@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Briefcase, Award, HeartPulse, X, Check, Edit3, Calendar } from 'lucide-react';
 import { Entry, Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
+import { formatDateItalian } from '../../shared/dateUtils';
 import { AutoSaveStatus } from '../autosave/AutoSave';
 import { FormField, FieldStatus } from '../../shared/FormField';
 import { DirectoryPicker } from '../directory/DirectoryPicker';
@@ -11,7 +13,10 @@ import { ServiceSector, ServiceContractType } from './serviceCalculations';
 import { FamilyMemberPicker } from './FamilyMemberPicker';
 import { detectContractType } from '../../shared/entitlements';
 import { QualificationPresetSelector } from './QualificationPresetSelector';
+import { ManualSchoolModal } from './ManualSchoolModal';
+import { SelectedSchoolCard } from './SelectedSchoolCard';
 import { getTitleLabel, getTitlePlaceholder, getStartLabel } from './recordFormLabels';
+import './recordEditForm.css';
 
 export interface RecordEditFormProps {
   draft: Entry;
@@ -29,18 +34,8 @@ export interface RecordEditFormProps {
   onSubmit: (entry: Entry) => void;
 }
 
-function parseNotes(notes: string): {
-  text: string;
-  sector?: ServiceSector;
-  contractType?: ServiceContractType;
-  weeklyHours?: number;
-  linkedPersonId?: string;
-} {
-  try {
-    if (notes.startsWith('{')) return JSON.parse(notes);
-  } catch {
-    return { text: notes };
-  }
+function parseNotes(notes: string): { text: string; sector?: ServiceSector; contractType?: ServiceContractType; weeklyHours?: number; linkedPersonId?: string } {
+  try { if (notes.startsWith('{')) return JSON.parse(notes); } catch { return { text: notes }; }
   return { text: notes };
 }
 
@@ -60,11 +55,19 @@ export function RecordEditForm({
   onSubmit,
 }: RecordEditFormProps) {
   const t = useT();
+  const [submitted, setSubmitted] = useState(false);
+  const [showManualSchoolModal, setShowManualSchoolModal] = useState(false);
   const parsedDraftNotes = parseNotes(draft.notes);
 
   const getFieldStatus = (field: 'title' | 'start' | 'end' | 'notes' | 'profile'): FieldStatus => {
-    if (field === 'title') return draft.title.trim().length > 0 ? 'saved' : 'error';
-    if (field === 'start') return draft.start ? 'saved' : 'error';
+    if (field === 'title') {
+      if (draft.title.trim().length > 0) return 'saved';
+      return submitted ? 'error' : 'idle';
+    }
+    if (field === 'start') {
+      if (draft.start) return 'saved';
+      return submitted ? 'error' : 'idle';
+    }
     if (field === 'end') {
       if (!draft.end) return 'idle';
       return draft.end >= draft.start ? 'saved' : 'error';
@@ -121,18 +124,51 @@ export function RecordEditForm({
 
   return (
     <form
-      className="panel form"
+      className="modern-record-form"
       onSubmit={event => {
         event.preventDefault();
+        setSubmitted(true);
+        if (!draft.title.trim() || !draft.start) {
+          return;
+        }
+        if (draft.end && draft.end < draft.start) {
+          return;
+        }
         onSubmit(draft);
       }}
     >
       <fieldset className="application-boundary" disabled={pending || busy}>
-        <div className="form-panel-header">
-          <div>
-            <h2>{draft.id ? t('edit') : t('addRecord')}</h2>
+        <div className="modern-form-header">
+          <div className="modern-form-title-col">
+            <div className="modern-form-icon">
+              {draft.kind === 'service' ? (
+                <Briefcase size={22} color="#116b62" />
+              ) : draft.kind === 'qualification' ? (
+                <Award size={22} color="#0d9488" />
+              ) : (
+                <HeartPulse size={22} color="#ea580c" />
+              )}
+            </div>
+            <div>
+              <h2>{draft.id ? t('edit') : draft.kind === 'service' ? 'Nuovo Periodo di Servizio' : t('addRecord')}</h2>
+              <p className="modern-form-subtitle">
+                {draft.kind === 'service'
+                  ? 'Compila le date e la scuola per calcolare automaticamente punteggio graduatorie e anzianità'
+                  : 'Registra i dettagli conformi alle normative vigenti'}
+              </p>
+            </div>
           </div>
-          <AutoSaveStatus />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <AutoSaveStatus />
+            <button
+              type="button"
+              className="form-close-x-btn"
+              title="Chiudi modulo"
+              onClick={() => setDraft(null)}
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {draft.kind === 'child' && (
@@ -145,8 +181,8 @@ export function RecordEditForm({
           />
         )}
 
-        {draft.kind === 'service' && (
-          <div style={{ marginBottom: 20 }}>
+        {draft.kind === 'service' && !draft.school && (
+          <div style={{ marginBottom: 16 }}>
             <FormField
               label={t('schoolSearch')}
               tip={t('tipServiceSchool')}
@@ -154,7 +190,8 @@ export function RecordEditForm({
             >
               <DirectoryPicker
                 kind="school"
-                value={draft.school?.name || ''}
+                value=""
+                onOpenManual={() => setShowManualSchoolModal(true)}
                 onSelect={school => {
                   const isParitaria = school.category === 'SCUANAGRAFEPA';
                   const autoSector: ServiceSector = isParitaria ? 'paritaria_ata' : 'statale_ata';
@@ -168,39 +205,39 @@ export function RecordEditForm({
                   setDraft({
                     ...draft,
                     school,
-                    title: school.name,
+                    title: draft.title.trim() ? draft.title : school.name,
                     notes: JSON.stringify(updatedNotes),
                   });
                 }}
               />
             </FormField>
+            <div style={{ marginTop: 6, display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                className="link-style-btn"
+                style={{
+                  fontSize: 12,
+                  color: '#0d9488',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  fontWeight: 600,
+                }}
+                onClick={() => setShowManualSchoolModal(true)}
+              >
+                + Non trovi la scuola? Inserisci scuola storica o codice manuale (es. FIMM290003)
+              </button>
+            </div>
           </div>
         )}
 
         {draft.school && (
-          <div className="school-summary" style={{ marginBottom: 18 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <strong>
-                  {draft.school.code} · {draft.school.name}
-                </strong>
-                <p>
-                  {draft.school.address} · {draft.school.postalCode} · {draft.school.municipality} ({draft.school.province})
-                </p>
-                <p>
-                  {draft.school.email} · {draft.school.pec}
-                </p>
-              </div>
-              <button
-                type="button"
-                className="secondary"
-                style={{ fontSize: 12, padding: '4px 8px' }}
-                onClick={() => setDraft({ ...draft, school: undefined })}
-              >
-                {t('change')}
-              </button>
-            </div>
-          </div>
+          <SelectedSchoolCard
+            school={draft.school}
+            onEdit={() => setShowManualSchoolModal(true)}
+            onRemove={() => setDraft({ ...draft, school: undefined })}
+          />
         )}
 
         <div className="fields">
@@ -314,6 +351,11 @@ export function RecordEditForm({
               value={draft.start}
               onChange={event => setDraft({ ...draft, start: event.target.value })}
             />
+            {draft.start && (
+              <span className="date-italian-preview">
+                📅 {formatDateItalian(draft.start)}
+              </span>
+            )}
           </FormField>
 
           {draft.kind !== 'child' && (
@@ -331,7 +373,41 @@ export function RecordEditForm({
                   setDraft({ ...draft, end: event.target.value || null })
                 }
               />
+              {draft.end && (
+                <span className="date-italian-preview">
+                  📅 {formatDateItalian(draft.end)}
+                </span>
+              )}
             </FormField>
+          )}
+
+          {draft.kind === 'service' && (
+            <div className="wide" style={{ gridColumn: '1 / -1', marginTop: -6, marginBottom: 4 }}>
+              <div className="date-presets-bar">
+                <span style={{ fontSize: 11, color: '#64748b', fontWeight: 650 }}>Scorciatoie:</span>
+                <button
+                  type="button"
+                  className="date-preset-chip"
+                  onClick={() => {
+                    const y = draft.start ? draft.start.slice(0, 4) : '2023';
+                    const ny = String(parseInt(y, 10) + 1);
+                    setDraft({ ...draft, start: `${y}-09-01`, end: `${ny}-08-31` });
+                  }}
+                >
+                  Anno Completo (01/09 - 31/08)
+                </button>
+                <button
+                  type="button"
+                  className="date-preset-chip"
+                  onClick={() => {
+                    const y = draft.start ? draft.start.slice(0, 4) : '2024';
+                    setDraft({ ...draft, end: `${y}-06-30` });
+                  }}
+                >
+                  Termine Attività (Fino al 30/06)
+                </button>
+              </div>
+            </div>
           )}
 
           {draft.kind === 'service' && (
@@ -387,6 +463,32 @@ export function RecordEditForm({
           <button type="submit">{t('save')}</button>
         </div>
       </fieldset>
+
+      {showManualSchoolModal && (
+        <ManualSchoolModal
+          initialSchool={draft.school}
+          initialCode={draft.school?.code || ''}
+          onSave={school => {
+            const isParitaria = school.category === 'SCUANAGRAFEPA';
+            const autoSector: ServiceSector = isParitaria ? 'paritaria_ata' : 'statale_ata';
+            const updatedNotes = {
+              ...parsedDraftNotes,
+              sector: autoSector,
+              schoolCode: school.code,
+              schoolMunicipality: school.municipality,
+              schoolProvince: school.province,
+            };
+            setDraft({
+              ...draft,
+              school,
+              title: draft.title.trim() ? draft.title : school.name,
+              notes: JSON.stringify(updatedNotes),
+            });
+            setShowManualSchoolModal(false);
+          }}
+          onClose={() => setShowManualSchoolModal(false)}
+        />
+      )}
     </form>
   );
 }

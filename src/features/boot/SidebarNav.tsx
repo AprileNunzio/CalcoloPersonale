@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   BriefcaseBusiness,
   FolderHeart,
@@ -12,6 +13,8 @@ import {
   Banknote,
   School,
   FileCheck,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Person, Archive } from '../../shared/types';
 import { useT } from '../../shared/i18n';
@@ -38,40 +41,53 @@ export function SidebarNav({
   onLock,
 }: SidebarNavProps) {
   const t = useT();
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${collapsed ? 'icon-only' : ''}`}>
       <div className="brand">
         <div className="brand-icon">
           <BriefcaseBusiness />
         </div>
-        <strong>{t('app')}</strong>
+        {!collapsed && <strong>{t('app')}</strong>}
+        <button
+          type="button"
+          className="sidebar-toggle-btn"
+          title={collapsed ? 'Espandi barra laterale' : 'Riduci a solo icone'}
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        </button>
       </div>
-      <div className="side-label">{t('all')}</div>
+      {!collapsed && <div className="side-label">{t('all')}</div>}
       <button
         className={!person ? 'nav active' : 'nav'}
+        title={t('people')}
         onClick={() => {
           onSelectPerson(null);
           onSelectSection('overview');
         }}
       >
         <Users size={19} />
-        {t('people')}
-        <span>{archive.people.length}</span>
+        {!collapsed && <span className="nav-label">{t('people')}</span>}
+        {!collapsed && <span className="nav-badge">{archive.people.length}</span>}
       </button>
       <button
         className="nav"
+        title="Configurazione a Step"
         onClick={onOpenWizard}
         style={{ color: '#116b62', fontWeight: 650 }}
       >
         <Sparkles size={17} />
-        <span>Configurazione a Step</span>
+        {!collapsed && <span className="nav-label">Configurazione a Step</span>}
       </button>
       {person && (
         <>
-          <div className="side-label">
-            {person.firstName} {person.lastName}
-          </div>
+          {!collapsed && (
+            <div className="side-label">
+              {person.firstName} {person.lastName}
+            </div>
+          )}
           {[
             { k: 'overview', icon: LayoutDashboard, lbl: t('overview') },
             { k: 'identity', icon: FolderHeart, lbl: t('identity') },
@@ -88,9 +104,11 @@ export function SidebarNav({
             <button
               className={`nav ${section === k ? 'active' : ''}`}
               key={k}
+              title={lbl}
               onClick={() => onSelectSection(k)}
             >
-              <Icon size={18} /> {lbl}
+              <Icon size={18} />
+              {!collapsed && <span className="nav-label">{lbl}</span>}
             </button>
           ))}
         </>
@@ -98,34 +116,38 @@ export function SidebarNav({
       <div className="sidebar-bottom">
         <button
           className={`nav ${section === 'assistant' ? 'active' : ''}`}
+          title={t('assistant')}
           onClick={() => {
             onSelectPerson(null);
             onSelectSection('assistant');
           }}
         >
           <Bot size={17} />
-          {t('assistant')}
+          {!collapsed && <span className="nav-label">{t('assistant')}</span>}
         </button>
-        <div className="secure-label">
-          <ShieldCheck size={18} />
-          <div>
-            {t('secure')}
-            <small>{t('local')}</small>
+        {!collapsed && (
+          <div className="secure-label">
+            <ShieldCheck size={18} />
+            <div>
+              {t('secure')}
+              <small>{t('local')}</small>
+            </div>
           </div>
-        </div>
+        )}
         <button
           className={`nav ${section === 'updates' ? 'active' : ''}`}
+          title={t('update')}
           onClick={() => {
             onSelectPerson(null);
             onSelectSection('updates');
           }}
         >
           <RefreshCw size={17} />
-          {t('update')}
+          {!collapsed && <span className="nav-label">{t('update')}</span>}
         </button>
-        <button className="nav" disabled={busy} onClick={onLock}>
+        <button className="nav" title={t('lock')} disabled={busy} onClick={onLock}>
           <LockKeyhole size={17} />
-          {t('lock')}
+          {!collapsed && <span className="nav-label">{t('lock')}</span>}
         </button>
       </div>
     </aside>

@@ -25,6 +25,7 @@ import { Entry } from '../../shared/types';
 import { useT } from '../../shared/i18n';
 import { PROFILE_LABELS } from '../../shared/personUtils';
 import { parseDays } from '../../shared/scoring';
+import { formatDateItalian } from '../../shared/dateUtils';
 import {
   ServiceSector,
   ServiceContractType,
@@ -332,7 +333,7 @@ export function RecordItemCard({
           <div className="card-dates-row">
             <Calendar size={14} color="#0d9488" />
             <span>
-              Data conseguimento: <strong>{record.start || 'Non specificata'}</strong>
+              Data conseguimento: <strong>{formatDateItalian(record.start) || 'Non specificata'}</strong>
             </span>
             {parsed.scoreAchieved && parsed.scoreBase && (
               <span style={{ color: '#0f172a', fontWeight: 650 }}>
@@ -350,8 +351,8 @@ export function RecordItemCard({
           <div className="card-dates-row">
             <Calendar size={14} color="#64748b" />
             <span>
-              Dal <strong>{record.start}</strong>
-              {record.end ? <> al <strong>{record.end}</strong></> : ' (1 giorno)'}
+              Dal <strong>{formatDateItalian(record.start)}</strong>
+              {record.end ? <> al <strong>{formatDateItalian(record.end)}</strong></> : ' (1 giorno)'}
             </span>
             <span style={{ color: '#64748b' }}>
               · {parseDays(record.start, record.end)}{' '}
@@ -364,9 +365,9 @@ export function RecordItemCard({
           <div className="card-dates-row">
             <Calendar size={14} color="#64748b" />
             <span>
-              Dal <strong>{record.start}</strong>
+              Dal <strong>{formatDateItalian(record.start)}</strong>
               {record.end ? (
-                <> al <strong>{record.end}</strong></>
+                <> al <strong>{formatDateItalian(record.end)}</strong></>
               ) : isRuolo ? (
                 <span style={{ color: '#7e22ce', fontWeight: 700 }}>
                   {' '}

@@ -1,0 +1,355 @@
+/* Modern Form Container & Layout */
+.modern-record-form {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 10px 32px rgba(15, 23, 42, 0.05);
+  margin-bottom: 24px;
+  transition: all 0.2s ease;
+}
+
+.modern-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.modern-form-title-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modern-form-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modern-form-title-col h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.modern-form-subtitle {
+  margin: 2px 0 0 0;
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.form-close-x-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.form-close-x-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+/* Sections Inside Form */
+.form-section-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 750;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.form-fields-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.form-fields-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+/* Date preview helper tag */
+.date-italian-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: #0f766e;
+  font-weight: 600;
+  background: #f0fdfa;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccfbf1;
+}
+
+/* Shortcuts Bar */
+.date-presets-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.date-preset-chip {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.date-preset-chip:hover {
+  background: #116b62;
+  color: #ffffff;
+  border-color: #116b62;
+}
+
+/* School Summary Card inside Form */
+.selected-school-card-modern {
+  background: #ffffff;
+  border: 1.5px solid #0d9488;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.08);
+}
+
+.school-card-main-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.school-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.school-code-chip {
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 12px;
+  background: #e6fffa;
+  color: #0d9488;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid #99f6e4;
+}
+
+.school-source-chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.school-source-chip.historical {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.school-card-name {
+  font-size: 14px;
+  font-weight: 750;
+  color: #0f172a;
+}
+
+.school-card-location {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.school-card-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Manual School Modal */
+.manual-school-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.manual-school-dialog {
+  background: #ffffff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 540px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: dialogPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dialogPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.manual-school-header {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.manual-school-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.manual-school-header p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.manual-school-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.manual-school-tip {
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: #0f766e;
+  line-height: 1.45;
+}
+
+.manual-school-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-group label {
+  font-size: 12px;
+  font-weight: 650;
+  color: #334155;
+}
+
+.field-group input {
+  padding: 8px 12px;
+  border: 1.5px solid #d8e3dd;
+  border-radius: 8px;
+  font-size: 13.5px;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.field-group input:focus {
+  border-color: #116b62;
+  box-shadow: 0 0 0 3px rgba(17, 107, 98, 0.12);
+}
+
+.manual-school-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.manual-school-actions button.primary {
+  background: #116b62;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.manual-school-actions button.primary:hover {
+  background: #0d544c;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-fields-grid-2col,
+  .form-fields-grid-3col {
+    grid-template-columns: 1fr;
+  }
+}

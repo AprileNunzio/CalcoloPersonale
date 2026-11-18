@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { Search, X, School, MapPin } from 'lucide-react';
+import { Search, X, School, MapPin, Plus } from 'lucide-react';
 import { call } from '../../shared/api';
 import { useT } from '../../shared/i18n';
 import './styles.css';
@@ -23,6 +23,7 @@ export interface DirectoryEntry {
 export interface DirectoryPickerProps {
   kind: 'school' | 'municipality';
   onSelect: (entry: DirectoryEntry) => void;
+  onOpenManual?: () => void;
   value?: string;
   placeholder?: string;
   autoClearOnSelect?: boolean;
@@ -32,6 +33,7 @@ export interface DirectoryPickerProps {
 export function DirectoryPicker({
   kind,
   onSelect,
+  onOpenManual,
   value = '',
   placeholder,
   autoClearOnSelect = false,
@@ -205,12 +207,91 @@ export function DirectoryPicker({
               </li>
             );
           })}
+          {kind === 'school' && (
+            <li
+              className="directory-menu-item historical-custom-option"
+              onMouseDown={e => e.preventDefault()}
+              onClick={() => {
+                const q = query.trim().toUpperCase();
+                const isCode = /^[A-Z0-9]{6,12}$/i.test(q);
+                const prov = isCode && q.length >= 2 ? q.slice(0, 2) : '';
+                choose({
+                  code: isCode ? q : '',
+                  name: isCode ? `Scuola Statale (Codice ${q})` : query.trim(),
+                  municipality: '',
+                  province: prov,
+                  region: '',
+                  address: '',
+                  postalCode: '',
+                  email: '',
+                  pec: '',
+                  website: '',
+                  schoolYear: 'Storico / Pregresso',
+                  category: 'SCUOLASTORICA',
+                });
+              }}
+            >
+              <div className="directory-item-header">
+                <span style={{ color: '#0f766e', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Plus size={14} /> Usa "{query.trim()}" come codice / scuola storica o deprecata
+                </span>
+                <span className="cat-pill" style={{ background: '#fef3c7', color: '#92400e' }}>
+                  Storico
+                </span>
+              </div>
+              <div className="directory-item-sub" style={{ fontSize: 11, color: '#64748b' }}>
+                Per servizi ante 2024 (es. FIMM290003 nel 2008) o istituti accorpati/soppressi.
+              </div>
+            </li>
+          )}
         </ul>
       )}
 
       {isOpen && !loading && query.trim().length >= 2 && rows.length === 0 && (
         <div className="directory-dropdown-empty">
-          <span>{t('noResults')}</span>
+          <p style={{ margin: '0 0 10px 0', fontSize: 13, color: '#475569' }}>
+            Nessun istituto trovato nell'anagrafe attiva con "<strong>{query.trim()}</strong>"
+          </p>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="use-historical-school-btn"
+              onClick={() => {
+                const q = query.trim().toUpperCase();
+                const isCode = /^[A-Z0-9]{6,12}$/i.test(q);
+                const prov = isCode && q.length >= 2 ? q.slice(0, 2) : '';
+                choose({
+                  code: isCode ? q : '',
+                  name: isCode ? `Scuola Statale (Codice ${q})` : query.trim(),
+                  municipality: '',
+                  province: prov,
+                  region: '',
+                  address: '',
+                  postalCode: '',
+                  email: '',
+                  pec: '',
+                  website: '',
+                  schoolYear: 'Storico / Pregresso',
+                  category: 'SCUOLASTORICA',
+                });
+              }}
+            >
+              <Plus size={13} />
+              <span>Usa "{query.trim()}" come codice storico</span>
+            </button>
+            {onOpenManual && (
+              <button
+                type="button"
+                className="use-historical-school-btn secondary"
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenManual();
+                }}
+              >
+                Compila dati scuola manualmente
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

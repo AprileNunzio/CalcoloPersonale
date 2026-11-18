@@ -6,15 +6,19 @@
   flex-direction: column;
   border-right: 1px solid #e1e9e7;
   background: #ffffff;
-  padding: 26px 16px;
-  z-index: 10;
+  padding: 24px 14px;
+  z-index: 100;
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), padding 0.2s ease;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 36px;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 24px;
   font-size: 16px;
   font-weight: 750;
   color: #116b62;
@@ -27,6 +31,28 @@
   border-radius: 12px;
   display: flex;
   box-shadow: 0 4px 10px rgba(17, 107, 98, 0.2);
+  flex-shrink: 0;
+}
+
+.sidebar-toggle-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+  background: #116b62;
+  color: #ffffff;
+  border-color: #116b62;
 }
 
 .side-label {
@@ -34,20 +60,25 @@
   text-transform: uppercase;
   letter-spacing: 1.4px;
   color: #8c9b98;
-  margin: 18px 12px 10px;
+  margin: 16px 10px 8px;
   font-weight: 700;
 }
 
 .nav {
   background: transparent;
   color: #556967;
+  display: flex;
+  align-items: center;
   justify-content: flex-start;
+  gap: 10px;
   width: 100%;
-  padding: 11px 14px;
-  margin-bottom: 4px;
+  padding: 10px 12px;
+  margin-bottom: 3px;
   font-size: 13px;
   text-align: left;
   border-radius: 10px;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
 }
 
 .nav:hover {
@@ -62,7 +93,7 @@
   font-weight: 700;
 }
 
-.nav span {
+.nav .nav-badge {
   margin-left: auto;
   font-size: 11px;
   background: #d4e7e2;
@@ -73,17 +104,18 @@
 
 .sidebar-bottom {
   margin-top: auto;
-  padding-top: 20px;
+  padding-top: 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  border-top: 1px solid #f1f5f9;
 }
 
 .secure-label {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 10px;
+  padding: 10px 8px;
   color: #3b7468;
   font-size: 12px;
 }
@@ -92,43 +124,110 @@
   display: block;
   color: #8c9c99;
   font-size: 10px;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
-@media (max-width: 1100px) {
+/* Icon-Only Mode (Collapsed or Compact Viewports) */
+.sidebar.icon-only {
+  width: 72px;
+  padding: 20px 8px;
+  align-items: center;
+}
+
+.sidebar.icon-only .brand {
+  justify-content: center;
+  width: 100%;
+}
+
+.sidebar.icon-only .brand strong,
+.sidebar.icon-only .side-label,
+.sidebar.icon-only .nav-label,
+.sidebar.icon-only .nav-badge,
+.sidebar.icon-only .secure-label {
+  display: none !important;
+}
+
+.sidebar.icon-only .nav {
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0 auto 4px auto;
+}
+
+.sidebar.icon-only ~ .workspace {
+  margin-left: 72px;
+}
+
+/* Tablet & Compact Screen Auto-collapse */
+@media (max-width: 1120px) {
   .sidebar {
-    width: 220px;
+    width: 72px;
+    padding: 20px 8px;
+    align-items: center;
+  }
+  .sidebar .brand {
+    justify-content: center;
+  }
+  .sidebar .brand strong,
+  .sidebar .side-label,
+  .sidebar .nav-label,
+  .sidebar .nav-badge,
+  .sidebar .secure-label {
+    display: none !important;
+  }
+  .sidebar .nav {
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0 auto 4px auto;
+  }
+  .workspace {
+    margin-left: 72px !important;
   }
 }
 
+/* Mobile Screen Horizontal Bar */
 @media (max-width: 768px) {
   .sidebar {
     position: static;
-    width: 100%;
-    padding: 16px;
+    width: 100% !important;
+    padding: 12px 14px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    align-items: center;
     gap: 6px;
+    overflow-x: auto;
   }
   .brand {
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    justify-content: space-between;
   }
-  .side-label, .secure-label {
-    display: none;
+  .brand strong {
+    display: inline-block !important;
   }
   .nav {
-    width: auto;
+    width: auto !important;
+    height: auto !important;
     margin: 0;
-    padding: 9px 12px;
+    padding: 8px 12px;
     font-size: 12px;
+  }
+  .sidebar .nav-label {
+    display: inline-block !important;
   }
   .sidebar-bottom {
     margin: 0;
     padding: 0;
+    border-top: none;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+  .workspace {
+    margin-left: 0 !important;
   }
 }

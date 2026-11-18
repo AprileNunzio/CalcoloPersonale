@@ -28,11 +28,15 @@ export function Records({
   const t = useT();
   const context = useContext(AutoSaveContext)!;
   const [draft, setDraft] = useAutoDraft<Entry | null>(`entry:${person.id}:${section}`, null);
+  const [isExplicitlyAdding, setIsExplicitlyAdding] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
   const [familySource, setFamilySource] = useState<'manual' | 'archive'>('manual');
   const [selectedLinkedId, setSelectedLinkedId] = useState('');
   const [showImportModal, setShowImportModal] = useState(false);
+
+  const hasDraftContent = draft !== null && Boolean(draft.id || draft.title?.trim() || draft.school || draft.start);
+  const isFormOpen = isExplicitlyAdding || hasDraftContent;
 
   const kinds = section === 'absences' ? absenceKinds : [section];
   const entries = person.records.filter(record => kinds.includes(record.kind));
@@ -106,8 +110,9 @@ export function Records({
           )}
 
           <button
-            disabled={busy || pending || draft !== null}
+            disabled={busy || pending || isFormOpen}
             onClick={() => {
+              setIsExplicitlyAdding(true);
               setFamilySource('manual');
               setSelectedLinkedId('');
               setDraft({
@@ -141,10 +146,13 @@ export function Records({
         </p>
       )}
 
-      {draft && (
+      {isFormOpen && draft && (
         <RecordEditForm
           draft={draft}
-          setDraft={setDraft}
+          setDraft={d => {
+            setDraft(d);
+            if (!d) setIsExplicitlyAdding(false);
+          }}
           person={person}
           section={section}
           kinds={kinds}
