@@ -1,16 +1,18 @@
 import { useState } from 'react';
-import { Calendar, AlertCircle, Banknote, Printer, FileText, CheckCircle2, Info } from 'lucide-react';
+import { Calendar, AlertCircle, Printer, CheckCircle2, Info } from 'lucide-react';
 import { Person } from '../../shared/types';
+import { ContractCategory } from './salaryTables';
 import { calculateFerieMonetizzazione } from './careerProgressionCalculations';
 
 export interface FerieMonetizzazioneCardProps {
   person: Person;
   profile: string;
+  contractCategory?: ContractCategory;
 }
 
-export function FerieMonetizzazioneCard({ person, profile }: FerieMonetizzazioneCardProps) {
+export function FerieMonetizzazioneCard({ person, profile, contractCategory }: FerieMonetizzazioneCardProps) {
   const [giorniFruiti, setGiorniFruiti] = useState<number>(10);
-  const result = calculateFerieMonetizzazione(person, profile, giorniFruiti);
+  const result = calculateFerieMonetizzazione(person, profile, giorniFruiti, contractCategory);
 
   const generateDiffidaText = () => {
     const today = new Date().toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -27,7 +29,7 @@ Il/La sottoscritto/a:
 Cognome e Nome: ${person.lastName} ${person.firstName}
 Codice Fiscale: ${person.fiscalCode}
 Profilo Professionale: ${profile}
-In servizio nell'anno scolastico con contratto a tempo determinato fino al termine delle attività didattiche;
+In servizio nell'anno scolastico con contratto a tempo determinato (${result.contractCategory === 'short' ? 'supplenza breve' : 'fino al termine delle attività didattiche'});
 
 PREMESSO CHE
 - Il/La sottoscritto/a ha prestato servizio a tempo determinato per un totale di ${result.totalServiceDaysInYear} giorni;
@@ -77,29 +79,28 @@ Firma del Dipendente: _________________________________________
 
   return (
     <div style={{ background: '#fff', border: '1px solid #cbd5e1', borderRadius: 10, padding: 18, marginTop: 16 }}>
-      {/* HEADER */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
         <div>
           <h4 style={{ margin: 0, fontSize: 16, display: 'flex', alignItems: 'center', gap: 8, color: '#0f172a' }}>
-            <Calendar size={20} color="#059669" /> Ferie Non Godute & Monetizzazione (Tempo Determinato)
+            <Calendar size={20} color="#059669" /> Ferie e Monetizzazione ({result.contractCategory === 'permanent' ? 'Tempo Indeterminato' : result.contractCategory === 'annual' ? 'Annuale 31/08' : result.contractCategory === 'short' ? 'Supplenza Breve' : 'Termine Attività 30/06'})
           </h4>
           <span style={{ fontSize: 12, color: '#64748b' }}>
-            Rif. CCNL 18/01/2024 e Ordinanza Corte di Cassazione n. 16715/2024 (Diritti supplenti al 30/06 o brevi).
+            Rif. CCNL 18/01/2024 Art. 13 & 19 - Ordinanza Corte di Cassazione n. 16715/2024.
           </span>
         </div>
 
-        <button
-          type="button"
-          className="secondary"
-          onClick={handlePrintDiffida}
-          disabled={!result.isEligibleForMonetizzazione}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#059669', borderColor: '#a7f3d0' }}
-        >
-          <Printer size={15} /> Genera Diffida per Liquidazione
-        </button>
+        {result.isEligibleForMonetizzazione && (
+          <button
+            type="button"
+            className="secondary"
+            onClick={handlePrintDiffida}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#059669', borderColor: '#a7f3d0' }}
+          >
+            <Printer size={15} /> Genera Diffida per Liquidazione
+          </button>
+        )}
       </div>
 
-      {/* METRICS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
         <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: 12, borderRadius: 8 }}>
           <span style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Ferie + Festività Spettanti</span>
@@ -124,7 +125,7 @@ Firma del Dipendente: _________________________________________
             />
             <span style={{ fontSize: 13, color: '#475569' }}>giorni</span>
           </div>
-          <small style={{ fontSize: 10, color: '#64748b' }}>Vacanze Natale, Pasqua, ponti</small>
+          <small style={{ fontSize: 10, color: '#64748b' }}>Sospensione lezioni / ponti</small>
         </div>
 
         <div style={{ background: result.giorniResiduiNonGoduti > 0 ? '#ecfdf5' : '#f8fafc', border: `1px solid ${result.giorniResiduiNonGoduti > 0 ? '#a7f3d0' : '#e2e8f0'}`, padding: 12, borderRadius: 8 }}>
@@ -132,26 +133,31 @@ Firma del Dipendente: _________________________________________
           <div style={{ fontSize: 18, fontWeight: 700, color: result.giorniResiduiNonGoduti > 0 ? '#059669' : '#0f172a', marginTop: 4 }}>
             {result.giorniResiduiNonGoduti} gg
           </div>
-          <small style={{ fontSize: 10, color: '#64748b' }}>Da monetizzare al termine</small>
+          <small style={{ fontSize: 10, color: '#64748b' }}>
+            {result.isEligibleForMonetizzazione ? 'Liquidabili alla cessazione' : 'Da fruire in natura'}
+          </small>
         </div>
 
-        <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', padding: 12, borderRadius: 8 }}>
-          <span style={{ fontSize: 11, color: '#1e40af', textTransform: 'uppercase', fontWeight: 600 }}>Monetizzazione Spettante</span>
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#1d4ed8', marginTop: 4 }}>
-            € {result.indennitaMonetizzazioneLorda.toFixed(2)}
+        <div style={{ background: result.isEligibleForMonetizzazione ? '#eff6ff' : '#f1f5f9', border: `1px solid ${result.isEligibleForMonetizzazione ? '#bfdbfe' : '#cbd5e1'}`, padding: 12, borderRadius: 8 }}>
+          <span style={{ fontSize: 11, color: result.isEligibleForMonetizzazione ? '#1e40af' : '#475569', textTransform: 'uppercase', fontWeight: 600 }}>Monetizzazione Spettante</span>
+          <div style={{ fontSize: 18, fontWeight: 700, color: result.isEligibleForMonetizzazione ? '#1d4ed8' : '#64748b', marginTop: 4 }}>
+            {result.isEligibleForMonetizzazione ? `€ ${result.indennitaMonetizzazioneLorda.toFixed(2)}` : 'Non monetizzabile'}
           </div>
-          <small style={{ fontSize: 10, color: '#1e40af' }}>Netta stimata: ~€ {result.indennitaMonetizzazioneNetta.toFixed(2)}</small>
+          <small style={{ fontSize: 10, color: result.isEligibleForMonetizzazione ? '#1e40af' : '#64748b' }}>
+            {result.isEligibleForMonetizzazione ? `Netta stimata: ~€ ${result.indennitaMonetizzazioneNetta.toFixed(2)}` : 'Fruizione obbligatoria in servizio'}
+          </small>
         </div>
       </div>
 
-      {/* CASSAZIONE INFO BANNER */}
-      <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-        <AlertCircle color="#d97706" size={20} style={{ flexShrink: 0, marginTop: 2 }} />
-        <div style={{ fontSize: 11.5, color: '#92400e', lineHeight: 1.5 }}>
-          <strong>Tutela Giurisprudenziale Ferie Supplenti (Cassazione Ord. 16715/2024):</strong>
-          <div style={{ marginTop: 2 }}>
-            La scuola non può azzerare le ferie del supplente se non dimostra di averlo formalmente invitato per iscritto a fruirne durante l'anno scolastico. In assenza di tale invito espresso, il lavoratore ha pieno diritto alla liquidazione monetaria di tutti i giorni residui non goduti al termine del contratto.
-          </div>
+      <div style={{ background: result.isEligibleForMonetizzazione ? '#fffbeb' : '#f8fafc', border: `1px solid ${result.isEligibleForMonetizzazione ? '#fde68a' : '#e2e8f0'}`, borderRadius: 8, padding: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+        {result.isEligibleForMonetizzazione ? (
+          <AlertCircle color="#d97706" size={20} style={{ flexShrink: 0, marginTop: 2 }} />
+        ) : (
+          <Info color="#2563eb" size={20} style={{ flexShrink: 0, marginTop: 2 }} />
+        )}
+        <div style={{ fontSize: 11.5, color: result.isEligibleForMonetizzazione ? '#92400e' : '#334155', lineHeight: 1.5 }}>
+          <strong>Regime Giuridico Ferie Applicato:</strong>
+          <div style={{ marginTop: 2 }}>{result.legalNote}</div>
         </div>
       </div>
     </div>

@@ -1,12 +1,7 @@
 import { Entry, Person } from '../../shared/types';
 import { parseDays } from '../../shared/scoring';
-import { SalaryFascia } from './salaryCalculations';
-
-// -------------------------------------------------------------
-// 1. RICOSTRUZIONE DI CARRIERA & ARRETRATI (TEMPO INDETERMINATO)
-// Rif: D.L. 69/2023 convertito in Legge 103/2023 (Riforma Art. 569 D.Lgs. 297/94)
-// CCNL Comparto Istruzione e Ricerca 18/01/2024
-// -------------------------------------------------------------
+import { SalaryFascia, ContractCategory, CCNL_TABLES } from './salaryTables';
+import { detectCurrentContract } from './salaryRecordSync';
 
 export interface RicostruzioneCarrieraResult {
   preRuoloTotalDays: number;
@@ -18,78 +13,56 @@ export interface RicostruzioneCarrieraResult {
   ruoloMonths: number;
   totalRecognizedYears: number;
   totalRecognizedMonths: number;
-  oldLawDecurtazioneYears: number; // For comparison: old law took 1/3 over 4 years!
-  salvaInfrazioniGainYears: number; // Years regained thanks to DL 69/2023
+  oldLawDecurtazioneYears: number;
+  salvaInfrazioniGainYears: number;
   inquadramentoFascia: SalaryFascia;
   nextFascia: SalaryFascia | null;
   yearsToNextFascia: number;
   monthlyBaseSalary: number;
   monthlyDifferencePreRuolo: number;
-  estimatedArrearsGross: number; // Estimated arrears since confirmation of role
+  estimatedArrearsGross: number;
   estimatedArrearsNet: number;
+  isEligibleNow: boolean;
+  applicabilityNote: string;
 }
-
-// -------------------------------------------------------------
-// 2. FERIE NON GODUTE E MONETIZZAZIONE (TEMPO DETERMINATO)
-// Rif: Sentenza Cassazione Ordinanza 16715/2024 & CGUE C-61/17
-// CCNL 18/01/2024 Art. 13 e Art. 19
-// -------------------------------------------------------------
 
 export interface FerieMonetizzazioneResult {
   totalServiceDaysInYear: number;
   seniorityOver3Years: boolean;
-  yearlyBaseDays: number; // 30 or 32
-  ferieMaturate: number; // pro-rata
-  festivitaSoppresseMaturate: number; // 4 days pro-rata
+  yearlyBaseDays: number;
+  ferieMaturate: number;
+  festivitaSoppresseMaturate: number;
   totalSpettanti: number;
-  giorniFruitiSospensioneLezioni: number; // e.g. Natale, Pasqua
+  giorniFruitiSospensioneLezioni: number;
   giorniResiduiNonGoduti: number;
   dailyRateGross: number;
   indennitaMonetizzazioneLorda: number;
   indennitaMonetizzazioneNetta: number;
   isEligibleForMonetizzazione: boolean;
+  contractCategory: ContractCategory;
   legalNote: string;
 }
 
-// -------------------------------------------------------------
-// 3. MOBILITÀ E GRADUATORIA INTERNA D'ISTITUTO (CCNI MOBILITÀ ATA)
-// -------------------------------------------------------------
-
 export interface MobilitaGraduatoriaResult {
-  puntiServizioRuolo: number; // 6 punti per ogni anno di ruolo
-  puntiServizioPreRuolo: number; // 3 punti per anno pre-ruolo
-  puntiContinuitaScuola: number; // da 2 a 3 punti/anno dopo il primo triennio
-  puntiEsigenzeFamiglia: number; // ricongiungimento +6, figli < 6 anni +4, figli 6-18 +3
-  puntiTitoliGenerali: number; // concorso pubblico +12, laurea +5
+  puntiServizioRuolo: number;
+  puntiServizioPreRuolo: number;
+  puntiContinuitaScuola: number;
+  puntiEsigenzeFamiglia: number;
+  puntiTitoliGenerali: number;
   punteggioTotaleMobilita: number;
+  isPermanentStaff: boolean;
   dettagli: string[];
 }
-
-// -------------------------------------------------------------
-// 4. SPEZZONI ORARI E MULTI-CONTRATTO (MAX 36 ORE)
-// -------------------------------------------------------------
 
 export interface SpezzoniOrariResult {
   activeContractsCount: number;
   totalWeeklyHours: number;
-  isOverMaxHours: boolean; // CCNL max 36 hours
+  isOverMaxHours: boolean;
   maxHoursAllowed: number;
   hoursComplianceStatus: 'regular' | 'warning_exceeded' | 'part_time';
   overlapDaysDetected: number;
   effectiveWorkingDays: number;
 }
-
-// Tabellari CCNL 18/01/2024 lordi per 36 ore
-const CCNL_BASE_SALARIES: Record<string, Record<SalaryFascia, number>> = {
-  CS: { '0-8': 1358.50, '9-14': 1472.30, '15-20': 1558.10, '21-27': 1642.80, '28-34': 1714.60, '35+': 1761.90 },
-  OS: { '0-8': 1412.30, '9-14': 1538.00, '15-20': 1632.00, '21-27': 1725.00, '28-34': 1802.00, '35+': 1854.00 },
-  AA: { '0-8': 1492.20, '9-14': 1636.50, '15-20': 1751.80, '21-27': 1868.10, '28-34': 1961.40, '35+': 2028.70 },
-  AT: { '0-8': 1492.20, '9-14': 1636.50, '15-20': 1751.80, '21-27': 1868.10, '28-34': 1961.40, '35+': 2028.70 },
-  CU: { '0-8': 1492.20, '9-14': 1636.50, '15-20': 1751.80, '21-27': 1868.10, '28-34': 1961.40, '35+': 2028.70 },
-  GU: { '0-8': 1412.30, '9-14': 1538.00, '15-20': 1632.00, '21-27': 1725.00, '28-34': 1802.00, '35+': 1854.00 },
-  CR: { '0-8': 1412.30, '9-14': 1538.00, '15-20': 1632.00, '21-27': 1725.00, '28-34': 1802.00, '35+': 1854.00 },
-  DOCENTE: { '0-8': 1800.00, '9-14': 1980.00, '15-20': 2160.00, '21-27': 2340.00, '28-34': 2500.00, '35+': 2650.00 },
-};
 
 export function calculateRicostruzioneCarriera(
   person: Person,
@@ -113,7 +86,6 @@ export function calculateRicostruzioneCarriera(
     }
   }
 
-  // Pre-ruolo conversion: 360 days = 1 commercial year
   const preRuoloYears = Math.floor(preRuoloDays / 360);
   const preRuoloMonths = Math.floor((preRuoloDays % 360) / 30);
   const preRuoloRemainingDays = preRuoloDays % 30;
@@ -121,11 +93,9 @@ export function calculateRicostruzioneCarriera(
   const ruoloYears = Math.floor(ruoloDays / 360);
   const ruoloMonths = Math.floor((ruoloDays % 360) / 30);
 
-  // DL 69/2023: Full 100% recognition
   const totalYears = preRuoloYears + ruoloYears;
   const totalMonths = preRuoloMonths + ruoloMonths;
 
-  // Comparison with old law: old art. 569 took 4 years + 2/3 of remaining pre-ruolo
   let oldLawDecurtazioneYears = 0;
   if (preRuoloYears > 4) {
     const excess = preRuoloYears - 4;
@@ -133,7 +103,6 @@ export function calculateRicostruzioneCarriera(
   }
   const salvaInfrazioniGainYears = oldLawDecurtazioneYears;
 
-  // Determine Fascia
   let inquadramentoFascia: SalaryFascia = '0-8';
   let nextFascia: SalaryFascia | null = '9-14';
   let yearsToNextFascia = 9 - totalYears;
@@ -160,14 +129,18 @@ export function calculateRicostruzioneCarriera(
     yearsToNextFascia = 15 - totalYears;
   }
 
-  const table = CCNL_BASE_SALARIES[profile] || CCNL_BASE_SALARIES.CS;
+  const table = CCNL_TABLES[profile] || CCNL_TABLES.CS;
   const monthlyBaseSalary = table[inquadramentoFascia];
   const entryLevelSalary = table['0-8'];
   const monthlyDifferencePreRuolo = Math.max(0, monthlyBaseSalary - entryLevelSalary);
 
-  // Arrears estimate: difference * 13 months * yearsSinceRole
   const estimatedArrearsGross = Math.round(monthlyDifferencePreRuolo * 13 * Math.max(1, yearsSinceRole) * 100) / 100;
   const estimatedArrearsNet = Math.round(estimatedArrearsGross * 0.77 * 100) / 100;
+
+  const isEligibleNow = ruoloDays > 0;
+  const applicabilityNote = isEligibleNow
+    ? 'Personale a tempo indeterminato con servizio di ruolo registrato. Piena applicabilità della riforma D.L. 69/2023 Salva Infrazioni (riconoscimento integrale 100% pre-ruolo senza tagli).'
+    : 'Nessun servizio a tempo indeterminato/ruolo attivo rilevato nei record. La ricostruzione di carriera formale è riservata al personale immesso in ruolo post-conferma. I dati mostrano la simulazione della carriera maturata.';
 
   return {
     preRuoloTotalDays: preRuoloDays,
@@ -188,16 +161,22 @@ export function calculateRicostruzioneCarriera(
     monthlyDifferencePreRuolo,
     estimatedArrearsGross,
     estimatedArrearsNet,
+    isEligibleNow,
+    applicabilityNote,
   };
 }
 
 export function calculateFerieMonetizzazione(
   person: Person,
   profile = 'CS',
-  giorniFruitiManuali = 12
+  giorniFruitiManuali = 12,
+  explicitContractType?: ContractCategory
 ): FerieMonetizzazioneResult {
   const records = person.records || [];
   const services = records.filter(r => r.kind === 'service');
+
+  const detected = detectCurrentContract(records, profile);
+  const contractCategory: ContractCategory = explicitContractType || detected.contractType;
 
   let totalServiceDaysInYear = 0;
   let totalCareerDays = 0;
@@ -205,30 +184,45 @@ export function calculateFerieMonetizzazione(
   for (const s of services) {
     const days = parseDays(s.start, s.end);
     totalCareerDays += days;
-    // Current year service
     totalServiceDaysInYear += days;
   }
 
-  // Cap current year to 360 days
   const effectiveYearDays = Math.min(360, totalServiceDaysInYear > 0 ? totalServiceDaysInYear : 280);
   const seniorityOver3Years = totalCareerDays > (360 * 3);
   const yearlyBaseDays = seniorityOver3Years ? 32 : 30;
 
-  // Pro-rata: (giorni / 360) * baseDays
   const ferieMaturate = Math.round(((effectiveYearDays / 360) * yearlyBaseDays) * 10) / 10;
   const festivitaSoppresseMaturate = Math.round(((effectiveYearDays / 360) * 4) * 10) / 10;
   const totalSpettanti = Math.round((ferieMaturate + festivitaSoppresseMaturate) * 10) / 10;
 
-  // Residual days
   const giorniResiduiNonGoduti = Math.max(0, Math.round((totalSpettanti - giorniFruitiManuali) * 10) / 10);
 
-  // Daily gross rate: monthly salary / 30
-  const table = CCNL_BASE_SALARIES[profile] || CCNL_BASE_SALARIES.CS;
+  const table = CCNL_TABLES[profile] || CCNL_TABLES.CS;
   const monthlySalary = table['0-8'];
   const dailyRateGross = Math.round((monthlySalary / 30) * 100) / 100;
 
-  const indennitaMonetizzazioneLorda = Math.round(dailyRateGross * giorniResiduiNonGoduti * 100) / 100;
-  const indennitaMonetizzazioneNetta = Math.round(indennitaMonetizzazioneLorda * 0.77 * 100) / 100;
+  let isEligibleForMonetizzazione = false;
+  let indennitaMonetizzazioneLorda = 0;
+  let indennitaMonetizzazioneNetta = 0;
+  let legalNote = '';
+
+  if (contractCategory === 'permanent') {
+    isEligibleForMonetizzazione = false;
+    legalNote = 'Personale a Tempo Indeterminato: divieto assoluto di monetizzazione delle ferie per legge (D.L. 95/2012 e CCNL). I ' + totalSpettanti + ' giorni di ferie spettanti devono essere fruiti durante l\'anno scolastico.';
+  } else if (contractCategory === 'annual') {
+    isEligibleForMonetizzazione = false;
+    legalNote = 'Supplenza annuale al 31/08: le ferie devono essere interamente fruite entro il 31 agosto (inclusi luglio e agosto). La monetizzazione è preclusa salvo documentata e accertata impossibilità oggettiva ex art. 19 CCNL.';
+  } else if (contractCategory === 'term') {
+    isEligibleForMonetizzazione = giorniResiduiNonGoduti > 0;
+    indennitaMonetizzazioneLorda = Math.round(dailyRateGross * giorniResiduiNonGoduti * 100) / 100;
+    indennitaMonetizzazioneNetta = Math.round(indennitaMonetizzazioneLorda * 0.77 * 100) / 100;
+    legalNote = 'Supplenza fino al 30/06: ordinanza Cassazione n. 16715/2024 e CGUE C-61/17. Poiché il rapporto cessa al 30 giugno, le ferie residue non godute devono essere OBBLIGATORIAMENTE liquidate nel cedolino finale di luglio/agosto.';
+  } else {
+    isEligibleForMonetizzazione = giorniResiduiNonGoduti > 0;
+    indennitaMonetizzazioneLorda = Math.round(dailyRateGross * giorniResiduiNonGoduti * 100) / 100;
+    indennitaMonetizzazioneNetta = Math.round(indennitaMonetizzazioneLorda * 0.77 * 100) / 100;
+    legalNote = 'Supplenza breve e saltuaria: le ferie maturate in proporzione ai giorni di effettivo servizio non godute sono liquidate di diritto alla conclusione del contratto.';
+  }
 
   return {
     totalServiceDaysInYear: effectiveYearDays,
@@ -242,8 +236,9 @@ export function calculateFerieMonetizzazione(
     dailyRateGross,
     indennitaMonetizzazioneLorda,
     indennitaMonetizzazioneNetta,
-    isEligibleForMonetizzazione: giorniResiduiNonGoduti > 0,
-    legalNote: 'Ordinanza Cassazione n. 16715/2024 e Corte di Giustizia UE: la monetizzazione è dovuta salvo formale invito per iscritto del Dirigente a fruire delle ferie prima della scadenza contrattuale.',
+    isEligibleForMonetizzazione,
+    contractCategory,
+    legalNote,
   };
 }
 
@@ -265,16 +260,27 @@ export function calculateMobilitaPunteggio(person: Person, profile = 'CS'): Mobi
     else anniPreRuolo += Math.max(1, years);
   }
 
+  const isPermanentStaff = anniRuolo > 0;
   const puntiServizioRuolo = anniRuolo * 6;
   const puntiServizioPreRuolo = anniPreRuolo * 3;
   const puntiContinuitaScuola = anniRuolo >= 3 ? (anniRuolo - 2) * 2 : 0;
 
-  // Family needs
-  let puntiEsigenzeFamiglia = 0;
+  let puntiEsigenzeFamiglia = 6;
   const dettagli: string[] = [];
 
-  // Has spouse/convivente (+6 punti)
-  puntiEsigenzeFamiglia += 6;
+  if (isPermanentStaff) {
+    dettagli.push(`Servizio di ruolo: ${anniRuolo} anni x 6 punti = ${puntiServizioRuolo} pt`);
+  } else {
+    dettagli.push('Personale non di ruolo: la graduatoria interna d\'istituto si applica solo al personale con contratto a tempo indeterminato.');
+  }
+
+  if (anniPreRuolo > 0) {
+    dettagli.push(`Servizio pre-ruolo: ${anniPreRuolo} anni x 3 punti = ${puntiServizioPreRuolo} pt`);
+  }
+  if (puntiContinuitaScuola > 0) {
+    dettagli.push(`Continuità nella sede: +${puntiContinuitaScuola} pt (oltre il primo triennio)`);
+  }
+
   dettagli.push('Ricongiungimento al coniuge/comune di residenza: +6 punti');
 
   for (const c of children) {
@@ -291,7 +297,6 @@ export function calculateMobilitaPunteggio(person: Person, profile = 'CS'): Mobi
     }
   }
 
-  // Qualifications
   let puntiTitoliGenerali = 0;
   for (const q of quals) {
     const t = q.title.toLowerCase();
@@ -319,6 +324,7 @@ export function calculateMobilitaPunteggio(person: Person, profile = 'CS'): Mobi
     puntiEsigenzeFamiglia,
     puntiTitoliGenerali,
     punteggioTotaleMobilita,
+    isPermanentStaff,
     dettagli,
   };
 }
@@ -341,7 +347,6 @@ export function verifySpezzoniOrari(records: Entry[]): SpezzoniOrariResult {
     activeContractsCount++;
   }
 
-  // Default if no notes found
   if (totalWeeklyHours === 0 && activeContractsCount > 0) {
     totalWeeklyHours = 36;
   }

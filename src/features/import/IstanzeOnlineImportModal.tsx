@@ -6,7 +6,6 @@ import {
   X,
   AlertCircle,
   Sparkles,
-  User,
   GraduationCap,
   Briefcase,
   Users2,
@@ -15,6 +14,10 @@ import { Person, Entry, Archive } from '../../shared/types';
 import { call, getRevision } from '../../shared/api';
 import { flush } from '../autosave/store';
 import { extractTextFromPdf } from '../../shared/pdfExtractor';
+import {
+  parseIstanzeOnlineText,
+  ParsedIstanzeOnlineData,
+} from './istanzeOnlineParser';
 
 export interface IstanzeOnlineImportModalProps {
   currentPerson: Person;
@@ -34,18 +37,7 @@ export function IstanzeOnlineImportModal({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [parsedData, setParsedData] = useState<{
-    fiscalCode?: string;
-    lastName?: string;
-    firstName?: string;
-    profiles: string[];
-    accessTitle?: { title: string; score: number; base: number; points: number; date?: string };
-    culturalTitles: { title: string; points: number; kind: string }[];
-    services: { school: string; profile: string; start: string; end: string; isStatale: boolean }[];
-    hasSpouse?: boolean;
-    childrenCount?: number;
-  } | null>(null);
-
+  const [parsedData, setParsedData] = useState<ParsedIstanzeOnlineData | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -57,12 +49,12 @@ export function IstanzeOnlineImportModal({
         const buffer = await file.arrayBuffer();
         const extracted = await extractTextFromPdf(buffer);
         setInputText(extracted);
-        parseTextContent(extracted);
+        executeParse(extracted);
         return;
       }
       const content = await file.text();
       setInputText(content);
-      parseTextContent(content);
+      executeParse(content);
     } catch (err: any) {
       setErrorMsg(err?.message || 'Impossibile leggere il file selezionato.');
     } finally {
@@ -70,7 +62,7 @@ export function IstanzeOnlineImportModal({
     }
   };
 
-  const parseTextContent = (textToParse: string) => {
+  const executeParse = (textToParse: string) => {
     if (!textToParse.trim()) {
       setErrorMsg('Incolla o carica il testo della domanda scaricata da Istanze Online (POLIS).');
       return;
@@ -80,123 +72,8 @@ export function IstanzeOnlineImportModal({
     setErrorMsg('');
 
     try {
-      const text = textToParse;
-
-      // Extract Fiscal Code
-      const cfMatch = text.match(/[A-Z]{6}\d{2}[A-EHLMPR-T]\d{2}[A-Z]\d{3}[A-Z]/i);
-      const fiscalCode = cfMatch ? cfMatch[0].toUpperCase() : undefined;
-
-      // Extract Profiles
-      const profiles: string[] = [];
-      if (/collaboratore scolastico|\bcs\b/i.test(text)) profiles.push('CS');
-      if (/assistente amministrativo|\baa\b/i.test(text)) profiles.push('AA');
-      if (/assistente tecnico|\bat\b/i.test(text)) profiles.push('AT');
-      if (/operatore scolastico|\bos\b/i.test(text)) profiles.push('OS');
-      if (/cuoco|\bcu\b/i.test(text)) profiles.push('CU');
-      if (/guardarobiere|\bgu\b/i.test(text)) profiles.push('GU');
-      if (/addetto aziende agrarie|\bcr\b/i.test(text)) profiles.push('CR');
-
-      // Extract Access Title and Score
-      let accessTitle: { title: string; score: number; base: number; points: number; date?: string } | undefined;
-      const scoreMatch = text.match(/(?:votazione|voto|punti|punteggio)[^\d]*(\d{1,3})\s*(?:\/|\s+su\s+)\s*(\d{2,3})/i) ||
-        text.match(/(\d{1,3})\s*\/\s*(\d{2,3})/);
-
-      if (scoreMatch) {
-        const score = parseFloat(scoreMatch[1]);
-        const base = parseFloat(scoreMatch[2]);
-        if (score > 0 && base > 0 && score <= base) {
-          const points = Number(((score / base) * 10).toFixed(2));
-          accessTitle = {
-            title: `Diploma di Scuola Secondaria (${score}/${base})`,
-            score,
-            base,
-            points,
-          };
-        }
-      }
-
-      // Cultural Titles
-      const culturalTitles: { title: string; points: number; kind: string }[] = [];
-      if (/alfabetizzazione|ciad/i.test(text)) {
-        culturalTitles.push({
-          title: 'Certificazione Internazionale di Alfabetizzazione Digitale (CIAD)',
-          points: 0,
-          kind: 'ciad',
-        });
-      }
-      if (/dattilografia/i.test(text)) {
-        culturalTitles.push({
-          title: 'Corso di Addestramento alla Dattilografia',
-          points: 1.0,
-          kind: 'typing',
-        });
-      }
-      if (/eipass|icdl|ecdl|digcomp|pekit/i.test(text)) {
-        culturalTitles.push({
-          title: 'Certificazione Informatica (EIPASS / ICDL / DigComp)',
-          points: profiles.includes('CS') && profiles.length === 1 ? 0.30 : 0.60,
-          kind: 'digital',
-        });
-      }
-      if (/laurea/i.test(text)) {
-        culturalTitles.push({
-          title: 'Diploma di Laurea',
-          points: 2.0,
-          kind: 'degree',
-        });
-      }
-
-      // Service Periods (Matches dates in DD/MM/YYYY or YYYY-MM-DD format)
-      const services: { school: string; profile: string; start: string; end: string; isStatale: boolean }[] = [];
-      const dateRangeRegex = /(\d{2}[\/\-.]\d{2}[\/\-.]\d{4})\s*(?:al|a|-|–)\s*(\d{2}[\/\-.]\d{2}[\/\-.]\d{4})/gi;
-      let match: RegExpExecArray | null;
-      let counter = 1;
-
-      while ((match = dateRangeRegex.exec(text)) !== null) {
-        const rawStart = match[1];
-        const rawEnd = match[2];
-
-        // Format to YYYY-MM-DD
-        const toIso = (dStr: string) => {
-          const parts = dStr.split(/[\/\-.]/);
-          if (parts.length === 3) {
-            return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-          }
-          return dStr;
-        };
-
-        const startIso = toIso(rawStart);
-        const endIso = toIso(rawEnd);
-
-        services.push({
-          school: `Servizio Scolastico ${counter}`,
-          profile: profiles[0] || 'CS',
-          start: startIso,
-          end: endIso,
-          isStatale: !text.toLowerCase().includes('paritaria'),
-        });
-        counter++;
-      }
-
-      // Family & Preferences
-      const hasSpouse = /coniuge|marito|moglie/i.test(text);
-      let childrenCount = 0;
-      const childMatch = text.match(/(\d+)\s*figli/i);
-      if (childMatch) {
-        childrenCount = parseInt(childMatch[1], 10);
-      } else if (/figli/i.test(text)) {
-        childrenCount = 1;
-      }
-
-      setParsedData({
-        fiscalCode,
-        profiles: profiles.length > 0 ? profiles : ['CS'],
-        accessTitle,
-        culturalTitles,
-        services,
-        hasSpouse,
-        childrenCount,
-      });
+      const data = parseIstanzeOnlineText(textToParse);
+      setParsedData(data);
     } catch {
       setErrorMsg('Errore durante la lettura del testo della domanda.');
     } finally {
@@ -214,7 +91,6 @@ export function IstanzeOnlineImportModal({
 
       const newRecords: Entry[] = [...(currentPerson.records || [])];
 
-      // 1. Add Access Title
       if (parsedData.accessTitle) {
         newRecords.push({
           id: crypto.randomUUID(),
@@ -234,7 +110,6 @@ export function IstanzeOnlineImportModal({
         });
       }
 
-      // 2. Add Cultural Titles
       for (const ct of parsedData.culturalTitles) {
         newRecords.push({
           id: crypto.randomUUID(),
@@ -249,7 +124,6 @@ export function IstanzeOnlineImportModal({
         });
       }
 
-      // 3. Add Services
       for (const s of parsedData.services) {
         newRecords.push({
           id: crypto.randomUUID(),
@@ -352,131 +226,123 @@ export function IstanzeOnlineImportModal({
                 />
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '14px 0', color: '#94a3b8' }}>
-                <div style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
-                <span style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase' }}>oppure incolla il testo</span>
-                <div style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
-              </div>
-
-              <textarea
-                rows={7}
-                value={inputText}
-                onChange={e => setInputText(e.target.value)}
-                placeholder="Incolla qui il testo della domanda scaricata da Istanze Online (POLIS)..."
-                style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #cbd5e1', fontFamily: 'monospace', fontSize: 12 }}
-              />
-
-              <div style={{ marginTop: 14, textAlign: 'right' }}>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#475569', display: 'block', marginBottom: 6 }}>
+                  Oppure incolla direttamente il testo estratto dalla domanda:
+                </label>
+                <textarea
+                  rows={8}
+                  value={inputText}
+                  onChange={e => setInputText(e.target.value)}
+                  placeholder="Incolla qui il testo della ricevuta della domanda ATA III Fascia scaricata da Istanze Online..."
+                  style={{ width: '100%', padding: '10px 12px', fontSize: 13, border: '1px solid #cbd5e1', borderRadius: 8, fontFamily: 'monospace' }}
+                />
                 <button
                   type="button"
-                  className="wizard-btn-next"
-                  onClick={() => parseTextContent(inputText)}
+                  className="primary"
+                  onClick={() => executeParse(inputText)}
                   disabled={isParsing || !inputText.trim()}
+                  style={{ marginTop: 10 }}
                 >
-                  <Sparkles size={16} /> Analizza Domanda
+                  {isParsing ? 'Analisi in corso...' : 'Analizza ed Estrai Dati'}
                 </button>
               </div>
             </div>
           ) : (
             <div>
-              <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', padding: 12, borderRadius: 8, marginBottom: 16, display: 'flex', gap: 10, alignItems: 'center' }}>
-                <CheckCircle2 size={24} color="#059669" />
-                <div>
-                  <h4 style={{ margin: 0, color: '#065f46' }}>Domanda analizzata con successo!</h4>
-                  <p style={{ margin: '4px 0 0 0', fontSize: 12, color: '#047857' }}>
-                    Verifica i dati estratti prima di confermare l'importazione nel fascicolo personale.
-                  </p>
+              <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', padding: 14, borderRadius: 10, marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#065f46', fontWeight: 700, fontSize: 14 }}>
+                  <CheckCircle2 size={18} color="#059669" />
+                  Domanda Analizzata con Successo! Verifica i dati estratti:
+                </div>
+                <div style={{ marginTop: 8, fontSize: 12, color: '#047857' }}>
+                  Profili: <strong>{parsedData.profiles.join(', ')}</strong> {parsedData.fiscalCode && `· Codice Fiscale: ${parsedData.fiscalCode}`}
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div style={{ background: '#f8fafc', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
-                  <h5 style={{ margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <User size={16} /> Dati Generali & Profili
-                  </h5>
-                  <div style={{ fontSize: 12 }}>
-                    <div>Codice Fiscale: <strong>{parsedData.fiscalCode || currentPerson.fiscalCode || 'Non rilevato'}</strong></div>
-                    <div>Profili Richiesti: <strong>{parsedData.profiles.join(', ')}</strong></div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {parsedData.accessTitle && (
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
+                      <GraduationCap size={16} color="#2563eb" /> Titolo di Accesso Rilevato
+                    </div>
+                    <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>
+                      {parsedData.accessTitle.title} &rarr; <strong>{parsedData.accessTitle.points.toFixed(2)} punti</strong> (voto {parsedData.accessTitle.score}/{parsedData.accessTitle.base})
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <div style={{ background: '#f8fafc', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
-                  <h5 style={{ margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <GraduationCap size={16} /> Titolo di Accesso
-                  </h5>
-                  <div style={{ fontSize: 12 }}>
-                    {parsedData.accessTitle ? (
-                      <>
-                        <div>{parsedData.accessTitle.title}</div>
-                        <div>Punteggio calcolato: <strong style={{ color: '#059669' }}>{parsedData.accessTitle.points.toFixed(2)} pt</strong></div>
-                      </>
-                    ) : (
-                      <span className="muted">Nessun titolo di accesso con voto identificato nel testo.</span>
-                    )}
+                {parsedData.culturalTitles.length > 0 && (
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
+                      <FileText size={16} color="#059669" /> Titoli Culturali & Informatici ({parsedData.culturalTitles.length})
+                    </div>
+                    <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 12, color: '#475569' }}>
+                      {parsedData.culturalTitles.map((ct, idx) => (
+                        <li key={idx}>
+                          {ct.title} (+{ct.points.toFixed(2)} pt)
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
+                )}
 
-                <div style={{ background: '#f8fafc', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
-                  <h5 style={{ margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Sparkles size={16} /> Titoli Culturali ({parsedData.culturalTitles.length})
-                  </h5>
-                  <div style={{ fontSize: 12 }}>
-                    {parsedData.culturalTitles.length > 0 ? (
-                      <ul style={{ margin: 0, paddingLeft: 16 }}>
-                        {parsedData.culturalTitles.map((ct, idx) => (
-                          <li key={idx}>{ct.title} (+{ct.points.toFixed(2)} pt)</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <span className="muted">Nessuna certificazione aggiuntiva rilevata.</span>
-                    )}
+                {parsedData.services.length > 0 && (
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
+                      <Briefcase size={16} color="#d97706" /> Periodi di Servizio Rilevati ({parsedData.services.length})
+                    </div>
+                    <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 12, color: '#475569' }}>
+                      {parsedData.services.map((s, idx) => (
+                        <li key={idx}>
+                          {s.start} &rarr; {s.end} ({s.profile}) - {s.isStatale ? 'Scuola Statale' : 'Scuola Paritaria'}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
+                )}
 
-                <div style={{ background: '#f8fafc', padding: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}>
-                  <h5 style={{ margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Briefcase size={16} /> Periodi di Servizio ({parsedData.services.length})
-                  </h5>
-                  <div style={{ fontSize: 12 }}>
-                    {parsedData.services.length > 0 ? (
-                      <ul style={{ margin: 0, paddingLeft: 16 }}>
-                        {parsedData.services.map((s, idx) => (
-                          <li key={idx}>{s.school} ({s.start} - {s.end})</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <span className="muted">Nessun periodo con date precise rilevato.</span>
-                    )}
+                {(parsedData.hasSpouse || (parsedData.childrenCount && parsedData.childrenCount > 0)) && (
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#1e293b' }}>
+                      <Users2 size={16} color="#7c3aed" /> Preferenze e Famiglia
+                    </div>
+                    <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>
+                      {parsedData.hasSpouse && '• Coniuge a carico / ricongiungimento indicato'}
+                      {parsedData.childrenCount && ` • Figli a carico: ${parsedData.childrenCount}`}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           )}
         </div>
 
-        <div className="wizard-footer">
-          <div className="wizard-footer-left">
-            {parsedData && (
-              <button
-                type="button"
-                className="wizard-btn-prev"
-                onClick={() => setParsedData(null)}
-                disabled={isSaving}
-              >
-                Modifica Testo
-              </button>
-            )}
-          </div>
+        <div className="wizard-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', borderTop: '1px solid #e2e8f0' }}>
+          {parsedData ? (
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => setParsedData(null)}
+              disabled={isSaving}
+            >
+              Ricarica / Modifica Testo
+            </button>
+          ) : (
+            <div />
+          )}
 
-          <div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button type="button" className="secondary" onClick={onClose} disabled={isSaving}>
+              Annulla
+            </button>
             {parsedData && (
               <button
                 type="button"
-                className="wizard-btn-finish"
+                className="primary"
                 onClick={handleApplyImport}
                 disabled={isSaving || busy}
               >
-                <CheckCircle2 size={18} />
                 {isSaving ? 'Importazione in corso...' : 'Conferma e Importa nel Fascicolo'}
               </button>
             )}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Award, TrendingUp, Calendar, Coins, Sparkles, CheckCircle2, ShieldCheck, FileText } from 'lucide-react';
+import { Award, TrendingUp, Coins, AlertCircle } from 'lucide-react';
 import { Person } from '../../shared/types';
+import { ContractCategory } from './salaryTables';
 import {
   calculateRicostruzioneCarriera,
   calculateMobilitaPunteggio,
@@ -9,32 +10,40 @@ import {
 export interface RicostruzioneCarrieraCardProps {
   person: Person;
   profile: string;
+  contractCategory?: ContractCategory;
 }
 
-export function RicostruzioneCarrieraCard({ person, profile }: RicostruzioneCarrieraCardProps) {
+export function RicostruzioneCarrieraCard({ person, profile, contractCategory }: RicostruzioneCarrieraCardProps) {
   const [yearsSinceRole, setYearsSinceRole] = useState(2);
   const result = calculateRicostruzioneCarriera(person, profile, yearsSinceRole);
   const mobilita = calculateMobilitaPunteggio(person, profile);
 
   return (
     <div style={{ background: '#fff', border: '1px solid #cbd5e1', borderRadius: 10, padding: 18, marginTop: 16 }}>
-      {/* HEADER */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
         <div>
           <h4 style={{ margin: 0, fontSize: 16, display: 'flex', alignItems: 'center', gap: 8, color: '#0f172a' }}>
             <Award size={20} color="#2563eb" /> Ricostruzione di Carriera & Arretrati (Tempo Indeterminato)
           </h4>
           <span style={{ fontSize: 12, color: '#64748b' }}>
-            Riforma D.L. 69/2023 (Salva Infrazioni - L. 103/2023): riconoscimento 100% pre-ruolo senza tagli di 1/3 (Art. 569 D.Lgs. 297/94).
+            Riforma D.L. 69/2023 (Salva Infrazioni - L. 103/2023): riconoscimento integrale 100% pre-ruolo (Art. 569 D.Lgs. 297/94).
           </span>
         </div>
 
-        <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '4px 10px', borderRadius: 6, fontSize: 12, color: '#065f46', fontWeight: 650 }}>
-          ✓ Riforma DL 69/2023 Applicata
+        <div style={{ background: result.isEligibleNow ? '#ecfdf5' : '#eff6ff', border: `1px solid ${result.isEligibleNow ? '#a7f3d0' : '#bfdbfe'}`, padding: '4px 10px', borderRadius: 6, fontSize: 12, color: result.isEligibleNow ? '#065f46' : '#1e40af', fontWeight: 650 }}>
+          {result.isEligibleNow ? '✓ Servizio di Ruolo Registrato (DL 69/2023)' : 'ℹ Simulazione Carriera all\'Immissione in Ruolo'}
         </div>
       </div>
 
-      {/* KPI METRICS */}
+      {!result.isEligibleNow && (
+        <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: 10, marginBottom: 14, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+          <AlertCircle size={16} color="#d97706" style={{ flexShrink: 0, marginTop: 2 }} />
+          <div style={{ fontSize: 11.5, color: '#92400e', lineHeight: 1.4 }}>
+            {result.applicabilityNote}
+          </div>
+        </div>
+      )}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
         <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: 12, borderRadius: 8 }}>
           <span style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Anzianità Pre-Ruolo Riconosciuta</span>
@@ -77,10 +86,7 @@ export function RicostruzioneCarrieraCard({ person, profile }: RicostruzioneCarr
         </div>
       </div>
 
-      {/* ARREARS SLIDER & MOBILITY SCORE */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.8fr', gap: 14 }}>
-        
-        {/* ARREARS CONTROLLER */}
         <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 6 }}>
             <Coins size={15} color="#d97706" /> Anni Decorsi dalla Conferma in Ruolo: <strong>{yearsSinceRole} ann{yearsSinceRole === 1 ? 'o' : 'i'}</strong>
@@ -104,7 +110,6 @@ export function RicostruzioneCarrieraCard({ person, profile }: RicostruzioneCarr
           </p>
         </div>
 
-        {/* MOBILITY & INTERNAL RANKING SCORE */}
         <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -125,7 +130,6 @@ export function RicostruzioneCarrieraCard({ person, profile }: RicostruzioneCarr
             )}
           </div>
         </div>
-
       </div>
     </div>
   );

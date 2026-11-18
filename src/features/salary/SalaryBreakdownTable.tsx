@@ -48,7 +48,9 @@ export function SalaryBreakdownTable({
           {result.sicknessDeductions > 0 && (
             <tr>
               <td style={{ color: '#ef4444' }}><strong>Trattenute per Malattia</strong></td>
-              <td className="muted">Decurtazione Brunetta (primi 10 gg) o riduzione retribuzione 50%/0% ({sicknessDaysInMonth} gg)</td>
+              <td className="muted">
+                {result.sicknessRuleApplied} ({sicknessDaysInMonth} gg)
+              </td>
               <td style={{ textAlign: 'right' }} className="salary-deduction-badge">- € {result.sicknessDeductions.toFixed(2)}</td>
             </tr>
           )}

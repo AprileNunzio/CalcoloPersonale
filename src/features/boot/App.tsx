@@ -42,6 +42,7 @@ import { OtaBanner } from '../ota/OtaBanner';
 import { VaultScreen } from './VaultScreen';
 import { UpdatesPage } from '../updates/UpdatesPage';
 import { FirstSetupWizard } from '../wizard/FirstSetupWizard';
+import { SidebarNav } from './SidebarNav';
 
 export default function App() {
   const [locale, setLocale] = useState<Locale>('it');
@@ -229,97 +230,19 @@ function Workspace({
   return (
     <AutoSaveContext.Provider value={{ archive, saved: setArchive }}>
       <div className="shell">
-        <aside className="sidebar">
-          <div className="brand">
-            <div className="brand-icon">
-              <BriefcaseBusiness />
-            </div>
-            <strong>{t('app')}</strong>
-          </div>
-          <div className="side-label">{t('all')}</div>
-          <button
-            className={!person ? 'nav active' : 'nav'}
-            onClick={() => {
-              setSelected(null);
-              setCreating(false);
-              setSection('overview');
-            }}
-          >
-            <Users size={19} />
-            {t('people')}
-            <span>{archive.people.length}</span>
-          </button>
-          <button
-            className="nav"
-            onClick={() => setShowWizard(true)}
-            style={{ color: '#116b62', fontWeight: 650 }}
-          >
-            <Sparkles size={17} />
-            <span>Configurazione a Step</span>
-          </button>
-          {person && (
-            <>
-              <div className="side-label">
-                {person.firstName} {person.lastName}
-              </div>
-              {[
-                { k: 'overview', icon: LayoutDashboard, lbl: t('overview') },
-                { k: 'identity', icon: FolderHeart, lbl: t('identity') },
-                { k: 'salary', icon: Banknote, lbl: 'Busta Paga & TFR' },
-                { k: 'schools30', icon: School, lbl: '30 Scuole & Convocazioni' },
-                { k: 'dossier', icon: FileCheck, lbl: 'Scheda Sindacati & Backup' },
-                { k: 'applications', icon: FileText, lbl: t('applications') },
-                { k: 'service', icon: FolderHeart, lbl: t('service') },
-                { k: 'qualification', icon: FolderHeart, lbl: t('qualification') },
-                { k: 'child', icon: Users, lbl: t('child') },
-                { k: 'absences', icon: FolderHeart, lbl: t('absences') },
-              ].map(({ k, icon: Icon, lbl }) => (
-                <button
-                  className={`nav ${section === k ? 'active' : ''}`}
-                  key={k}
-                  onClick={() => setSection(k)}
-                >
-                  <Icon size={18} /> {lbl}
-                </button>
-              ))}
-            </>
-          )}
-          <div className="sidebar-bottom">
-            <button
-              className={`nav ${section === 'assistant' ? 'active' : ''}`}
-              onClick={() => {
-                setSelected(null);
-                setCreating(false);
-                setSection('assistant');
-              }}
-            >
-              <Bot size={17} />
-              {t('assistant')}
-            </button>
-            <div className="secure-label">
-              <ShieldCheck size={18} />
-              <div>
-                {t('secure')}
-                <small>{t('local')}</small>
-              </div>
-            </div>
-            <button
-              className={`nav ${section === 'updates' ? 'active' : ''}`}
-              onClick={() => {
-                setSelected(null);
-                setCreating(false);
-                setSection('updates');
-              }}
-            >
-              <RefreshCw size={17} />
-              {t('update')}
-            </button>
-            <button className="nav" disabled={busy} onClick={() => void lock()}>
-              <LockKeyhole size={17} />
-              {t('lock')}
-            </button>
-          </div>
-        </aside>
+        <SidebarNav
+          archive={archive}
+          person={person}
+          section={section}
+          busy={busy}
+          onSelectPerson={id => {
+            setSelected(id);
+            setCreating(false);
+          }}
+          onSelectSection={s => setSection(s)}
+          onOpenWizard={() => setShowWizard(true)}
+          onLock={() => void lock()}
+        />
 
         <div className="workspace">
           <header>
