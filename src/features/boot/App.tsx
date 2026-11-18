@@ -49,6 +49,7 @@ import { exportPersonToFile } from '../sync/personExport';
 import { parsePersonExportFile, calculatePersonDiff } from '../sync/personDiff';
 import { ImportConflictModal } from '../sync/ImportConflictModal';
 import type { PersonSyncDiff } from '../sync/exportImportTypes';
+import { getSectionTheme } from './themeUtils';
 
 export default function App() {
   const [locale, setLocale] = useState<Locale>('it');
@@ -208,6 +209,12 @@ function Workspace({
     </>
   );
 
+  const activeTheme = getSectionTheme(archive, person, section);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = activeTheme;
+  }, [activeTheme]);
+
   if (!archive) {
     return (
       <VaultScreen
@@ -240,7 +247,7 @@ function Workspace({
 
   return (
     <AutoSaveContext.Provider value={{ archive, saved: setArchive }}>
-      <div className="shell">
+      <div className="shell" data-theme={activeTheme}>
         <SidebarNav
           archive={archive}
           person={person}
@@ -323,7 +330,6 @@ function Workspace({
                   <button
                     type="button"
                     className="export-person-header-btn"
-                    style={{ marginLeft: 'auto' }}
                     onClick={() => exportPersonToFile(person)}
                     title="Esporta fascicolo su file singolo (.json)"
                   >
@@ -333,7 +339,6 @@ function Workspace({
                   <button
                     type="button"
                     className="wizard-btn-primary"
-                    style={{ padding: '7px 14px', fontSize: 12 }}
                     onClick={() => setShowWizard(true)}
                   >
                     <Sparkles size={14} />

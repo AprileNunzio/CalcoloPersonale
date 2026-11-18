@@ -1,0 +1,236 @@
+/* ==========================================================================
+   MD3 EXPRESSIVE - DYNAMIC PALETTES: CORE & CAREER SECTIONS
+   Each section has a dedicated semantic theme with tinted surface tones
+   ========================================================================== */
+
+/* 1. Default & Dashboard: Indaco Elettrico */
+:root, [data-theme="dashboard"] {
+  --primary: #2563eb;
+  --on-primary: #ffffff;
+  --primary-container: #dbeafe;
+  --on-primary-container: #1e40af;
+  --secondary: #475569;
+  --on-secondary: #ffffff;
+  --secondary-container: #e2e8f0;
+  --on-secondary-container: #1e293b;
+  --tertiary: #7c3aed;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #ede9fe;
+  --on-tertiary-container: #5b21b6;
+  --surface: #f8fafc;
+  --surface-dim: #e2e8f0;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f1f5f9;
+  --surface-container: #e8edf5;
+  --surface-container-high: #dfe6f0;
+  --surface-container-highest: #d4dfea;
+  --on-surface: #0f172a;
+  --on-surface-variant: #475569;
+  --outline: #94a3b8;
+  --outline-variant: #cbd5e1;
+  --shadow: rgba(37, 99, 235, 0.08);
+}
+
+/* 2. Utenti / Personale: Smeraldo Profondo */
+[data-theme="utenti"] {
+  --primary: #059669;
+  --on-primary: #ffffff;
+  --primary-container: #d1fae5;
+  --on-primary-container: #065f46;
+  --secondary: #0d9488;
+  --on-secondary: #ffffff;
+  --secondary-container: #ccfbf1;
+  --on-secondary-container: #115e59;
+  --tertiary: #0284c7;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #e0f2fe;
+  --on-tertiary-container: #0369a1;
+  --surface: #f6faf8;
+  --surface-dim: #dbe8e1;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #edf5f1;
+  --surface-container: #e2ede7;
+  --surface-container-high: #d6e5dd;
+  --surface-container-highest: #cadcd2;
+  --on-surface: #06281e;
+  --on-surface-variant: #3d5950;
+  --outline: #709489;
+  --outline-variant: #b8cec6;
+  --shadow: rgba(5, 150, 105, 0.08);
+}
+
+/* 3. Identità / Anagrafica: Ciano Odissea */
+[data-theme="identita"] {
+  --primary: #0891b2;
+  --on-primary: #ffffff;
+  --primary-container: #cffafe;
+  --on-primary-container: #155e75;
+  --secondary: #0284c7;
+  --on-secondary: #ffffff;
+  --secondary-container: #e0f2fe;
+  --on-secondary-container: #0369a1;
+  --tertiary: #4f46e5;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #e0e7ff;
+  --on-tertiary-container: #3730a3;
+  --surface: #f4f9fa;
+  --surface-dim: #d7e6eb;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #eaf3f5;
+  --surface-container: #deebee;
+  --surface-container-high: #d2e3e7;
+  --surface-container-highest: #c6dbe0;
+  --on-surface: #08232c;
+  --on-surface-variant: #3b5a64;
+  --outline: #68909c;
+  --outline-variant: #b3ccd4;
+  --shadow: rgba(8, 145, 178, 0.08);
+}
+
+/* 4. Servizi ATA: Cobalto Reale */
+[data-theme="servizi"] {
+  --primary: #1d4ed8;
+  --on-primary: #ffffff;
+  --primary-container: #dbeafe;
+  --on-primary-container: #1e3a8a;
+  --secondary: #2563eb;
+  --on-secondary: #ffffff;
+  --secondary-container: #eff6ff;
+  --on-secondary-container: #1d4ed8;
+  --tertiary: #0284c7;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #e0f2fe;
+  --on-tertiary-container: #075985;
+  --surface: #f6f8fc;
+  --surface-dim: #d8e2f0;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #ecf1f9;
+  --surface-container: #e1e9f4;
+  --surface-container-high: #d4e0ee;
+  --surface-container-highest: #c7d7e8;
+  --on-surface: #0b1a33;
+  --on-surface-variant: #41536d;
+  --outline: #778ca7;
+  --outline-variant: #bcc8d8;
+  --shadow: rgba(29, 78, 216, 0.08);
+}
+
+/* 5. Titoli & Certificazioni: Ambra Dorata */
+[data-theme="titoli"] {
+  --primary: #d97706;
+  --on-primary: #ffffff;
+  --primary-container: #fef3c7;
+  --on-primary-container: #78350f;
+  --secondary: #ea580c;
+  --on-secondary: #ffffff;
+  --secondary-container: #ffedd5;
+  --on-secondary-container: #9a3412;
+  --tertiary: #ca8a04;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #fef9c3;
+  --on-tertiary-container: #713f12;
+  --surface: #fcf9f4;
+  --surface-dim: #ebe1d1;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f7f2e9;
+  --surface-container: #ede5d8;
+  --surface-container-high: #e2d7c5;
+  --surface-container-highest: #d6c8b1;
+  --on-surface: #291e0a;
+  --on-surface-variant: #63553e;
+  --outline: #9b8b70;
+  --outline-variant: #d4c8b2;
+  --shadow: rgba(217, 119, 6, 0.08);
+}
+
+/* 6. Assenze & Malattia: Corallo Expressivo */
+[data-theme="assenze"] {
+  --primary: #e11d48;
+  --on-primary: #ffffff;
+  --primary-container: #ffe4e6;
+  --on-primary-container: #881337;
+  --secondary: #ea580c;
+  --on-secondary: #ffffff;
+  --secondary-container: #ffedd5;
+  --on-secondary-container: #7c2d12;
+  --tertiary: #c026d3;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #fae8ff;
+  --on-tertiary-container: #701a75;
+  --surface: #faf5f6;
+  --surface-dim: #ebd4d7;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f6ebed;
+  --surface-container: #ecdedf;
+  --surface-container-high: #dfcecf;
+  --surface-container-highest: #d1bdbf;
+  --on-surface: #2a0c14;
+  --on-surface-variant: #634349;
+  --outline: #9e757c;
+  --outline-variant: #d7bfc3;
+  --shadow: rgba(225, 29, 72, 0.08);
+}
+
+/* 7. Famiglia & Congedi: Lavanda & Orchidea */
+[data-theme="famiglia"] {
+  --primary: #8b5cf6;
+  --on-primary: #ffffff;
+  --primary-container: #ede9fe;
+  --on-primary-container: #4c1d95;
+  --secondary: #d946ef;
+  --on-secondary: #ffffff;
+  --secondary-container: #fae8ff;
+  --on-secondary-container: #701a75;
+  --tertiary: #6366f1;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #e0e7ff;
+  --on-tertiary-container: #312e81;
+  --surface: #f9f7fc;
+  --surface-dim: #e6ddf1;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f2edf8;
+  --surface-container: #e8e0f2;
+  --surface-container-high: #ddd2e9;
+  --surface-container-highest: #d1c3e0;
+  --on-surface: #1d122e;
+  --on-surface-variant: #544865;
+  --outline: #8a7b9f;
+  --outline-variant: #cec4dc;
+  --shadow: rgba(139, 92, 246, 0.08);
+}
+
+/* 8. Stipendio & Busta Paga: Smeraldo Finanza */
+[data-theme="stipendio"] {
+  --primary: #047857;
+  --on-primary: #ffffff;
+  --primary-container: #a7f3d0;
+  --on-primary-container: #064e3b;
+  --secondary: #0f766e;
+  --on-secondary: #ffffff;
+  --secondary-container: #ccfbf1;
+  --on-secondary-container: #134e4a;
+  --tertiary: #16a34a;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #dcfce7;
+  --on-tertiary-container: #14532d;
+  --surface: #f4faf7;
+  --surface-dim: #d5e9df;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #eaf5f0;
+  --surface-container: #ddede5;
+  --surface-container-high: #cfe4da;
+  --surface-container-highest: #bfdacd;
+  --on-surface: #07271c;
+  --on-surface-variant: #3d594d;
+  --outline: #709183;
+  --outline-variant: #b7cec3;
+  --shadow: rgba(4, 120, 87, 0.08);
+}

@@ -19,19 +19,23 @@ export function VaultScreen({
   const [password, setPassword] = useState('');
 
   return (
-    <main className="vault-screen">
+    <main className="vault-screen" data-theme="vault">
       <div className="vault-brand">
-        <BriefcaseBusiness size={30} />
-        {t('app')}
+        <div className="icon-badge circular">
+          <BriefcaseBusiness size={24} />
+        </div>
+        <strong>{t('app')}</strong>
       </div>
       <div className="vault-layout">
-        <div>
+        <div className="vault-hero">
           <span className="eyebrow">{t('secure')}</span>
           <h1>{t('vaultTitle')}</h1>
           <p>{t('subtitle')}</p>
           <div className="privacy">
-            <ShieldCheck size={18} />
-            {t('privacy')}
+            <div className="icon-badge circular secondary" style={{ width: 28, height: 28 }}>
+              <ShieldCheck size={16} />
+            </div>
+            <span>{t('privacy')}</span>
           </div>
         </div>
         <form
@@ -42,7 +46,9 @@ export function VaultScreen({
             setPassword('');
           }}
         >
-          <LockKeyhole size={32} />
+          <div className="icon-badge circular" style={{ marginBottom: 16 }}>
+            <LockKeyhole size={24} />
+          </div>
           <h2>{t('unlock')}</h2>
           <p className="muted">{t('vaultHelp')}</p>
           {error && (
@@ -67,8 +73,8 @@ export function VaultScreen({
               onChange={e => setPassword(e.target.value)}
             />
           </label>
-          <button disabled={busy}>
-            {t(busy ? 'loading' : 'unlock')}
+          <button type="submit" disabled={busy}>
+            <span>{t(busy ? 'loading' : 'unlock')}</span>
             <ArrowUpRight size={18} />
           </button>
         </form>

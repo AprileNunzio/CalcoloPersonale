@@ -73,10 +73,9 @@ export function SidebarNav({
         {!collapsed && <span className="nav-badge">{archive.people.length}</span>}
       </button>
       <button
-        className="nav"
+        className="nav nav-wizard"
         title="Configurazione a Step"
         onClick={onOpenWizard}
-        style={{ color: '#116b62', fontWeight: 650 }}
       >
         <Sparkles size={17} />
         {!collapsed && <span className="nav-label">Configurazione a Step</span>}

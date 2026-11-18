@@ -243,7 +243,7 @@ export function FirstSetupWizard({
 
   return (
     <div className="wizard-overlay" role="dialog" aria-modal="true">
-      <div className="wizard-container">
+      <div className="wizard-container" data-theme="wizard">
         <WizardStepperBar
           currentStep={currentStep}
           onSelectStep={setCurrentStep}

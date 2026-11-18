@@ -1,0 +1,101 @@
+/* ==========================================================================
+   COMPACT PERSON TOP BAR - MD3 EXPRESSIVE
+   ========================================================================== */
+
+.person-compact-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: clamp(12px, 1vw, 18px) clamp(16px, 1.4vw, 28px);
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.back-btn-compact {
+  background: var(--surface-container);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-full);
+  padding: 8px 14px;
+  font-size: var(--font-label-medium);
+  font-weight: 600;
+}
+
+.back-btn-compact:hover {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border-color: var(--primary);
+}
+
+.avatar-compact {
+  width: clamp(38px, 2.5vw, 48px);
+  height: clamp(38px, 2.5vw, 48px);
+  border-radius: var(--shape-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  flex-shrink: 0;
+}
+
+.avatar-compact.female {
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+}
+
+.person-compact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.person-compact-info h2 {
+  margin: 0;
+  font-size: var(--font-title-large);
+  font-weight: 750;
+  color: var(--on-surface);
+}
+
+.person-profile-badge-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.export-person-header-btn {
+  margin-left: auto;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-full);
+  padding: 8px 16px;
+  font-size: var(--font-label-small);
+  font-weight: 650;
+}
+
+.export-person-header-btn:hover {
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+}
+
+.wizard-btn-primary {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--shape-full);
+  padding: 8px 18px;
+  font-size: var(--font-label-small);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  border: 0;
+}
+
+.wizard-btn-primary:hover {
+  filter: brightness(1.08);
+}

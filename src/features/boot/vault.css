@@ -1,16 +1,18 @@
 .vault-screen {
   min-height: 100vh;
-  padding: 40px 6vw;
-  background: radial-gradient(ellipse at 15% 65%, #d4ebe2, transparent 60%), #f4f7f5;
+  padding: clamp(24px, 4vw, 64px) clamp(20px, 6vw, 120px);
+  background: var(--surface);
+  color: var(--on-surface);
+  box-sizing: border-box;
 }
 
 .vault-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-sm);
   font-weight: 750;
-  font-size: 18px;
-  color: #116b62;
+  font-size: var(--font-title-large);
+  color: var(--primary);
 }
 
 .vault-brand .language {
@@ -18,70 +20,70 @@
 }
 
 .vault-layout {
-  max-width: 1100px;
-  margin: 10vh auto 0;
+  width: 100%;
+  max-width: clamp(800px, 75vw, 1600px);
+  margin: clamp(40px, 8vh, 120px) auto 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(320px, 30vw, 560px), 1fr));
+  gap: clamp(32px, 5vw, 88px);
   align-items: center;
+}
+
+.vault-hero {
+  display: flex;
+  flex-direction: column;
 }
 
 .vault-layout h1 {
-  font-size: 56px;
-  max-width: 460px;
-  margin: 20px 0;
+  font-size: clamp(32px, 3.5vw, 64px);
+  letter-spacing: -0.03em;
+  margin: var(--space-sm) 0;
+  color: var(--on-surface);
+  line-height: 1.15;
 }
 
-.vault-layout > div > p {
-  font-size: 18px;
-  color: #55726c;
+.vault-layout p {
+  font-size: var(--font-body-large);
+  color: var(--on-surface-variant);
+  line-height: 1.6;
 }
 
 .privacy {
-  margin-top: 40px;
+  margin-top: var(--space-xl);
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  color: #4d7a70;
+  gap: var(--space-sm);
+  font-size: var(--font-label-medium);
+  color: var(--on-surface-variant);
+  font-weight: 600;
 }
 
 .vault-form {
-  box-shadow: 0 24px 80px rgba(17, 107, 98, 0.12);
-  padding: 36px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-xl);
+  padding: clamp(24px, 2.5vw, 48px);
 }
 
 .vault-form h2 {
-  margin-top: 20px;
+  margin-top: var(--space-xs);
+  color: var(--on-surface);
 }
 
 .vault-form button {
   width: 100%;
-  margin-top: 22px;
-}
-
-@media (max-width: 1100px) {
-  .vault-layout {
-    gap: 36px;
-  }
-  .vault-layout h1 {
-    font-size: 42px;
-  }
+  margin-top: var(--space-lg);
 }
 
 @media (max-width: 768px) {
   .vault-screen {
-    padding: 24px;
+    padding: 20px 14px;
   }
   .vault-layout {
-    grid-template-columns: 1fr;
-    margin-top: 36px;
+    margin-top: 24px;
     gap: 24px;
   }
-  .vault-layout h1 {
-    font-size: 36px;
-  }
   .vault-form {
-    padding: 24px;
+    padding: 20px;
   }
 }

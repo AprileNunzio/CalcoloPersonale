@@ -1,0 +1,267 @@
+/* ==========================================================================
+   MD3 EXPRESSIVE - DYNAMIC PALETTES: SPECIALIZED & SYSTEM SECTIONS
+   ========================================================================== */
+
+/* 9. NASpI: Bronzo & Tramonto */
+[data-theme="naspi"] {
+  --primary: #ea580c;
+  --on-primary: #ffffff;
+  --primary-container: #ffedd5;
+  --on-primary-container: #7c2d12;
+  --secondary: #d97706;
+  --on-secondary: #ffffff;
+  --secondary-container: #fef3c7;
+  --on-secondary-container: #78350f;
+  --tertiary: #dc2626;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #fee2e2;
+  --on-tertiary-container: #7f1d1d;
+  --surface: #faf6f4;
+  --surface-dim: #ebd7ce;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f5ece8;
+  --surface-container: #ebdcd6;
+  --surface-container-high: #e0cdc6;
+  --surface-container-highest: #d4bdb5;
+  --on-surface: #2b140b;
+  --on-surface-variant: #63483f;
+  --outline: #9a786e;
+  --outline-variant: #d4bfb8;
+  --shadow: rgba(234, 88, 12, 0.08);
+}
+
+/* 10. Scuole 30: Turchese Mappa */
+[data-theme="scuole"] {
+  --primary: #0f766e;
+  --on-primary: #ffffff;
+  --primary-container: #ccfbf1;
+  --on-primary-container: #115e59;
+  --secondary: #0284c7;
+  --on-secondary: #ffffff;
+  --secondary-container: #e0f2fe;
+  --on-secondary-container: #075985;
+  --tertiary: #059669;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #d1fae5;
+  --on-tertiary-container: #065f46;
+  --surface: #f4f9f9;
+  --surface-dim: #d5e9e9;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #e9f4f4;
+  --surface-container: #dbeeee;
+  --surface-container-high: #cee7e7;
+  --surface-container-highest: #c0dfdf;
+  --on-surface: #092523;
+  --on-surface-variant: #3d5957;
+  --outline: #709290;
+  --outline-variant: #b8cfce;
+  --shadow: rgba(15, 118, 110, 0.08);
+}
+
+/* 11. Dossier & Scheda Sindacati: Porpora Notturno */
+[data-theme="dossier"] {
+  --primary: #7e22ce;
+  --on-primary: #ffffff;
+  --primary-container: #f3e8ff;
+  --on-primary-container: #581c87;
+  --secondary: #9333ea;
+  --on-secondary: #ffffff;
+  --secondary-container: #faf5ff;
+  --on-secondary-container: #6b21a8;
+  --tertiary: #be185d;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #fce7f3;
+  --on-tertiary-container: #831843;
+  --surface: #f9f6fa;
+  --surface-dim: #e8d9eb;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f2ebf5;
+  --surface-container: #e8dde0;
+  --surface-container-high: #decfe2;
+  --surface-container-highest: #d2bfd8;
+  --on-surface: #230c2c;
+  --on-surface-variant: #57435e;
+  --outline: #8d7796;
+  --outline-variant: #cfc2d5;
+  --shadow: rgba(126, 34, 206, 0.08);
+}
+
+/* 12. Domande ATA: Blu Acciaio */
+[data-theme="domande"] {
+  --primary: #2563eb;
+  --on-primary: #ffffff;
+  --primary-container: #dbeafe;
+  --on-primary-container: #1e40af;
+  --secondary: #4f46e5;
+  --on-secondary: #ffffff;
+  --secondary-container: #e0e7ff;
+  --on-secondary-container: #3730a3;
+  --tertiary: #0284c7;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #e0f2fe;
+  --on-tertiary-container: #0369a1;
+  --surface: #f7f9fc;
+  --surface-dim: #dce3f0;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #edf1f7;
+  --surface-container: #e1e7f2;
+  --surface-container-high: #d5ddeb;
+  --surface-container-highest: #c7d2e4;
+  --on-surface: #0e192c;
+  --on-surface-variant: #445169;
+  --outline: #7a8aa3;
+  --outline-variant: #bec8d7;
+  --shadow: rgba(37, 99, 235, 0.08);
+}
+
+/* 13. Assistente IA: Magenta & Cyber Violet */
+[data-theme="assistente"] {
+  --primary: #9333ea;
+  --on-primary: #ffffff;
+  --primary-container: #f3e8ff;
+  --on-primary-container: #581c87;
+  --secondary: #c026d3;
+  --on-secondary: #ffffff;
+  --secondary-container: #fae8ff;
+  --on-secondary-container: #701a75;
+  --tertiary: #4f46e5;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #e0e7ff;
+  --on-tertiary-container: #312e81;
+  --surface: #faf7fc;
+  --surface-dim: #ebd9f0;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f3ecf8;
+  --surface-container: #ebdfef;
+  --surface-container-high: #dfcfe5;
+  --surface-container-highest: #d2bfdc;
+  --on-surface: #220d2d;
+  --on-surface-variant: #584462;
+  --outline: #8f789a;
+  --outline-variant: #d1c3d9;
+  --shadow: rgba(147, 51, 234, 0.08);
+}
+
+/* 14. Aggiornamenti: Titanio & Zinco */
+[data-theme="aggiornamenti"] {
+  --primary: #475569;
+  --on-primary: #ffffff;
+  --primary-container: #e2e8f0;
+  --on-primary-container: #1e293b;
+  --secondary: #0f766e;
+  --on-secondary: #ffffff;
+  --secondary-container: #ccfbf1;
+  --on-secondary-container: #115e59;
+  --tertiary: #2563eb;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #dbeafe;
+  --on-tertiary-container: #1e40af;
+  --surface: #f8fafc;
+  --surface-dim: #e2e8f0;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f1f5f9;
+  --surface-container: #e2e8f0;
+  --surface-container-high: #cbd5e1;
+  --surface-container-highest: #94a3b8;
+  --on-surface: #0f172a;
+  --on-surface-variant: #475569;
+  --outline: #64748b;
+  --outline-variant: #cbd5e1;
+  --shadow: rgba(71, 85, 105, 0.08);
+}
+
+/* 15. Vault / Blindato: Smeraldo Lock */
+[data-theme="vault"] {
+  --primary: #0d9488;
+  --on-primary: #ffffff;
+  --primary-container: #ccfbf1;
+  --on-primary-container: #115e59;
+  --secondary: #475569;
+  --on-secondary: #ffffff;
+  --secondary-container: #e2e8f0;
+  --on-secondary-container: #1e293b;
+  --tertiary: #0284c7;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #e0f2fe;
+  --on-tertiary-container: #0369a1;
+  --surface: #f4f7f6;
+  --surface-dim: #d7e4e0;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #edf3f1;
+  --surface-container: #e2edea;
+  --surface-container-high: #d6e5e1;
+  --surface-container-highest: #cadcd7;
+  --on-surface: #0d2420;
+  --on-surface-variant: #425a54;
+  --outline: #74928b;
+  --outline-variant: #b8cec8;
+  --shadow: rgba(13, 148, 136, 0.08);
+}
+
+/* 16. Wizard: Configurazione Guidata */
+[data-theme="wizard"] {
+  --primary: #059669;
+  --on-primary: #ffffff;
+  --primary-container: #d1fae5;
+  --on-primary-container: #065f46;
+  --secondary: #2563eb;
+  --on-secondary: #ffffff;
+  --secondary-container: #dbeafe;
+  --on-secondary-container: #1e40af;
+  --tertiary: #7c3aed;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #ede9fe;
+  --on-tertiary-container: #5b21b6;
+  --surface: #f6faf8;
+  --surface-dim: #dbe8e1;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #edf5f1;
+  --surface-container: #e2ede7;
+  --surface-container-high: #d6e5dd;
+  --surface-container-highest: #cadcd2;
+  --on-surface: #06281e;
+  --on-surface-variant: #3d5950;
+  --outline: #709489;
+  --outline-variant: #b8cec6;
+  --shadow: rgba(5, 150, 105, 0.08);
+}
+
+/* MD3 System Color Token Aliases */
+:root, [data-theme] {
+  --md-sys-color-primary: var(--primary);
+  --md-sys-color-on-primary: var(--on-primary);
+  --md-sys-color-primary-container: var(--primary-container);
+  --md-sys-color-on-primary-container: var(--on-primary-container);
+  --md-sys-color-secondary: var(--secondary);
+  --md-sys-color-on-secondary: var(--on-secondary);
+  --md-sys-color-secondary-container: var(--secondary-container);
+  --md-sys-color-on-secondary-container: var(--on-secondary-container);
+  --md-sys-color-tertiary: var(--tertiary);
+  --md-sys-color-on-tertiary: var(--on-tertiary);
+  --md-sys-color-tertiary-container: var(--tertiary-container);
+  --md-sys-color-on-tertiary-container: var(--on-tertiary-container);
+  --md-sys-color-surface: var(--surface);
+  --md-sys-color-surface-dim: var(--surface-dim);
+  --md-sys-color-surface-bright: var(--surface-bright);
+  --md-sys-color-surface-container-lowest: var(--surface-container-lowest);
+  --md-sys-color-surface-container-low: var(--surface-container-low);
+  --md-sys-color-surface-container: var(--surface-container);
+  --md-sys-color-surface-container-high: var(--surface-container-high);
+  --md-sys-color-surface-container-highest: var(--surface-container-highest);
+  --md-sys-color-on-surface: var(--on-surface);
+  --md-sys-color-on-surface-variant: var(--on-surface-variant);
+  --md-sys-color-outline: var(--outline);
+  --md-sys-color-outline-variant: var(--outline-variant);
+  --md-sys-color-error: var(--error);
+  --md-sys-color-on-error: var(--on-error);
+  --md-sys-color-error-container: var(--error-container);
+  --md-sys-color-on-error-container: var(--on-error-container);
+}

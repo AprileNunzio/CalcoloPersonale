@@ -1,0 +1,71 @@
+/* ==========================================================================
+   BENTO STATS & METRICS WIDGETS - MD3 EXPRESSIVE
+   ========================================================================== */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 15vw, 300px), 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-lg);
+  padding: var(--space-lg);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.stat:hover {
+  background: var(--surface-container);
+  transform: translateY(-2px);
+}
+
+.stat strong {
+  font-size: clamp(24px, 2.2vw, 42px);
+  color: var(--primary);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+.stat span {
+  font-size: var(--font-label-medium);
+  color: var(--on-surface-variant);
+  font-weight: 600;
+}
+
+.evidence {
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-lg);
+  padding: var(--space-lg);
+  color: var(--on-surface);
+}
+
+.evidence h3 {
+  margin-top: var(--space-xs);
+  color: var(--on-surface);
+}
+
+.evidence p {
+  color: var(--on-surface-variant);
+  margin-bottom: var(--space-xs);
+}
+
+.entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.entry:last-child {
+  border: 0;
+}
