@@ -28,6 +28,8 @@ import {
 import { detectCurrentContract, extractAbsenceStats } from './salaryRecordSync';
 import { SeniorityProgressionCard } from './SeniorityProgressionCard';
 import { TfrHistoryCard } from './TfrHistoryCard';
+import { RicostruzioneCarrieraCard } from './RicostruzioneCarrieraCard';
+import { FerieMonetizzazioneCard } from './FerieMonetizzazioneCard';
 import './SalarySimulator.css';
 
 export function SalarySimulatorPane({ person }: { person: Person }) {
@@ -492,6 +494,12 @@ export function SalarySimulatorPane({ person }: { person: Person }) {
 
       {/* CUMULATIVE TFR HISTORY CARD */}
       <TfrHistoryCard tfrData={tfrData} />
+
+      {/* RICOSTRUZIONE DI CARRIERA & ARRETRATI (TEMPO INDETERMINATO / RUOLO) */}
+      <RicostruzioneCarrieraCard person={person} profile={profile} />
+
+      {/* FERIE NON GODUTE & MONETIZZAZIONE (TEMPO DETERMINATO / SUPPLENTI) */}
+      <FerieMonetizzazioneCard person={person} profile={profile} />
     </div>
   );
 }
