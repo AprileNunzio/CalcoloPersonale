@@ -23,6 +23,8 @@ import { FamilyLeavePane } from './FamilyLeavePane';
 import { WorkProbabilityPane } from '../probability/WorkProbabilityPane';
 import { DashboardScoresPane } from './DashboardScoresPane';
 import { DashboardEntitlementsPane } from './DashboardEntitlementsPane';
+import { AtaTimelinePane } from '../timeline/AtaTimelinePane';
+import { computeTimelineDeadlines } from '../timeline/timelineCalculations';
 import './Dashboard.css';
 import './DashboardModern.css';
 import './entitlements.css';
@@ -41,13 +43,14 @@ export function Dashboard({
   const t = useT();
   const context = useContext(AutoSaveContext);
   const allPeople = context?.archive.people || [];
-  const [activeStep, setActiveStep] = useState<'scores' | 'probability' | 'career' | 'services' | 'family' | 'entitlements' | 'all'>('scores');
+  const [activeStep, setActiveStep] = useState<'scores' | 'probability' | 'timeline' | 'career' | 'services' | 'family' | 'entitlements' | 'all'>('scores');
   const [contractOverride, setContractOverride] = useState<ContractType | undefined>(undefined);
 
   const profileScores = person ? calculateProfileScores(person) : [];
   const careerIntelligence = person ? computeCareerIntelligence(person, profileScores) : [];
   const familyOverview = person ? computeComprehensiveFamilyOverview(person, allPeople) : null;
   const entitlements = person ? calculateEntitlements(person, contractOverride) : null;
+  const timelineData = person ? computeTimelineDeadlines(person) : null;
   const bestScore = profileScores.length > 0 ? profileScores[0] : null;
 
   const totalFamilyCount = (familyOverview?.childrenLeaves.length || 0) + (familyOverview?.spouses.length || 0) + (familyOverview?.others.length || 0);
@@ -121,6 +124,29 @@ export function Dashboard({
                 </div>
               </div>
             )}
+
+            {timelineData && (
+              <div
+                className="dash-stat-badge"
+                title="Timeline e Scadenze Normative ATA (24 Mesi e NASpI)"
+                style={{ cursor: 'pointer' }}
+                onClick={() => setActiveStep('timeline')}
+              >
+                <div className="dash-stat-icon" style={{ background: '#e0f2fe', color: '#0284c7' }}>
+                  <CalendarDays size={18} />
+                </div>
+                <div className="dash-stat-content">
+                  <span className="dash-stat-num">
+                    {timelineData.is24MesiReached ? '24M Raggiunto' : `${timelineData.daysTo24Mesi} gg a 24M`}
+                  </span>
+                  <span className="dash-stat-label">
+                    {timelineData.naspiDaysRemaining !== null && timelineData.naspiDaysRemaining > 0
+                      ? `NASpI: ${timelineData.naspiDaysRemaining} gg`
+                      : 'Timeline & Scadenze'}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="dash-year-selector">
@@ -161,6 +187,28 @@ export function Dashboard({
           >
             <TrendingUp size={15} />
             <span>Probabilità Lavoro</span>
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeStep === 'timeline'}
+            className={`dash-tab-item ${activeStep === 'timeline' ? 'active' : ''}`}
+            onClick={() => setActiveStep('timeline')}
+          >
+            <CalendarDays size={15} />
+            <span>Timeline & Scadenze</span>
+            {timelineData && timelineData.deadlines.length > 0 && (
+              <span
+                className="dash-tab-counter"
+                style={{
+                  background: timelineData.naspiDaysRemaining && timelineData.naspiDaysRemaining <= 10 ? '#ef4444' : '#0284c7',
+                  color: '#ffffff',
+                }}
+              >
+                {timelineData.deadlines.length}
+              </span>
+            )}
           </button>
 
           <button
@@ -229,6 +277,12 @@ export function Dashboard({
         {(activeStep === 'probability' || activeStep === 'all') && person && (
           <div className="step-pane step-probability-pane" style={{ marginTop: 12 }}>
             <WorkProbabilityPane person={person} />
+          </div>
+        )}
+
+        {(activeStep === 'timeline' || activeStep === 'all') && person && (
+          <div className="step-pane step-timeline-pane" style={{ marginTop: 12 }}>
+            <AtaTimelinePane person={person} />
           </div>
         )}
 
