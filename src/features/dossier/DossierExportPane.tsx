@@ -12,6 +12,9 @@ import {
   Clock,
   Briefcase,
   GraduationCap,
+  FileWarning,
+  Banknote,
+  Lock,
 } from 'lucide-react';
 import { Person, Archive } from '../../shared/types';
 import { calculateProfileScores } from '../../shared/scoring';
@@ -21,6 +24,10 @@ import { PROFILE_LABELS } from '../../shared/personUtils';
 import { AutoSaveContext } from '../autosave/AutoSave';
 import { flush } from '../autosave/store';
 import { call, getRevision } from '../../shared/api';
+import { encryptBackup, decryptBackup } from '../../shared/backupCrypto';
+import { ReclamoGraduatorieModal } from './ReclamoGraduatorieModal';
+import { NaspiSimulatorModal } from './NaspiSimulatorModal';
+import { CareerTimelineGantt } from '../dashboard/CareerTimelineGantt';
 import './dossier.css';
 
 export function DossierExportPane({ person }: { person: Person }) {
@@ -29,6 +36,9 @@ export function DossierExportPane({ person }: { person: Person }) {
 
   const [feedbackMsg, setFeedbackMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [showReclamoModal, setShowReclamoModal] = useState(false);
+  const [showNaspiModal, setShowNaspiModal] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const profileScores = calculateProfileScores(person);
@@ -48,27 +58,33 @@ export function DossierExportPane({ person }: { person: Person }) {
     window.print();
   };
 
-  const handleExportBackup = () => {
+  const handleExportBackup = async () => {
     if (!context?.archive) return;
     try {
-      const backupData = {
-        exportedAt: new Date().toISOString(),
-        version: '0.1.3',
-        archive: context.archive,
-      };
-      const blob = new Blob([JSON.stringify(backupData, null, 2)], {
+      const pwd = window.prompt(
+        'Imposta una password sicura per cifrare il backup (AES-256-GCM):\nLascia vuoto per esportare senza cifratura.',
+      );
+      if (pwd === null) return; // User canceled
+
+      const encryptedText = await encryptBackup(context.archive, pwd);
+      const isEncrypted = pwd && pwd.trim().length > 0;
+      const blob = new Blob([encryptedText], {
         type: 'application/json',
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `backup_calcolo_personale_${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `backup_calcolo_personale_${isEncrypted ? 'cifrato_' : ''}${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      setFeedbackMsg('Backup cifrato esportato con successo!');
+      setFeedbackMsg(
+        isEncrypted
+          ? 'Backup cifrato con successo con AES-256-GCM!'
+          : 'Backup esportato in chiaro (senza password).',
+      );
       setErrorMsg('');
-    } catch {
-      setErrorMsg('Errore durante l\'esportazione del backup.');
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'Errore durante l\'esportazione del backup.');
     }
   };
 
@@ -80,8 +96,10 @@ export function DossierExportPane({ person }: { person: Person }) {
     reader.onload = async event => {
       try {
         const text = event.target?.result as string;
-        const parsed = JSON.parse(text);
-        const importedArchive = parsed.archive || parsed;
+        const importedArchive = await decryptBackup(text, async () => {
+          const pwd = window.prompt('Il backup è cifrato con AES-256. Inserisci la password di sblocco:');
+          return pwd || '';
+        });
 
         if (!importedArchive || !Array.isArray(importedArchive.people)) {
           throw new Error('Formato backup non valido.');
@@ -96,8 +114,8 @@ export function DossierExportPane({ person }: { person: Person }) {
           setFeedbackMsg(`Archivio ripristinato con successo (${importedArchive.people.length} persone caricate)!`);
           setErrorMsg('');
         }
-      } catch (err) {
-        setErrorMsg('Impossibile importare il file di backup: formato corrotto o non riconosciuto.');
+      } catch (err: any) {
+        setErrorMsg(err?.message || 'Impossibile importare il backup: formato corrotto o password errata.');
       }
     };
     reader.readAsText(file);
@@ -110,21 +128,48 @@ export function DossierExportPane({ person }: { person: Person }) {
       <div className="dossier-actions-bar">
         <div>
           <h3 style={{ margin: 0, fontSize: 17, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <FileText size={20} color="#2563eb" /> Scheda Fascicolo per Sindacati/Patronati & Backup
+            <FileText size={20} color="#2563eb" /> Scheda Fascicolo per Sindacati/Patronati & Strumenti ATA
           </h3>
           <p style={{ margin: '4px 0 0 0', fontSize: 12, color: '#64748b' }}>
-            Genera il prospetto riepilogativo ufficiale del punteggio e dei titoli per verifiche, reclami o patronato.
+            Genera il prospetto riepilogativo ufficiale del punteggio e dei titoli per verifiche, reclami, NASpI o patronato.
           </p>
         </div>
 
-        <div className="dossier-actions-buttons">
+        <div className="dossier-actions-buttons" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => setShowTimeline(!showTimeline)}
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          >
+            <Clock size={16} /> {showTimeline ? 'Nascondi Timeline' : 'Timeline Carriera'}
+          </button>
+
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => setShowReclamoModal(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#dc2626' }}
+          >
+            <FileWarning size={16} /> Reclamo Graduatoria
+          </button>
+
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => setShowNaspiModal(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#059669' }}
+          >
+            <Banknote size={16} /> Simulatore NASpI
+          </button>
+
           <button
             type="button"
             className="primary"
             onClick={handlePrint}
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
-            <Printer size={16} /> Stampa Scheda / PDF
+            <Printer size={16} /> Stampa Scheda
           </button>
 
           <button
@@ -133,7 +178,7 @@ export function DossierExportPane({ person }: { person: Person }) {
             onClick={handleExportBackup}
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
-            <Download size={16} /> Esporta Backup
+            <Lock size={16} /> Backup Cifrato
           </button>
 
           <button
@@ -142,7 +187,7 @@ export function DossierExportPane({ person }: { person: Person }) {
             onClick={() => fileInputRef.current?.click()}
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
-            <Upload size={16} /> Ripristina Backup
+            <Upload size={16} /> Ripristina
           </button>
           <input
             type="file"
@@ -153,6 +198,20 @@ export function DossierExportPane({ person }: { person: Person }) {
           />
         </div>
       </div>
+
+      {showReclamoModal && (
+        <ReclamoGraduatorieModal person={person} onClose={() => setShowReclamoModal(false)} />
+      )}
+
+      {showNaspiModal && (
+        <NaspiSimulatorModal person={person} onClose={() => setShowNaspiModal(false)} />
+      )}
+
+      {showTimeline && (
+        <div style={{ marginBottom: 20 }}>
+          <CareerTimelineGantt person={person} targetProfile={targetProfile} />
+        </div>
+      )}
 
       {feedbackMsg && (
         <div style={{ background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', padding: '10px 14px', borderRadius: 8, display: 'flex', gap: 8, alignItems: 'center' }}>

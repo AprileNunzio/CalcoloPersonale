@@ -14,6 +14,7 @@ import {
 import { Person, Entry, Archive } from '../../shared/types';
 import { call, getRevision } from '../../shared/api';
 import { flush } from '../autosave/store';
+import { extractTextFromPdf } from '../../shared/pdfExtractor';
 
 export interface IstanzeOnlineImportModalProps {
   currentPerson: Person;
@@ -54,21 +55,16 @@ export function IstanzeOnlineImportModal({
     try {
       if (file.name.toLowerCase().endsWith('.pdf')) {
         const buffer = await file.arrayBuffer();
-        const decoder = new TextDecoder('latin1');
-        const raw = decoder.decode(buffer);
-        const matches = raw.match(/\(([^)]+)\)\s*(?:Tj|TJ)/g) || [];
-        const extracted = matches.map(m => m.replace(/^\(|\)\s*(?:Tj|TJ)$/g, '')).join(' ');
-        if (extracted.trim().length > 40) {
-          setInputText(extracted);
-          parseTextContent(extracted);
-          return;
-        }
+        const extracted = await extractTextFromPdf(buffer);
+        setInputText(extracted);
+        parseTextContent(extracted);
+        return;
       }
       const content = await file.text();
       setInputText(content);
       parseTextContent(content);
-    } catch {
-      setErrorMsg('Impossibile leggere il file selezionato.');
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'Impossibile leggere il file selezionato.');
     } finally {
       setIsParsing(false);
     }

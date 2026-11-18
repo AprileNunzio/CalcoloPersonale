@@ -53,6 +53,11 @@ export interface ProfileScore {
   serviceDays: number;
   specificDays: number;
   decree: MinisterialDecree;
+  // CIAD Compliance (CCNL 18/01/2024 & DM 89/2024):
+  requiresCiad: boolean;
+  hasCiad: boolean;
+  isCiadCompliant: boolean;
+  ciadWarning?: string;
   // Convalidation metadata:
   isConvalidated: boolean;
   useValidatedScore: boolean;
@@ -68,6 +73,20 @@ export interface ProfileScore {
   subsequentScore?: number;
   subsequentDays?: number;
   schoolYearBreakdown: SchoolYearServiceBreakdown[];
+}
+
+export function checkHasCiad(records: Entry[]): boolean {
+  return (records || []).some(r => {
+    if (r.kind !== 'qualification') return false;
+    const t = ((r.title || '') + ' ' + (r.notes || '')).toLowerCase();
+    return (
+      t.includes('ciad') ||
+      t.includes('alfabetizzazione') ||
+      (t.includes('digcomp') && (t.includes('user') || t.includes('accredia'))) ||
+      (t.includes('eipass') && t.includes('standard')) ||
+      (t.includes('icdl') && (t.includes('full') || t.includes('standard')))
+    );
+  });
 }
 
 export function parseDays(start: string, end: string | null): number {
@@ -437,6 +456,13 @@ export function calculateProfileScores(
       }
     }
 
+    const hasCiad = checkHasCiad(person.records || []);
+    const requiresCiad = prof.code !== 'CS';
+    const isCiadCompliant = !requiresCiad || hasCiad;
+    const ciadWarning = !isCiadCompliant
+      ? 'Attenzione CIAD: Requisito di accesso obbligatorio (CCNL 18/01/2024 e DM 89/2024). Da acquisire entro il 30/04/2025 a pena di decadenza dalla graduatoria.'
+      : undefined;
+
     return {
       code: prof.code,
       label: PROFILE_LABELS[prof.code] || prof.label,
@@ -448,6 +474,10 @@ export function calculateProfileScores(
       serviceDays: totalSpecificDays + totalOtherDays,
       specificDays: totalSpecificDays,
       decree,
+      requiresCiad,
+      hasCiad,
+      isCiadCompliant,
+      ciadWarning,
       isConvalidated,
       useValidatedScore,
       validatedScore: validation?.validatedScore,

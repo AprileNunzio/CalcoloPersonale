@@ -2,6 +2,7 @@ import { call } from '../../shared/api';
 import { AiConfig, ChatAttachment, OllamaModelDetail } from './types';
 import { OCR_SYSTEM_PROMPT } from './documentOcr';
 import { buildDocumentContext } from './documentParser';
+import { getRelevantNormativeContext } from './normativeKnowledge';
 
 export interface OllamaStatusResult {
   isRunning: boolean;
@@ -144,7 +145,8 @@ export async function executeAiQuery(
 ): Promise<string> {
   // Extract text from attached PDFs and metadata from images
   const documentContext = buildDocumentContext(attachments);
-  const fullPrompt = `${OCR_SYSTEM_PROMPT}${documentContext}\n\n[Richiesta Utente]\n${userPrompt}`;
+  const normativeContext = getRelevantNormativeContext(userPrompt);
+  const fullPrompt = `${OCR_SYSTEM_PROMPT}${normativeContext}${documentContext}\n\n[Richiesta Utente]\n${userPrompt}`;
 
   if (config.provider === 'ollama') {
     const images: string[] = attachments

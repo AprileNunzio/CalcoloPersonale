@@ -47,6 +47,28 @@ export function CareerIntelligencePane({
                 </div>
               </div>
 
+              {/* CIAD Compliance Alert Badge (CCNL 2024) */}
+              <div style={{ margin: '6px 0 10px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
+                {scoreItem?.requiresCiad ? (
+                  scoreItem.hasCiad ? (
+                    <span style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontSize: 10, padding: '2px 8px', borderRadius: 4, fontWeight: 650, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      ✓ CIAD Accreditata Registrata
+                    </span>
+                  ) : (
+                    <span
+                      style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', fontSize: 10, padding: '2px 8px', borderRadius: 4, fontWeight: 650, display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                      title={scoreItem.ciadWarning}
+                    >
+                      ⚠ CIAD Mancante (Scad. 30/04/2025)
+                    </span>
+                  )
+                ) : (
+                  <span style={{ fontSize: 10, color: '#64748b' }}>
+                    Requisito di accesso: Diploma / Terza media (No CIAD)
+                  </span>
+                )}
+              </div>
+
               <div className="first-tier-block">
                 <div className="first-tier-header">
                   <div className="first-tier-title">
