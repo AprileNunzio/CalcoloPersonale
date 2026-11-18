@@ -30,6 +30,16 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
   const records = person.records || [];
   const services = records.filter(r => r.kind === 'service');
 
+  const isPersonRuolo = services.some(s => {
+    try {
+      if (s.notes?.startsWith('{')) {
+        const p = JSON.parse(s.notes);
+        return p.isRuolo === true || p.contractType === 'permanent';
+      }
+    } catch {}
+    return false;
+  });
+
   // 1. Calcolo Anzianità per 24 Mesi ATA (Art. 554 D.Lgs. 297/94)
   // Requisito normativo: 23 mesi e 16 giorni = 716 giorni di servizio effettivo statale
   let totalStataleDays = 0;
@@ -42,10 +52,11 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
     }
     const sector = String(parsedNotes.sector || '');
     const isParitaria = sector === 'paritaria_ata' || s.school?.category === 'SCUANAGRAFEPA';
+    const isOngoing = !s.end || parsedNotes.isRuolo === true || parsedNotes.contractType === 'permanent';
 
     if (!isParitaria) {
       const d1 = parseIso(s.start);
-      const d2 = parseIso(s.end || s.start);
+      const d2 = isOngoing ? today : parseIso(s.end);
       if (d1 && d2 && d2 >= d1) {
         totalStataleDays += getDayDiff(d1, d2) + 1;
       }
@@ -53,9 +64,9 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
   }
 
   const REQUIREMENT_24M_DAYS = 716;
-  const is24MesiReached = totalStataleDays >= REQUIREMENT_24M_DAYS;
+  const is24MesiReached = isPersonRuolo || totalStataleDays >= REQUIREMENT_24M_DAYS;
   const daysTo24Mesi = Math.max(0, REQUIREMENT_24M_DAYS - totalStataleDays);
-  const percent24Mesi = Math.min(100, Math.round((totalStataleDays / REQUIREMENT_24M_DAYS) * 100));
+  const percent24Mesi = isPersonRuolo ? 100 : Math.min(100, Math.round((totalStataleDays / REQUIREMENT_24M_DAYS) * 100));
 
   let dateTarget24M = '';
   if (is24MesiReached) {
@@ -69,15 +80,23 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
   deadlines.push({
     id: 'deadline_24mesi_ata',
     type: 'graduatorie24m',
-    title: is24MesiReached ? 'Requisito 24 Mesi ATA Conquistato! (1ª Fascia)' : 'Traguardo 24 Mesi ATA (Graduatorie Permanenti)',
+    title: isPersonRuolo
+      ? 'Personale di Ruolo (Tempo Indeterminato Confermato)'
+      : is24MesiReached
+      ? 'Requisito 24 Mesi ATA Conquistato! (1ª Fascia)'
+      : 'Traguardo 24 Mesi ATA (Graduatorie Permanenti)',
     targetDate: dateTarget24M,
-    daysRemaining: daysTo24Mesi,
+    daysRemaining: isPersonRuolo ? 0 : daysTo24Mesi,
     status: is24MesiReached ? 'completed' : 'active_countdown',
-    badge: is24MesiReached ? '✓ REQUISITO MATURATO' : `${daysTo24Mesi} gg mancanti`,
-    description: is24MesiReached
+    badge: isPersonRuolo ? '✓ RUOLO A TEMPO INDETERMINATO' : is24MesiReached ? '✓ REQUISITO MATURATO' : `${daysTo24Mesi} gg mancanti`,
+    description: isPersonRuolo
+      ? `Inquadrato a tempo indeterminato con ${totalStataleDays} giorni di servizio statale registrati. Pieno diritto di titolarità contrattuale ATA.`
+      : is24MesiReached
       ? `Hai maturato ${totalStataleDays} giorni di servizio statale (superati i 716 giorni previsti dall'art. 554 D.Lgs. 297/94). Hai pieno diritto all'inserimento nelle graduatorie permanenti ATA 24 Mesi.`
       : `Hai accumulato finora ${totalStataleDays} di 716 giorni di servizio statale necessari (23 mesi e 16 giorni). Mancano ${daysTo24Mesi} giorni di servizio.`,
-    actionNote: is24MesiReached
+    actionNote: isPersonRuolo
+      ? 'Posizione contrattuale consolidata a tempo indeterminato.'
+      : is24MesiReached
       ? 'Monitora la finestra annuale di apertura del bando ATA 24 Mesi su Istanze Online (aprile/maggio) per presentare domanda di primo inserimento.'
       : 'Continua a registrare i contratti statali per monitorare l’avvicinamento al compimento del requisito.',
     progressPercent: percent24Mesi,
@@ -90,56 +109,92 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
   let latestEndedService: { entry: Entry; end: Date } | null = null;
 
   for (const s of services) {
+    let parsedNotes: Record<string, unknown> = {};
+    try {
+      if (s.notes?.startsWith('{')) parsedNotes = JSON.parse(s.notes);
+    } catch {}
+    const isRuoloRec = parsedNotes.isRuolo === true || parsedNotes.contractType === 'permanent';
+    const isOngoing = !s.end || isRuoloRec;
     const dStart = parseIso(s.start);
-    const dEnd = parseIso(s.end || s.start);
-    if (!dStart || !dEnd) continue;
+    if (!dStart) continue;
 
-    if (dStart <= today && today <= dEnd) {
-      const daysLeft = getDayDiff(today, dEnd);
-      const totalDur = getDayDiff(dStart, dEnd) + 1;
-      const progress = Math.min(100, Math.round(((totalDur - daysLeft) / totalDur) * 100));
-
+    if (isOngoing) {
+      const totalDur = getDayDiff(dStart, today) + 1;
       activeContract = {
         schoolName: s.school?.name || s.title || 'Istituzione Scolastica',
         profile: s.profile || 'CS',
         startDate: s.start,
-        endDate: s.end || s.start,
-        daysRemaining: daysLeft,
+        endDate: s.end || 'In corso',
+        daysRemaining: isRuoloRec ? 0 : 9999,
         totalDurationDays: totalDur,
-        progressPercent: progress,
+        progressPercent: 100,
       };
-    }
+    } else {
+      const dEnd = parseIso(s.end);
+      if (dEnd) {
+        if (dStart <= today && today <= dEnd) {
+          const daysLeft = getDayDiff(today, dEnd);
+          const totalDur = getDayDiff(dStart, dEnd) + 1;
+          const progress = Math.min(100, Math.round(((totalDur - daysLeft) / totalDur) * 100));
 
-    if (dEnd < today) {
-      if (!latestEndedService || dEnd > latestEndedService.end) {
-        latestEndedService = { entry: s, end: dEnd };
+          activeContract = {
+            schoolName: s.school?.name || s.title || 'Istituzione Scolastica',
+            profile: s.profile || 'CS',
+            startDate: s.start,
+            endDate: s.end || formatIso(today),
+            daysRemaining: daysLeft,
+            totalDurationDays: totalDur,
+            progressPercent: progress,
+          };
+        } else if (dEnd < today && !isPersonRuolo) {
+          if (!latestEndedService || dEnd > latestEndedService.end) {
+            latestEndedService = { entry: s, end: dEnd };
+          }
+        }
       }
     }
   }
 
   if (activeContract) {
-    deadlines.push({
-      id: 'deadline_active_contract',
-      type: 'contract_end',
-      title: `Scadenza Contratto di Lavoro (${activeContract.profile})`,
-      targetDate: activeContract.endDate,
-      daysRemaining: activeContract.daysRemaining,
-      status: 'active_countdown',
-      badge: `${activeContract.daysRemaining} gg al termine`,
-      description: `Contratto in corso presso ${activeContract.schoolName}. Termine previsto per il ${activeContract.endDate}.`,
-      actionNote: 'Alla scadenza del contratto, in caso di mancata proroga, avrai diritto alla disoccupazione NASpI.',
-      progressPercent: activeContract.progressPercent,
-      urgency: activeContract.daysRemaining <= 15 ? 'warning_amber' : 'neutral',
-      legalReference: 'Contratto Individuale di Lavoro CCNL Istruzione',
-    });
+    if (isPersonRuolo) {
+      deadlines.push({
+        id: 'deadline_active_contract',
+        type: 'contract_end',
+        title: `Contratto a Tempo Indeterminato (${activeContract.profile})`,
+        targetDate: formatIso(today),
+        daysRemaining: activeContract.totalDurationDays,
+        status: 'completed',
+        badge: 'DI RUOLO',
+        description: `Titolare di ruolo presso ${activeContract.schoolName} dal ${activeContract.startDate} (${activeContract.totalDurationDays} giorni di servizio maturati).`,
+        actionNote: 'Contratto a tempo indeterminato attivo.',
+        progressPercent: 100,
+        urgency: 'good_green',
+        legalReference: 'CCNL Comparto Istruzione e Ricerca',
+      });
+    } else {
+      deadlines.push({
+        id: 'deadline_active_contract',
+        type: 'contract_end',
+        title: `Scadenza Contratto di Lavoro (${activeContract.profile})`,
+        targetDate: activeContract.endDate,
+        daysRemaining: activeContract.daysRemaining,
+        status: 'active_countdown',
+        badge: `${activeContract.daysRemaining} gg al termine`,
+        description: `Contratto in corso presso ${activeContract.schoolName}. Termine previsto per il ${activeContract.endDate}.`,
+        actionNote: 'Alla scadenza del contratto, in caso di mancata proroga, avrai diritto alla disoccupazione NASpI.',
+        progressPercent: activeContract.progressPercent,
+        urgency: activeContract.daysRemaining <= 15 ? 'warning_amber' : 'neutral',
+        legalReference: 'Contratto Individuale di Lavoro CCNL Istruzione',
+      });
+    }
   }
 
-  // Countdown NASpI
+  // Countdown NASpI (solo per contratti a termine terminati, mai per dipendenti di ruolo)
   let naspiDaysRemaining: number | null = null;
   let naspiWindowOpen = false;
   let lastContractEndDate: string | null = null;
 
-  if (latestEndedService && !activeContract) {
+  if (latestEndedService && !activeContract && !isPersonRuolo) {
     lastContractEndDate = formatIso(latestEndedService.end);
     const daysSinceEnd = getDayDiff(latestEndedService.end, today);
     naspiDaysRemaining = 68 - daysSinceEnd;

@@ -29,12 +29,16 @@ export interface ServiceDetailCalculation {
   estimatedContractTfr: number;
 }
 
-export function calculateDaysBetween(start: string, end: string | null): number {
+export function calculateDaysBetween(start: string, end: string | null, referenceDate?: Date): number {
   const d1 = new Date(start);
-  const d2 = end ? new Date(end) : new Date(start);
+  d1.setHours(0, 0, 0, 0);
+  const now = referenceDate ? new Date(referenceDate) : new Date();
+  now.setHours(0, 0, 0, 0);
+  const d2 = end ? new Date(end) : now;
+  d2.setHours(0, 0, 0, 0);
   if (isNaN(d1.getTime()) || isNaN(d2.getTime()) || d2 < d1) return 1;
   const diff = Math.abs(d2.getTime() - d1.getTime());
-  return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
+  return Math.round(diff / (1000 * 60 * 60 * 24)) + 1;
 }
 
 export function calculateEquivalentMonths(days: number): number {

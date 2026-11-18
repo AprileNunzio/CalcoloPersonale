@@ -61,7 +61,7 @@ pub fn calculate(person: &Person, year: i32, reference: NaiveDate) -> Result<Ana
         } else {
             continue;
         };
-        let last = record.end.unwrap_or(record.start).min(end);
+        let last = record.end.unwrap_or(end).min(end);
         let first = record.start.max(start);
         if first <= last {
             for day in first.iter_days().take_while(|d| *d <= last) {
@@ -136,5 +136,40 @@ mod tests {
         let analysis = calculate(&person, 2026, date("2026-09-10")).unwrap();
         assert_eq!(analysis.service_days, 10);
         assert!(analysis.score.is_none());
+    }
+
+    #[test]
+    fn ongoing_service_without_end_date_counts_until_reference_date() {
+        let record = Record {
+            id: Uuid::new_v4(),
+            kind: "service".into(),
+            title: "Assistente Tecnico a tempo indeterminato".into(),
+            start: date("2025-09-01"),
+            end: None,
+            amount: None,
+            notes: String::new(),
+            profile: Some("AT".into()),
+            school: None,
+        };
+        let person = Person {
+            id: Uuid::new_v4(),
+            first_name: "Nunzio".into(),
+            last_name: "Aprile".into(),
+            gender: "male".into(),
+            birth_date: None,
+            birth_place: None,
+            birth_province: None,
+            fiscal_code: String::new(),
+            profile: "AT".into(),
+            municipality: None,
+            records: vec![record],
+        };
+        // For school year 2025, from 2025-09-01 to 2026-08-31 is 365 days
+        let analysis_2025 = calculate(&person, 2025, date("2026-11-18")).unwrap();
+        assert_eq!(analysis_2025.service_days, 365);
+
+        // For school year 2026, from 2026-09-01 to reference date 2026-11-18 is 79 days
+        let analysis_2026 = calculate(&person, 2026, date("2026-11-18")).unwrap();
+        assert_eq!(analysis_2026.service_days, 79);
     }
 }

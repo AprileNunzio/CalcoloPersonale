@@ -54,17 +54,17 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
             style={{
               padding: '6px 12px',
               borderRadius: 10,
-              background: data.is24MesiReached ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.08)',
-              border: `1px solid ${data.is24MesiReached ? '#10b981' : 'rgba(255, 255, 255, 0.15)'}`,
-              fontSize: '0.78rem',
+              background: data.is24MesiReached ? '#f0fdf4' : '#f8fafc',
+              border: `1.5px solid ${data.is24MesiReached ? '#bbf7d0' : '#e2e8f0'}`,
+              fontSize: '0.8rem',
               fontWeight: 700,
-              color: data.is24MesiReached ? '#34d399' : '#cbd5e1',
+              color: data.is24MesiReached ? '#166534' : '#334155',
               display: 'flex',
               alignItems: 'center',
               gap: 6,
             }}
           >
-            <Award size={15} />
+            <Award size={15} color={data.is24MesiReached ? '#16a34a' : '#64748b'} />
             <span>24 Mesi ATA: {data.totalStataleDays}/716 gg ({data.percent24Mesi}%)</span>
           </div>
 
@@ -73,17 +73,17 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
               style={{
                 padding: '6px 12px',
                 borderRadius: 10,
-                background: data.naspiDaysRemaining <= 10 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(59, 130, 246, 0.2)',
-                border: `1px solid ${data.naspiDaysRemaining <= 10 ? '#ef4444' : '#3b82f6'}`,
-                fontSize: '0.78rem',
+                background: data.naspiDaysRemaining <= 10 ? '#fef2f2' : '#eff6ff',
+                border: `1.5px solid ${data.naspiDaysRemaining <= 10 ? '#fecaca' : '#bfdbfe'}`,
+                fontSize: '0.8rem',
                 fontWeight: 700,
-                color: data.naspiDaysRemaining <= 10 ? '#fca5a5' : '#93c5fd',
+                color: data.naspiDaysRemaining <= 10 ? '#991b1b' : '#1d4ed8',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 6,
               }}
             >
-              <Hourglass size={15} />
+              <Hourglass size={15} color={data.naspiDaysRemaining <= 10 ? '#dc2626' : '#2563eb'} />
               <span>NASpI INPS: {data.naspiDaysRemaining > 0 ? `${data.naspiDaysRemaining} gg rimasti` : 'Scaduto'}</span>
             </div>
           )}
@@ -130,8 +130,8 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
             <div className="timeline-card-desc">{dl.description}</div>
 
             {dl.targetDate && (
-              <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: 8 }}>
-                📅 Data di riferimento: <strong>{formatDateItalian(dl.targetDate)}</strong>
+              <div style={{ fontSize: '0.8rem', color: '#475569', marginBottom: 8 }}>
+                📅 Data di riferimento: <strong style={{ color: '#0f172a' }}>{formatDateItalian(dl.targetDate)}</strong>
               </div>
             )}
 
@@ -180,12 +180,16 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
           </div>
 
           <div className="timeline-step-node">
-            <div className={`timeline-step-dot ${data.activeContract ? 'active' : 'future'}`}>
-              {data.activeContract ? `${data.activeContract.daysRemaining}g` : '🏖️'}
+            <div className={`timeline-step-dot ${data.activeContract ? 'completed' : 'future'}`}>
+              {data.activeContract ? (data.activeContract.daysRemaining === 0 ? '✓' : `${data.activeContract.daysRemaining}g`) : '🏖️'}
             </div>
             <div className="timeline-step-label">Termine Servizio Attuale</div>
             <div className="timeline-step-sub">
-              {data.activeContract ? `Scadenza ${formatDateItalian(data.activeContract.endDate)}` : 'Nessun contratto in corso'}
+              {data.activeContract
+                ? data.activeContract.endDate === 'In corso'
+                  ? 'In corso a tempo indeterminato'
+                  : `Scadenza ${formatDateItalian(data.activeContract.endDate)}`
+                : 'Nessun contratto in corso'}
             </div>
           </div>
 

@@ -1,9 +1,13 @@
-export function parseDays(start: string, end: string | null): number {
+export function parseDays(start: string, end: string | null, referenceDate?: Date): number {
   const dStart = new Date(start);
-  const dEnd = end ? new Date(end) : new Date(start);
+  dStart.setHours(0, 0, 0, 0);
+  const now = referenceDate ? new Date(referenceDate) : new Date();
+  now.setHours(0, 0, 0, 0);
+  const dEnd = end ? new Date(end) : now;
+  dEnd.setHours(0, 0, 0, 0);
   if (isNaN(dStart.getTime()) || isNaN(dEnd.getTime()) || dEnd < dStart) return 1;
   const diffTime = Math.abs(dEnd.getTime() - dStart.getTime());
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
 }
 
 export function calculateMonths(days: number): number {
@@ -16,7 +20,9 @@ export function calculateMonths(days: number): number {
 export function splitServiceBySchoolYears(startStr: string, endStr: string | null, cutoffDate?: Date | null) {
   const results: { schoolYear: string; startYear: number; endYear: number; days: number }[] = [];
   let start = new Date(startStr);
-  const end = endStr ? new Date(endStr) : new Date(startStr);
+  const now = new Date();
+  now.setHours(23, 59, 59, 999);
+  const end = endStr ? new Date(endStr) : now;
 
   if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
     const yr = start.getFullYear() || 2024;
