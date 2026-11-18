@@ -55,13 +55,34 @@ export function OtaBanner() {
             : t('otaReloadNow')}
         </button>
         {!isApplying && (
-          <button
-            className="ota-btn-secondary"
-            onClick={dismiss}
-            aria-label={t('later')}
-          >
-            {t('later')}
-          </button>
+          <>
+            <button
+              type="button"
+              className="ota-btn-secondary"
+              onClick={() => dismiss(false)}
+              aria-label={t('later')}
+            >
+              {t('later')}
+            </button>
+            <button
+              type="button"
+              className="ota-btn-ghost"
+              onClick={() => dismiss(true)}
+              title={t('doNotShowAgain') || 'Non mostrare più'}
+              aria-label={t('doNotShowAgain') || 'Non mostrare più'}
+            >
+              {t('doNotShowAgain') || 'Non mostrare più'}
+            </button>
+            <button
+              type="button"
+              className="ota-btn-close"
+              onClick={() => dismiss(true)}
+              aria-label={t('close') || 'Chiudi'}
+              title={t('close') || 'Chiudi'}
+            >
+              <X size={15} />
+            </button>
+          </>
         )}
       </div>
     </aside>

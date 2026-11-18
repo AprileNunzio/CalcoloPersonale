@@ -105,6 +105,12 @@ async fn ota_apply(ota: State<'_, Arc<ota::OtaManager>>) -> Result<bool> {
     }
 }
 
+#[tauri::command]
+async fn ota_reset(ota: State<'_, Arc<ota::OtaManager>>) -> Result<bool> {
+    ota.reset().map_err(Error::Storage)?;
+    Ok(true)
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|_, _, _| {}))
@@ -139,6 +145,10 @@ fn main() {
                             http::header::CONTENT_TYPE,
                             http::HeaderValue::from_static(mime),
                         );
+                        res.headers_mut().insert(
+                            http::header::CACHE_CONTROL,
+                            http::HeaderValue::from_static("no-cache, no-store, must-revalidate"),
+                        );
                         if let Ok(val) = http::HeaderValue::from_str(&len.to_string()) {
                             res.headers_mut().insert(http::header::CONTENT_LENGTH, val);
                         }
@@ -166,6 +176,7 @@ fn main() {
             gemini::ask_ollama,
             ota_check,
             ota_apply,
+            ota_reset,
             probability::calculate_work_probability
         ])
         .run(tauri::generate_context!())

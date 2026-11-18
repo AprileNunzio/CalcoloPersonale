@@ -27,7 +27,7 @@ export function UpdatesPage() {
 
   const handleGlobalCheck = async () => {
     setLastCheck(new Date().toLocaleTimeString());
-    await Promise.all([ota.check(), native.checkUpdate(true)]);
+    await Promise.all([ota.check(true), native.checkUpdate(true)]);
   };
 
   const isChecking = ota.phase === 'checking' || native.status.phase === 'checking';
@@ -92,6 +92,36 @@ export function UpdatesPage() {
             </div>
           </div>
 
+          <div className="ota-settings-strip">
+            <label className="ota-toggle-label">
+              <input
+                type="checkbox"
+                checked={ota.autoCheckEnabled}
+                onChange={e => ota.setAutoCheckEnabled(e.target.checked)}
+              />
+              <span>{t('otaAutoCheckLabel') || 'Verifica automatica all’avvio'}</span>
+            </label>
+            {ota.status?.currentVersion && ota.status.currentVersion !== APP_VERSION && (
+              <button
+                type="button"
+                className="ota-reset-inline-btn"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      t('confirmResetOta') ||
+                        'Sei sicuro di voler rimuovere gli aggiornamenti rapidi e ripristinare la versione originale dell’app?',
+                    )
+                  ) {
+                    void ota.resetOta();
+                  }
+                }}
+                title={t('otaResetDesc') || 'Ripristina versione originale incorporata'}
+              >
+                {t('otaResetBtn') || 'Ripristina versione base'}
+              </button>
+            )}
+          </div>
+
           <div className="pipeline-stepper">
             <div className={`step-item ${ota.phase === 'checking' ? 'active' : 'done'}`}>
               <span className="step-dot">{ota.phase === 'checking' ? <RefreshCw size={12} className="spin" /> : <CheckCircle2 size={12} />}</span>
@@ -121,14 +151,23 @@ export function UpdatesPage() {
                     <p>{t('systemReloadNotice')}</p>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className="apply-ota-btn"
-                  onClick={() => void ota.apply()}
-                >
-                  <RefreshCw size={16} />
-                  <span>{t('downloadAndApplyNow')}</span>
-                </button>
+                <div className="ready-buttons-row">
+                  <button
+                    type="button"
+                    className="apply-ota-btn"
+                    onClick={() => void ota.apply()}
+                  >
+                    <RefreshCw size={16} />
+                    <span>{t('downloadAndApplyNow')}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="ignore-ota-btn"
+                    onClick={() => ota.dismiss(true)}
+                  >
+                    <span>{t('doNotShowAgain') || 'Ignora versione'}</span>
+                  </button>
+                </div>
               </div>
             ) : ota.phase === 'applying' ? (
               <div className="in-progress-box">
@@ -139,7 +178,7 @@ export function UpdatesPage() {
               <div className="error-action-box">
                 <AlertCircle size={18} />
                 <span>{ota.error ? t(ota.error) : t('updateFailed')}</span>
-                <button type="button" className="retry-btn" onClick={() => void ota.check()}>
+                <button type="button" className="retry-btn" onClick={() => void ota.check(true)}>
                   {t('retry')}
                 </button>
               </div>

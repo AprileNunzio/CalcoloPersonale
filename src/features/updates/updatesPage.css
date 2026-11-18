@@ -420,3 +420,68 @@
     grid-template-columns: 1fr;
   }
 }
+
+.ota-settings-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11.5px;
+}
+
+.ota-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #334155;
+  font-weight: 500;
+}
+
+.ota-toggle-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.ota-reset-inline-btn {
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ota-reset-inline-btn:hover {
+  background: #fef2f2;
+  border-color: #f87171;
+}
+
+.ready-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ignore-ota-btn {
+  background: #ffffff;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ignore-ota-btn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}

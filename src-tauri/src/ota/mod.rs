@@ -167,7 +167,20 @@ impl OtaManager {
         let mut f = File::create(marker).map_err(Error::Storage)?;
         f.write_all(manifest.version.as_bytes())
             .map_err(Error::Storage)?;
+        f.sync_all().map_err(Error::Storage)?;
 
+        Ok(())
+    }
+
+    pub fn reset(&self) -> std::io::Result<()> {
+        let marker = self.base_dir.join("current_version.txt");
+        if marker.exists() {
+            let _ = fs::remove_file(marker);
+        }
+        let versions = self.base_dir.join("versions");
+        if versions.exists() {
+            let _ = fs::remove_dir_all(versions);
+        }
         Ok(())
     }
 
