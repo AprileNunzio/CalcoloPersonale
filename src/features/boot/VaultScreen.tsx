@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { BriefcaseBusiness, LockKeyhole, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import {
+  BriefcaseBusiness,
+  LockKeyhole,
+  ArrowRight,
+  ShieldCheck,
+  Eye,
+  EyeOff,
+  HardDrive,
+  Sparkles,
+  AlertCircle,
+} from 'lucide-react';
 import { useT } from '../../shared/i18n';
 
 export function VaultScreen({
@@ -17,67 +27,133 @@ export function VaultScreen({
 }) {
   const t = useT();
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <main className="vault-screen" data-theme="vault">
-      <div className="vault-brand">
-        <div className="icon-badge circular">
-          <BriefcaseBusiness size={24} />
-        </div>
-        <strong>{t('app')}</strong>
-      </div>
-      <div className="vault-layout">
-        <div className="vault-hero">
-          <span className="eyebrow">{t('secure')}</span>
-          <h1>{t('vaultTitle')}</h1>
-          <p>{t('subtitle')}</p>
-          <div className="privacy">
-            <div className="icon-badge circular secondary" style={{ width: 28, height: 28 }}>
-              <ShieldCheck size={16} />
+      <div className="vault-center-wrapper">
+        <div className="vault-layout">
+          <div className="vault-hero">
+            <div className="vault-brand">
+              <div className="vault-brand-icon">
+                <BriefcaseBusiness size={22} />
+              </div>
+              <span className="vault-brand-name">{t('app')}</span>
             </div>
-            <span>{t('privacy')}</span>
+
+            <span className="eyebrow">{t('secure')}</span>
+            <h1>{t('vaultTitle')}</h1>
+            <p className="vault-hero-desc">{t('subtitle')}</p>
+
+            <div className="vault-features-list">
+              <div className="vault-feature-item">
+                <div className="feature-icon-box">
+                  <ShieldCheck size={16} />
+                </div>
+                <div>
+                  <strong>Crittografia Hardware AES-256-GCM</strong>
+                  <p>Derivazione chiavi Argon2id con cifratura locale zero-trust</p>
+                </div>
+              </div>
+
+              <div className="vault-feature-item">
+                <div className="feature-icon-box">
+                  <HardDrive size={16} />
+                </div>
+                <div>
+                  <strong>100% Locale &amp; Conforme GDPR</strong>
+                  <p>Nessun dato viene inviato a server cloud o terze parti</p>
+                </div>
+              </div>
+
+              <div className="vault-feature-item">
+                <div className="feature-icon-box">
+                  <Sparkles size={16} />
+                </div>
+                <div>
+                  <strong>Calcolo Graduatorie &amp; Ricostruzione Carriera</strong>
+                  <p>Motore normativo aggiornato al CCNL Istruzione e Ricerca</p>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <form
+            className="vault-form-card"
+            onSubmit={e => {
+              e.preventDefault();
+              onUnlock(password);
+              setPassword('');
+            }}
+          >
+            <div className="vault-form-header">
+              <div className="vault-lock-badge">
+                <LockKeyhole size={24} />
+              </div>
+              <div>
+                <h2>{t('unlock')}</h2>
+                <p>{t('vaultHelp')}</p>
+              </div>
+            </div>
+
+            {error && (
+              <div role="alert" className="vault-alert error">
+                <AlertCircle size={16} />
+                <span>{t(error)}</span>
+              </div>
+            )}
+
+            {notice && (
+              <div role="status" className="vault-alert notice">
+                <ShieldCheck size={16} />
+                <span>{t(notice)}</span>
+              </div>
+            )}
+
+            <div className="vault-input-group">
+              <label htmlFor="vault-password-input" className="vault-input-label">
+                {t('password')}
+              </label>
+              <div className="vault-input-wrap">
+                <input
+                  id="vault-password-input"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  minLength={12}
+                  maxLength={1024}
+                  required
+                  autoFocus
+                  placeholder="Password dell'archivio (min. 12 caratteri)..."
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className="vault-input"
+                />
+                <button
+                  type="button"
+                  className="vault-eye-btn"
+                  title={showPassword ? 'Nascondi password' : 'Mostra password'}
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              <small className="vault-input-hint">
+                Minimo 12 caratteri. La password non è recuperabile in caso di smarrimento.
+              </small>
+            </div>
+
+            <button type="submit" className="vault-submit-btn" disabled={busy || password.length < 12}>
+              <span>{t(busy ? 'loading' : 'unlock')}</span>
+              <ArrowRight size={18} />
+            </button>
+
+            <div className="vault-card-footer">
+              <ShieldCheck size={14} className="footer-shield-icon" />
+              <span>Protezione conforme standard NIST &amp; GDPR</span>
+            </div>
+          </form>
         </div>
-        <form
-          className="panel vault-form"
-          onSubmit={e => {
-            e.preventDefault();
-            onUnlock(password);
-            setPassword('');
-          }}
-        >
-          <div className="icon-badge circular" style={{ marginBottom: 16 }}>
-            <LockKeyhole size={24} />
-          </div>
-          <h2>{t('unlock')}</h2>
-          <p className="muted">{t('vaultHelp')}</p>
-          {error && (
-            <div role="alert" className="error">
-              {t(error)}
-            </div>
-          )}
-          {notice && (
-            <div role="status" className="notice">
-              {t(notice)}
-            </div>
-          )}
-          <label>
-            {t('password')}
-            <input
-              type="password"
-              autoComplete="current-password"
-              minLength={12}
-              maxLength={1024}
-              required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
-          </label>
-          <button type="submit" disabled={busy}>
-            <span>{t(busy ? 'loading' : 'unlock')}</span>
-            <ArrowUpRight size={18} />
-          </button>
-        </form>
       </div>
     </main>
   );
