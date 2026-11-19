@@ -37,19 +37,21 @@ export function Applications({
     setError('');
     try {
       await flush();
+      const validId = record.id && record.id.trim().length > 0 ? record.id.trim() : crypto.randomUUID();
+      const recordToSave: Entry = { ...record, id: validId };
       const updatedArchive = await call<Archive>('save_record', {
         personId: person.id,
-        entryId: record.id,
-        entry: record,
+        entryId: validId,
+        entry: recordToSave,
         revision: getRevision(),
       });
       if (context) {
         context.saved(updatedArchive);
       } else if (save) {
-        const existingIndex = person.records.findIndex(r => r.id === record.id);
+        const existingIndex = person.records.findIndex(r => r.id === validId);
         const nextRecords = existingIndex >= 0
-          ? person.records.map((r, i) => (i === existingIndex ? record : r))
-          : [record, ...person.records];
+          ? person.records.map((r, i) => (i === existingIndex ? recordToSave : r))
+          : [recordToSave, ...person.records];
         save({ ...person, records: nextRecords });
       }
       setCreating(false);

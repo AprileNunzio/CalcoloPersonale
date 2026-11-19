@@ -157,9 +157,14 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--on-surface-variant);
-  margin-top: 4px;
+  margin-top: 6px;
+}
+
+.card-school-info strong {
+  color: var(--on-surface);
+  font-weight: 700;
 }
 
 .ruolo-highlight-box {
@@ -196,6 +201,9 @@
   border-radius: var(--shape-full);
   width: 34px;
   height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;

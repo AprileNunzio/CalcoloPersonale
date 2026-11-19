@@ -147,12 +147,13 @@ button, .btn-primary {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border: 0;
+  border: 1px solid var(--primary);
   border-radius: var(--shape-full);
   background: var(--primary);
   color: var(--on-primary);
-  padding: 7px 16px;
-  min-height: 34px;
+  padding: 0 16px;
+  height: 36px;
+  min-height: 36px;
   transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
   box-sizing: border-box;
 }
@@ -171,23 +172,25 @@ button:disabled, .btn-primary:disabled {
   cursor: not-allowed;
 }
 
-.btn-secondary {
+button.secondary, .btn-secondary {
   background: var(--secondary-container);
   color: var(--on-secondary-container);
   border: 1px solid var(--outline-variant);
 }
 
-.btn-secondary:hover:not(:disabled) {
+button.secondary:hover:not(:disabled), .btn-secondary:hover:not(:disabled) {
   background: var(--surface-container-highest);
+  filter: brightness(1.05);
+  box-shadow: 0 2px 8px var(--shadow-ambient);
 }
 
-.btn-ghost, .btn-tertiary {
+button.ghost, button.tertiary, .btn-ghost, .btn-tertiary {
   background: transparent;
   color: var(--primary);
   border: 1px solid var(--outline-variant);
 }
 
-.btn-ghost:hover:not(:disabled) {
+button.ghost:hover:not(:disabled), button.tertiary:hover:not(:disabled), .btn-ghost:hover:not(:disabled) {
   background: var(--surface-container-high);
 }
 

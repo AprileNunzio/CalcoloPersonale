@@ -329,23 +329,25 @@ function Workspace({
                       </div>
                     )}
                   </div>
-                  <button
-                    type="button"
-                    className="export-person-header-btn"
-                    onClick={() => exportPersonToFile(person)}
-                    title="Esporta fascicolo su file singolo (.json)"
-                  >
-                    <Download size={14} />
-                    <span>{t('exportPerson')}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="wizard-btn-primary"
-                    onClick={() => setShowWizard(true)}
-                  >
-                    <Sparkles size={14} />
-                    <span>Configurazione Guidata</span>
-                  </button>
+                  <div className="person-compact-actions">
+                    <button
+                      type="button"
+                      className="person-compact-btn secondary"
+                      onClick={() => exportPersonToFile(person)}
+                      title="Esporta fascicolo su file singolo (.json)"
+                    >
+                      <Download size={14} />
+                      <span>{t('exportPerson')}</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="person-compact-btn primary"
+                      onClick={() => setShowWizard(true)}
+                    >
+                      <Sparkles size={14} />
+                      <span>Configurazione Guidata</span>
+                    </button>
+                  </div>
                 </div>
 
                 {section === 'overview' ? (

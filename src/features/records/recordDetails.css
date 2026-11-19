@@ -162,3 +162,110 @@
 .live-metric .text-amber {
   color: var(--tertiary);
 }
+
+/* ==========================================================================
+   RECORDS SECTION HEADER & LIST LAYOUT (MD3 EXPRESSIVE)
+   ========================================================================== */
+
+.records-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: clamp(16px, 1.8vw, 24px);
+  flex-wrap: wrap;
+}
+
+.records-header-text h1 {
+  margin: 0;
+  font-size: var(--font-title-large);
+  font-weight: 750;
+  color: var(--on-surface);
+}
+
+.records-header-text p {
+  margin: 4px 0 0;
+  font-size: var(--font-body-medium);
+  color: var(--on-surface-variant);
+}
+
+.records-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.records-btn-primary {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 16px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--shape-full);
+  font-size: 0.84rem;
+  font-weight: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  box-sizing: border-box;
+}
+
+.records-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--shadow-ambient);
+}
+
+.records-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.records-btn-secondary {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 16px;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-full);
+  font-size: 0.84rem;
+  font-weight: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  box-sizing: border-box;
+}
+
+.records-btn-secondary:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.records-btn-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.records-empty-card {
+  padding: clamp(24px, 3vw, 40px);
+  text-align: center;
+  background: var(--surface-container-low);
+  border: 1px dashed var(--outline-variant);
+  border-radius: var(--shape-lg);
+  color: var(--on-surface-variant);
+  font-size: var(--font-body-medium);
+}

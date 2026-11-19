@@ -127,7 +127,7 @@ export function ScoreValidationPane({
       const validationsObj: Record<string, ScoreValidationData> = { ...validationsMap };
       validationsObj[profileCode] = updatedValidation;
 
-      const recordId = existingValRecord ? existingValRecord.id : `validation-${profileCode.toLowerCase()}`;
+      const recordId = existingValRecord?.id?.trim() || crypto.randomUUID();
       const entry: Entry = {
         id: recordId,
         kind: 'validation',

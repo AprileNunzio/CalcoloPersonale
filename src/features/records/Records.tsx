@@ -35,7 +35,10 @@ export function Records({
   const [selectedLinkedId, setSelectedLinkedId] = useState('');
   const [showImportModal, setShowImportModal] = useState(false);
 
-  const hasDraftContent = draft !== null && Boolean(draft.id || draft.title?.trim() || draft.school || draft.start);
+  const isEditingExisting = Boolean(draft?.id && person.records.some(r => r.id === draft.id));
+  const hasDraftContent = draft !== null && Boolean(
+    isEditingExisting || draft.title?.trim() || draft.school || draft.start
+  );
   const isFormOpen = isExplicitlyAdding || hasDraftContent;
 
   const kinds = section === 'absences' ? absenceKinds : [section];
@@ -47,17 +50,23 @@ export function Records({
     setError('');
     try {
       await flush();
+      const validId = entry.id && entry.id.trim().length > 0 ? entry.id.trim() : crypto.randomUUID();
+      const entryToSave: Entry = {
+        ...entry,
+        id: validId,
+        profile: entry.kind === 'service' ? entry.profile || 'CS' : null,
+      };
       const archive = await call<Archive>(remove ? 'delete_record' : 'save_record', {
         personId: person.id,
-        entryId: entry.id,
-        entry: {
-          ...entry,
-          profile: entry.kind === 'service' ? entry.profile || 'CS' : null,
-        },
+        entryId: validId,
+        entry: entryToSave,
         revision: getRevision(),
       });
       context.saved(archive);
-      if (!remove || draft?.id === entry.id) setDraft(null);
+      if (!remove || draft?.id === entry.id) {
+        setDraft(null);
+        setIsExplicitlyAdding(false);
+      }
     } catch (reason) {
       setError(typeof reason === 'string' ? reason : 'error');
     } finally {
@@ -89,20 +98,19 @@ export function Records({
 
   return (
     <section className="records">
-      <div className="section-header">
-        <div>
+      <div className="records-header">
+        <div className="records-header-text">
           <h1>{t(section)}</h1>
           <p className="muted">{t(`${section}Description`)}</p>
         </div>
 
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div className="records-header-actions">
           {section === 'service' && (
             <button
               type="button"
-              className="secondary"
+              className="records-btn-secondary"
               onClick={() => setShowImportModal(true)}
               disabled={busy || pending}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
             >
               <FileText size={16} />
               <span>Importa PDF Istanze Online</span>
@@ -110,13 +118,15 @@ export function Records({
           )}
 
           <button
+            type="button"
+            className="records-btn-primary"
             disabled={busy || pending || isFormOpen}
             onClick={() => {
               setIsExplicitlyAdding(true);
               setFamilySource('manual');
               setSelectedLinkedId('');
               setDraft({
-                id: '',
+                id: crypto.randomUUID(),
                 kind: kinds[0],
                 school: null,
                 title: '',
@@ -128,14 +138,16 @@ export function Records({
               });
             }}
           >
-            <Plus size={17} />{' '}
-            {section === 'service'
-              ? t('addService')
-              : section === 'qualification'
-              ? t('addQualification')
-              : section === 'absences'
-              ? t('addAbsence')
-              : t('add')}
+            <Plus size={16} />
+            <span>
+              {section === 'service'
+                ? t('addService')
+                : section === 'qualification'
+                ? t('addQualification')
+                : section === 'absences'
+                ? t('addAbsence')
+                : t('add')}
+            </span>
           </button>
         </div>
       </div>
@@ -170,9 +182,11 @@ export function Records({
       {section === 'qualification' && <QualificationSummaryPanel person={person} />}
       {section === 'absences' && <AbsenceComportoPanel person={person} />}
 
-      <div className="panel entries">
+      <div className="records-list">
         {entries.length === 0 ? (
-          <p className="muted">{t('noRecords')}</p>
+          <div className="records-empty-card">
+            <p className="muted" style={{ margin: 0 }}>{t('noRecords')}</p>
+          </div>
         ) : (
           entries.map(record => (
             <RecordItemCard

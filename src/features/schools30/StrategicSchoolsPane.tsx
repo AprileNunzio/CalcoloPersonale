@@ -134,7 +134,7 @@ export function StrategicSchoolsPane({ person }: { person: Person }) {
     setSuccessMsg('');
     try {
       await flush();
-      const entryId = existingApp?.id || crypto.randomUUID();
+      const entryId = existingApp?.id?.trim() || crypto.randomUUID();
       const updatedEntry: Entry = {
         id: entryId,
         kind: 'application',

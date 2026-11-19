@@ -60,6 +60,7 @@ export function RecordEditForm({
   const [submitted, setSubmitted] = useState(false);
   const [showManualSchoolModal, setShowManualSchoolModal] = useState(false);
   const parsedDraftNotes = parseNotes(draft.notes);
+  const isEditing = Boolean(draft.id && person.records.some(r => r.id === draft.id));
 
   const aranAlerts = useMemo(() => {
     if (section !== 'absences' || !draft.start) return [];
@@ -150,7 +151,11 @@ export function RecordEditForm({
         if (draft.end && draft.end < draft.start) {
           return;
         }
-        onSubmit(draft);
+        const finalDraft: Entry = {
+          ...draft,
+          id: draft.id && draft.id.trim().length > 0 ? draft.id.trim() : crypto.randomUUID(),
+        };
+        onSubmit(finalDraft);
       }}
     >
       <fieldset className="application-boundary" disabled={pending || busy}>
@@ -166,7 +171,7 @@ export function RecordEditForm({
               )}
             </div>
             <div>
-              <h2>{draft.id ? t('edit') : draft.kind === 'service' ? 'Nuovo Periodo di Servizio' : t('addRecord')}</h2>
+              <h2>{isEditing ? t('edit') : draft.kind === 'service' ? 'Nuovo Periodo di Servizio' : t('addRecord')}</h2>
               <p className="modern-form-subtitle">
                 {draft.kind === 'service'
                   ? 'Compila le date e la scuola per calcolare automaticamente punteggio graduatorie e anzianità'

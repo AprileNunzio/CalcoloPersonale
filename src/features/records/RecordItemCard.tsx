@@ -148,22 +148,24 @@ export function RecordItemCard({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="card-top-badges">
           {/* Badge Tipo Record */}
-          <span className="status-chip profile">
-            {isQualification ? (
-              <Award size={11} />
-            ) : isAbsence ? (
-              record.kind === 'sickness' ? (
-                <HeartPulse size={11} />
-              ) : record.kind === 'holiday' || record.kind === 'festivity' ? (
-                <Palmtree size={11} />
-              ) : record.kind === 'specialist' ? (
-                <Stethoscope size={11} />
-              ) : (
-                <Clock size={11} />
-              )
-            ) : null}
-            {t(record.kind)}
-          </span>
+          {!isService && (
+            <span className="status-chip profile">
+              {isQualification ? (
+                <Award size={11} />
+              ) : isAbsence ? (
+                record.kind === 'sickness' ? (
+                  <HeartPulse size={11} />
+                ) : record.kind === 'holiday' || record.kind === 'festivity' ? (
+                  <Palmtree size={11} />
+                ) : record.kind === 'specialist' ? (
+                  <Stethoscope size={11} />
+                ) : (
+                  <Clock size={11} />
+                )
+              ) : null}
+              {t(record.kind)}
+            </span>
+          )}
 
           {/* Badge per Titoli & Attestati */}
           {isQualification &&
@@ -387,16 +389,21 @@ export function RecordItemCard({
 
         {record.school && (
           <div className="card-school-info">
-            <School size={13} color="var(--secondary)" />
+            <School size={14} color="var(--primary)" />
             <span>
-              {record.school.code} · {record.school.name} ({record.school.municipality} -{' '}
+              <strong>{record.school.code}</strong> · {record.school.name} ({record.school.municipality} -{' '}
               {record.school.province})
             </span>
           </div>
         )}
 
         {/* Box speciale per dettagli Ruolo, Trasferimenti, Assegnazioni Provvisorie */}
-        {isService && isRuolo && (
+        {isService && isRuolo && Boolean(
+          parsed.ruoloAmbito ||
+          parsed.ruoloMobility ||
+          (typeof parsed.continuityYears === 'number' && parsed.continuityYears > 0) ||
+          parsed.superamentoAnnoProva
+        ) && (
           <div className="ruolo-highlight-box">
             {parsed.ruoloAmbito && (
               <span className="ruolo-tag">

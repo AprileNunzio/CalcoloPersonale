@@ -6,11 +6,11 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  padding: 8px 14px;
+  padding: 8px 16px;
   background: var(--surface-container-low);
   border: 1px solid var(--outline-variant);
   border-radius: var(--shape-full);
-  margin-bottom: var(--space-md);
+  margin-bottom: clamp(16px, 1.8vw, 24px);
   flex-wrap: wrap;
 }
 
@@ -19,10 +19,17 @@
   color: var(--on-surface);
   border: 1px solid var(--outline-variant);
   border-radius: var(--shape-full);
-  padding: 4px 12px;
-  min-height: 28px;
-  font-size: var(--font-label-small);
-  font-weight: 600;
+  padding: 0 14px;
+  height: 34px;
+  min-height: 34px;
+  box-sizing: border-box;
+  font-size: 0.82rem;
+  font-weight: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .back-btn-compact:hover {
@@ -32,8 +39,8 @@
 }
 
 .avatar-compact {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--shape-full);
   display: flex;
   align-items: center;
@@ -85,15 +92,45 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .person-compact-btn {
-  padding: 4px 10px;
-  min-height: 28px;
-  font-size: var(--font-label-small);
+  padding: 0 14px;
+  height: 34px;
+  min-height: 34px;
+  box-sizing: border-box;
+  font-size: 0.82rem;
+  font-weight: 650;
   border-radius: var(--shape-full);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
+
+.person-compact-btn.secondary {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border-color: var(--outline-variant);
+}
+
+.person-compact-btn.secondary:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.person-compact-btn.primary {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+
+.person-compact-btn.primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--shadow-ambient);
+}
+
