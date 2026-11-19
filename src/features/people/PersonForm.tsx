@@ -113,11 +113,17 @@ export function PersonForm({
     setShowDropdown(false);
   };
 
+  const handleFieldBlur = () => {
+    if (person && value.lastName.trim() && value.firstName.trim()) {
+      onSave(value);
+    }
+  };
+
   const getStatus = (name: keyof Person): FieldStatus => {
     const val = value[name];
     if (name === 'lastName' || name === 'firstName') {
       if (typeof val === 'string' && val.trim().length > 0) return 'saved';
-      return val ? 'error' : 'idle';
+      return typeof val === 'string' && val.length === 0 ? 'error' : 'idle';
     }
     if (name === 'birthDate') {
       if (!val) return 'idle';
@@ -125,13 +131,18 @@ export function PersonForm({
       return (val as string) <= today ? 'saved' : 'error';
     }
     if (name === 'fiscalCode') {
-      const code = (val as string) || '';
+      const code = ((val as string) || '').trim();
       if (!code) return 'idle';
-      const isValid = /^[A-Z0-9]{16}$/.test(code);
+      const isValid = /^[A-Z0-9]{16}$/i.test(code);
       return isValid ? 'saved' : 'error';
     }
-    if (name === 'birthPlace' || name === 'birthProvince') {
+    if (name === 'birthPlace') {
       return (val as string)?.trim() ? 'saved' : 'idle';
+    }
+    if (name === 'birthProvince') {
+      const prov = ((val as string) || '').trim();
+      if (!prov) return 'idle';
+      return prov.length >= 2 && prov.length <= 4 ? 'saved' : 'error';
     }
     if (name === 'gender') {
       return 'saved';
@@ -160,7 +171,7 @@ export function PersonForm({
           label={t('lastName')}
           tip={t('tipLastName')}
           status={getStatus('lastName')}
-          errorMessage={t('requiredField')}
+          errorMessage="Il cognome è obbligatorio"
         >
           <input
             ref={lastNameRef}
@@ -169,6 +180,7 @@ export function PersonForm({
             maxLength={80}
             value={value.lastName || ''}
             onChange={e => setValue({ ...value, lastName: e.target.value })}
+            onBlur={handleFieldBlur}
             placeholder={t('placeholderLastName')}
           />
         </FormField>
@@ -177,7 +189,7 @@ export function PersonForm({
           label={t('firstName')}
           tip={t('tipFirstName')}
           status={getStatus('firstName')}
-          errorMessage={t('requiredField')}
+          errorMessage="Il nome è obbligatorio"
         >
           <input
             type="text"
@@ -185,6 +197,7 @@ export function PersonForm({
             maxLength={80}
             value={value.firstName || ''}
             onChange={e => setValue({ ...value, firstName: e.target.value })}
+            onBlur={handleFieldBlur}
             placeholder={t('placeholderFirstName')}
           />
         </FormField>
@@ -193,13 +206,14 @@ export function PersonForm({
           label={t('birthDate')}
           tip={t('tipBirthDate')}
           status={getStatus('birthDate')}
-          errorMessage={t('invalidField')}
+          errorMessage="Data di nascita non valida o successiva ad oggi"
         >
           <input
             type="date"
             value={value.birthDate || ''}
             max={new Date().toISOString().slice(0, 10)}
             onChange={e => setValue({ ...value, birthDate: e.target.value || null })}
+            onBlur={handleFieldBlur}
           />
         </FormField>
 
@@ -221,6 +235,7 @@ export function PersonForm({
               onFocus={() => {
                 if (muniQuery.trim().length >= 2) setShowDropdown(true);
               }}
+              onBlur={handleFieldBlur}
               placeholder={t('placeholderBirthPlace')}
             />
           </FormField>
@@ -230,7 +245,17 @@ export function PersonForm({
                 <li
                   key={`${entry.code}-${entry.name}`}
                   role="option"
-                  onClick={() => handleSelectMunicipality(entry)}
+                  onClick={() => {
+                    handleSelectMunicipality(entry);
+                    if (person && value.lastName.trim() && value.firstName.trim()) {
+                      onSave({
+                        ...value,
+                        birthPlace: entry.name,
+                        birthProvince: entry.province,
+                        municipality: entry,
+                      });
+                    }
+                  }}
                 >
                   <strong>{entry.name}</strong>
                   <span className="prov-badge">({entry.province})</span>
@@ -245,6 +270,7 @@ export function PersonForm({
           label={t('birthProvince')}
           tip={t('tipBirthProvince')}
           status={getStatus('birthProvince')}
+          errorMessage="Sigla provincia non valida (es. RM, MI, EE)"
         >
           <input
             type="text"
@@ -253,6 +279,7 @@ export function PersonForm({
             onChange={e =>
               setValue({ ...value, birthProvince: e.target.value.toUpperCase() })
             }
+            onBlur={handleFieldBlur}
             placeholder="RM / EE"
           />
         </FormField>
@@ -264,7 +291,11 @@ export function PersonForm({
         >
           <select
             value={value.gender || 'female'}
-            onChange={e => setValue({ ...value, gender: e.target.value })}
+            onChange={e => {
+              const next = { ...value, gender: e.target.value };
+              setValue(next);
+              if (person && next.lastName.trim() && next.firstName.trim()) onSave(next);
+            }}
           >
             <option value="female">{t('female')}</option>
             <option value="male">{t('male')}</option>
@@ -276,7 +307,7 @@ export function PersonForm({
           label={t('fiscalCode')}
           tip={t('tipFiscalCode')}
           status={getStatus('fiscalCode')}
-          errorMessage={t('invalidField')}
+          errorMessage="Il codice fiscale deve contenere 16 caratteri alfanumerici validi"
           className="wide"
         >
           <input
@@ -322,6 +353,7 @@ export function PersonForm({
                 setValue({ ...value, fiscalCode: code });
               }
             }}
+            onBlur={handleFieldBlur}
             placeholder={t('placeholderFiscalCode')}
           />
         </FormField>

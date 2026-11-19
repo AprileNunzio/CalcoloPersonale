@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Info } from 'lucide-react';
+import { Info, AlertCircle } from 'lucide-react';
 import './FormField.css';
 
 export type FieldStatus = 'idle' | 'saved' | 'error';
@@ -43,7 +43,8 @@ export function FormField({
       </div>
       {status === 'error' && errorMessage && (
         <span className="field-error-text" role="alert">
-          {errorMessage}
+          <AlertCircle size={13} style={{ flexShrink: 0 }} />
+          <span>{errorMessage}</span>
         </span>
       )}
     </div>

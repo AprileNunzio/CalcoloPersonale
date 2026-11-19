@@ -227,6 +227,32 @@ input:focus, select:focus, textarea:focus {
   background: var(--surface-container-high);
 }
 
+/* Universal saved (green) & error (red) form field states */
+input.saved, select.saved, textarea.saved,
+.saved input, .saved select, .saved textarea {
+  border-color: var(--secondary) !important;
+  box-shadow: 0 0 0 2px var(--secondary-container);
+}
+
+input.error, select.error, textarea.error,
+.error input, .error select, .error textarea {
+  border-color: var(--error) !important;
+  box-shadow: 0 0 0 2px var(--error-container);
+  background: var(--error-container);
+  color: var(--on-error-container);
+}
+
+.form-error-detail {
+  font-size: 0.72rem;
+  color: var(--error);
+  font-weight: 600;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.35;
+}
+
 /* Structural Icon Badges (Rule 6) */
 .icon-badge {
   display: inline-flex;

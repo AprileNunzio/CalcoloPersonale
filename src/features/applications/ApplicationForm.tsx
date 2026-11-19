@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { Entry, Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
-import { FormField } from '../../shared/FormField';
+import { FormField, FieldStatus } from '../../shared/FormField';
 import { ATA_PROFILES } from '../../shared/personUtils';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { ApplicationData, TRIENNIUMS } from './types';
@@ -52,6 +52,40 @@ export function ApplicationForm({
   }
 
   const [formData, setFormData] = useState<ApplicationData>(initialData);
+
+  const getFieldStatus = (field: keyof ApplicationData): FieldStatus => {
+    if (field === 'triennium' || field === 'applicationType') return 'saved';
+    if (field === 'submissionDate') {
+      return formData.submissionDate ? 'saved' : 'error';
+    }
+    if (field === 'province') {
+      const p = formData.province?.trim() || '';
+      if (!p) return 'idle';
+      return p.length >= 2 && p.length <= 4 ? 'saved' : 'error';
+    }
+    if (field === 'protocol') {
+      return formData.protocol?.trim() ? 'saved' : 'idle';
+    }
+    return 'idle';
+  };
+
+  const handleFieldBlur = () => {
+    if (formData.submissionDate && formData.profiles.length > 0) {
+      const jsonNotes = JSON.stringify(formData);
+      const updatedRecord: Entry = {
+        id: entry?.id ?? crypto.randomUUID(),
+        kind: 'application',
+        title: `${formData.triennium.split(' ')[0]} - ${formData.profiles.join(', ')}`,
+        start: formData.submissionDate || new Date().toISOString().slice(0, 10),
+        end: null,
+        amount: null,
+        notes: jsonNotes,
+        profile: formData.profiles[0] || null,
+        school: formData.headSchool || null,
+      };
+      onSave(updatedRecord);
+    }
+  };
 
   const addChosenSchool = (school: DirectoryEntry) => {
     setFormData(prev => {
@@ -152,10 +186,14 @@ export function ApplicationForm({
       </div>
 
       <div className="fields app-fields">
-        <FormField label={t('triennium')} tip={t('tipTriennium')}>
+        <FormField label={t('triennium')} tip={t('tipTriennium')} status={getFieldStatus('triennium')}>
           <select
             value={formData.triennium}
-            onChange={e => setFormData({ ...formData, triennium: e.target.value })}
+            onChange={e => {
+              const updated = { ...formData, triennium: e.target.value };
+              setFormData(updated);
+            }}
+            onBlur={handleFieldBlur}
           >
             {TRIENNIUMS.map(tri => (
               <option key={tri} value={tri}>
@@ -165,15 +203,17 @@ export function ApplicationForm({
           </select>
         </FormField>
 
-        <FormField label={t('applicationType')}>
+        <FormField label={t('applicationType')} status={getFieldStatus('applicationType')}>
           <select
             value={formData.applicationType}
-            onChange={e =>
-              setFormData({
+            onChange={e => {
+              const updated = {
                 ...formData,
                 applicationType: e.target.value as 'insert' | 'update',
-              })
-            }
+              };
+              setFormData(updated);
+            }}
+            onBlur={handleFieldBlur}
           >
             <option value="insert">{t('newInclusion')}</option>
             <option value="update">{t('updateConfirmation')}</option>
@@ -190,7 +230,10 @@ export function ApplicationForm({
                   type="button"
                   key={prof.code}
                   className={`profile-chip-btn ${selected ? 'active' : ''}`}
-                  onClick={() => toggleProfile(prof.code)}
+                  onClick={() => {
+                    toggleProfile(prof.code);
+                    setTimeout(handleFieldBlur, 50);
+                  }}
                 >
                   <ProfileBadge3d code={prof.code} size={28} />
                   <span>{prof.code}</span>
@@ -201,29 +244,40 @@ export function ApplicationForm({
           </div>
         </div>
 
-        <FormField label={t('submissionDate')}>
+        <FormField
+          label={t('submissionDate')}
+          status={getFieldStatus('submissionDate')}
+          errorMessage="La data di presentazione è obbligatoria"
+        >
           <input
             type="date"
             value={formData.submissionDate}
             onChange={e => setFormData({ ...formData, submissionDate: e.target.value })}
+            onBlur={handleFieldBlur}
           />
         </FormField>
 
-        <FormField label={t('protocolNumber')} tip={t('tipProtocol')}>
+        <FormField label={t('protocolNumber')} tip={t('tipProtocol')} status={getFieldStatus('protocol')}>
           <input
             type="text"
             value={formData.protocol}
             onChange={e => setFormData({ ...formData, protocol: e.target.value })}
+            onBlur={handleFieldBlur}
             placeholder="es. MIIC8XXXXX-2024-00123"
           />
         </FormField>
 
-        <FormField label={t('province')}>
+        <FormField
+          label={t('province')}
+          status={getFieldStatus('province')}
+          errorMessage="Inserisci una sigla provincia valida (es. RM, MI, NA)"
+        >
           <input
             type="text"
             maxLength={10}
             value={formData.province}
             onChange={e => setFormData({ ...formData, province: e.target.value.toUpperCase() })}
+            onBlur={handleFieldBlur}
             placeholder="es. RM, MI, NA"
           />
         </FormField>

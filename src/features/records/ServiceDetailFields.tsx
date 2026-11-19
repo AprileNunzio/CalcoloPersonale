@@ -63,7 +63,11 @@ export function ServiceDetailFields({
     <div className="service-detail-fields-block">
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
         {/* Tipologia Contratto / Nomina */}
-        <FormField label="Tipologia Contratto / Nomina" tip="Determina la durata e il calcolo del TFR e stipendio">
+        <FormField
+          label="Tipologia Contratto / Nomina"
+          tip="Determina la durata e il calcolo del TFR e stipendio"
+          status="saved"
+        >
           <select
             value={contractType}
             onChange={e => onChangeContractType(e.target.value as ServiceContractType)}
@@ -76,7 +80,11 @@ export function ServiceDetailFields({
         </FormField>
 
         {/* Settore di Servizio */}
-        <FormField label={t('serviceSector')} tip="Statale attribuisce punteggio pieno e validità per i 24 mesi ATA">
+        <FormField
+          label={t('serviceSector')}
+          tip="Statale attribuisce punteggio pieno e validità per i 24 mesi ATA"
+          status="saved"
+        >
           <select
             value={sector}
             onChange={e => onChangeSector(e.target.value as ServiceSector)}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { School, X, Check, AlertCircle } from 'lucide-react';
 import { DirectoryEntry } from '../directory/DirectoryPicker';
+import { FormField } from '../../shared/FormField';
 import './recordEditForm.css';
 
 interface ManualSchoolModalProps {
@@ -70,8 +71,11 @@ export function ManualSchoolModal({
           </div>
 
           <div className="manual-school-grid">
-            <div className="field-group">
-              <label>Codice Meccanografico (es. FIMM290003)</label>
+            <FormField
+              label="Codice Meccanografico (es. FIMM290003)"
+              status={code.trim().length >= 4 ? 'saved' : code.trim().length > 0 ? 'error' : 'idle'}
+              errorMessage="Codice meccanografico di almeno 4 caratteri"
+            >
               <input
                 required
                 maxLength={12}
@@ -86,10 +90,12 @@ export function ManualSchoolModal({
                 placeholder="es. FIMM290003"
                 style={{ fontFamily: 'monospace', fontWeight: 650, letterSpacing: '0.5px' }}
               />
-            </div>
+            </FormField>
 
-            <div className="field-group">
-              <label>Sigla Provincia</label>
+            <FormField
+              label="Sigla Provincia"
+              status={province.trim().length >= 2 ? 'saved' : 'idle'}
+            >
               <input
                 maxLength={4}
                 value={province}
@@ -97,26 +103,35 @@ export function ManualSchoolModal({
                 placeholder="es. FI"
                 style={{ width: '100px', textTransform: 'uppercase' }}
               />
-            </div>
+            </FormField>
           </div>
 
-          <div className="field-group">
-            <label>Denominazione Istituzione Scolastica</label>
-            <input
-              required
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="es. Scuola Media Statale 'G. Pascoli' (ex FIMM290003)"
-            />
+          <div style={{ marginTop: 10 }}>
+            <FormField
+              label="Denominazione Istituzione Scolastica"
+              status={name.trim().length > 0 ? 'saved' : 'idle'}
+              errorMessage="Denominazione scuola obbligatoria"
+            >
+              <input
+                required
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="es. Scuola Media Statale 'G. Pascoli' (ex FIMM290003)"
+              />
+            </FormField>
           </div>
 
-          <div className="field-group">
-            <label>Comune della Scuola</label>
-            <input
-              value={municipality}
-              onChange={e => setMunicipality(e.target.value)}
-              placeholder="es. Firenze"
-            />
+          <div style={{ marginTop: 10 }}>
+            <FormField
+              label="Comune della Scuola"
+              status={municipality.trim().length > 0 ? 'saved' : 'idle'}
+            >
+              <input
+                value={municipality}
+                onChange={e => setMunicipality(e.target.value)}
+                placeholder="es. Firenze"
+              />
+            </FormField>
           </div>
 
           <div className="checkbox-row" style={{ marginTop: 4 }}>

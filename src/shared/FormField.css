@@ -133,7 +133,10 @@
 /* Saved (valid) state */
 .input-wrapper.saved > input,
 .input-wrapper.saved > select,
-.input-wrapper.saved > textarea {
+.input-wrapper.saved > textarea,
+.input-wrapper.saved input,
+.input-wrapper.saved select,
+.input-wrapper.saved textarea {
   border-color: var(--secondary) !important;
   box-shadow: 0 0 0 2px var(--secondary-container);
 }
@@ -141,7 +144,10 @@
 /* Error state */
 .input-wrapper.error > input,
 .input-wrapper.error > select,
-.input-wrapper.error > textarea {
+.input-wrapper.error > textarea,
+.input-wrapper.error input,
+.input-wrapper.error select,
+.input-wrapper.error textarea {
   border-color: var(--error) !important;
   box-shadow: 0 0 0 2px var(--error-container);
   background: var(--error-container);
@@ -152,8 +158,21 @@
   font-size: 0.72rem;
   color: var(--error);
   font-weight: 600;
-  margin-top: 2px;
+  margin-top: 4px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  line-height: 1.35;
+  animation: fadeInFieldError 0.18s ease-out;
+}
+
+@keyframes fadeInFieldError {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

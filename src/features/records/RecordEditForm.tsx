@@ -76,7 +76,19 @@ export function RecordEditForm({
     return analyzeServiceAranRules(draft, person.records);
   }, [section, draft, person.records]);
 
-  const getFieldStatus = (field: 'title' | 'start' | 'end' | 'notes' | 'profile'): FieldStatus => {
+  const handleFieldBlur = () => {
+    if (draft.title.trim().length > 0 && draft.start) {
+      if (!draft.end || draft.end >= draft.start) {
+        const finalDraft: Entry = {
+          ...draft,
+          id: draft.id && draft.id.trim().length > 0 ? draft.id.trim() : crypto.randomUUID(),
+        };
+        onSubmit(finalDraft);
+      }
+    }
+  };
+
+  const getFieldStatus = (field: 'title' | 'start' | 'end' | 'notes' | 'profile' | 'amount'): FieldStatus => {
     if (field === 'title') {
       if (draft.title.trim().length > 0) return 'saved';
       return submitted ? 'error' : 'idle';
@@ -88,6 +100,13 @@ export function RecordEditForm({
     if (field === 'end') {
       if (!draft.end) return 'idle';
       return draft.end >= draft.start ? 'saved' : 'error';
+    }
+    if (field === 'amount') {
+      if (typeof draft.amount === 'number' && !isNaN(draft.amount)) return 'saved';
+      return 'idle';
+    }
+    if (field === 'profile') {
+      return draft.profile ? 'saved' : 'idle';
     }
     return 'idle';
   };
@@ -278,13 +297,14 @@ export function RecordEditForm({
             label={getTitleLabel(draft.kind)}
             tip={draft.kind === 'service' ? t('tipServiceTitle') : undefined}
             status={getFieldStatus('title')}
-            errorMessage={t('requiredField')}
+            errorMessage="La denominazione o titolo è obbligatorio"
           >
             <input
               required
               maxLength={160}
               value={draft.title}
               onChange={event => setDraft({ ...draft, title: event.target.value })}
+              onBlur={handleFieldBlur}
               placeholder={getTitlePlaceholder(draft.kind)}
             />
           </FormField>
@@ -293,6 +313,7 @@ export function RecordEditForm({
             <FormField
               label="Punteggio Titolo (in decimi)"
               tip="Punteggio ministeriale attribuito al titolo (es. 8.00 per voto 80/100, 1.00 per Dattilografia, 0 per CIAD)."
+              status={getFieldStatus('amount')}
             >
               <input
                 type="number"
@@ -306,6 +327,7 @@ export function RecordEditForm({
                     amount: event.target.value ? parseFloat(event.target.value) : null,
                   })
                 }
+                onBlur={handleFieldBlur}
                 placeholder="es. 8.00"
               />
             </FormField>
@@ -315,12 +337,14 @@ export function RecordEditForm({
             label={getStartLabel(draft.kind)}
             tip={draft.kind === 'service' ? t('tipServiceStart') : undefined}
             status={getFieldStatus('start')}
+            errorMessage={!draft.start && submitted ? "La data di inizio è obbligatoria" : undefined}
           >
             <input
               required
               type="date"
               value={draft.start}
               onChange={event => setDraft({ ...draft, start: event.target.value })}
+              onBlur={handleFieldBlur}
             />
             {draft.start && (
               <span className="date-italian-preview">
@@ -334,7 +358,7 @@ export function RecordEditForm({
               label={t('end')}
               tip={draft.kind === 'service' ? t('tipServiceEnd') : undefined}
               status={getFieldStatus('end')}
-              errorMessage={t('invalidField')}
+              errorMessage={draft.end && draft.start && draft.end < draft.start ? "La data di fine non può essere precedente all'inizio" : undefined}
             >
               <input
                 type="date"
@@ -343,6 +367,7 @@ export function RecordEditForm({
                 onChange={event =>
                   setDraft({ ...draft, end: event.target.value || null })
                 }
+                onBlur={handleFieldBlur}
               />
               {draft.end && (
                 <span className="date-italian-preview">

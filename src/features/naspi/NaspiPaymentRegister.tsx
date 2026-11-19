@@ -103,7 +103,11 @@ export function NaspiPaymentRegister({
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 12 }}>
-          <FormField label="Data Accredito Bonifico">
+          <FormField
+            label="Data Accredito Bonifico"
+            status={paymentDate ? 'saved' : 'idle'}
+            errorMessage="Data accredito obbligatoria"
+          >
             <input
               type="date"
               required
@@ -112,7 +116,11 @@ export function NaspiPaymentRegister({
             />
           </FormField>
 
-          <FormField label="Importo Netto Accreditato (€)">
+          <FormField
+            label="Importo Netto Accreditato (€)"
+            status={typeof amount === 'number' && amount > 0 ? 'saved' : 'idle'}
+            errorMessage="Importo netto in euro obbligatorio"
+          >
             <input
               type="number"
               step="0.01"
@@ -124,7 +132,11 @@ export function NaspiPaymentRegister({
             />
           </FormField>
 
-          <FormField label="Mese di Competenza">
+          <FormField
+            label="Mese di Competenza"
+            status={competenceMonth ? 'saved' : 'idle'}
+            errorMessage="Mese di competenza obbligatorio"
+          >
             <input
               type="month"
               required
@@ -133,7 +145,11 @@ export function NaspiPaymentRegister({
             />
           </FormField>
 
-          <FormField label="Giorni Indennizzati">
+          <FormField
+            label="Giorni Indennizzati"
+            status={daysPaid >= 1 && daysPaid <= 31 ? 'saved' : 'error'}
+            errorMessage="I giorni devono essere tra 1 e 31"
+          >
             <input
               type="number"
               min={1}
@@ -146,7 +162,10 @@ export function NaspiPaymentRegister({
 
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', marginTop: 12 }}>
           <div style={{ flex: 1 }}>
-            <FormField label="Note opzionali o causale bonifico">
+            <FormField
+              label="Note opzionali o causale bonifico"
+              status={notes.trim() ? 'saved' : 'idle'}
+            >
               <input
                 type="text"
                 placeholder="es. Primo pagamento con conguaglio giorni / Ritenute addizionali regionali..."

@@ -107,7 +107,11 @@ export function RuoloDetailFields({ payload, onChange }: RuoloDetailFieldsProps)
 
       {/* Date di Ruolo e Ambito */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 14 }}>
-        <FormField label="Data Decorrenza Giuridica" tip="Data formale di immissione in ruolo (spesso 1° settembre)">
+        <FormField
+          label="Data Decorrenza Giuridica"
+          tip="Data formale di immissione in ruolo (spesso 1° settembre)"
+          status={payload.ruoloDate ? 'saved' : 'idle'}
+        >
           <input
             type="date"
             value={payload.ruoloDate || ''}
@@ -115,7 +119,11 @@ export function RuoloDetailFields({ payload, onChange }: RuoloDetailFieldsProps)
           />
         </FormField>
 
-        <FormField label="Data Decorrenza Economica" tip="Data di effettivo inizio stipendio di ruolo (se diversa da quella giuridica)">
+        <FormField
+          label="Data Decorrenza Economica"
+          tip="Data di effettivo inizio stipendio di ruolo (se diversa da quella giuridica)"
+          status={payload.ruoloEconomicDate ? 'saved' : 'idle'}
+        >
           <input
             type="date"
             value={payload.ruoloEconomicDate || ''}
@@ -123,7 +131,11 @@ export function RuoloDetailFields({ payload, onChange }: RuoloDetailFieldsProps)
           />
         </FormField>
 
-        <FormField label="Ambito Territoriale / Provincia" tip="Codice ambito o provincia di titolarità (es. MI, RM, Ambito 0022)">
+        <FormField
+          label="Ambito Territoriale / Provincia"
+          tip="Codice ambito o provincia di titolarità (es. MI, RM, Ambito 0022)"
+          status={payload.ruoloAmbito ? 'saved' : 'idle'}
+        >
           <input
             type="text"
             placeholder="es. RM / Ambito 01"

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
+import { FormField } from '../../shared/FormField';
 import { FamilyMemberData, FamilyRelation } from './types';
 import { calculateAge } from './familyUtils';
 import './familyModal.css';
@@ -93,6 +94,24 @@ export function FamilyFormModal({
       linkedPersonId: source === 'archive' && selectedPersonId ? selectedPersonId : undefined,
       notesText: notesText.trim(),
     });
+  };
+
+  const handleFieldBlur = () => {
+    if (fullName.trim() && birthDate) {
+      if (!fiscalCode.trim() || fiscalCode.trim().length === 16) {
+        onSave({
+          id: member?.id,
+          relation,
+          fullName: fullName.trim(),
+          birthDate,
+          fiscalCode: fiscalCode.trim().toUpperCase(),
+          dependentPercentage,
+          isDisability104,
+          linkedPersonId: source === 'archive' && selectedPersonId ? selectedPersonId : undefined,
+          notesText: notesText.trim(),
+        });
+      }
+    }
   };
 
   return (
@@ -209,46 +228,51 @@ export function FamilyFormModal({
           </div>
 
           <div className="form-grid-2">
-            <div className="form-field-group">
-              <label>{t('fullName')}</label>
+            <FormField
+              label={t('fullName')}
+              status={fullName.trim() ? 'saved' : 'idle'}
+              errorMessage="Nome e cognome obbligatorio"
+            >
               <input
                 required
                 type="text"
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
+                onBlur={handleFieldBlur}
                 placeholder={t('familyFullNamePlaceholder')}
               />
-            </div>
+            </FormField>
 
-            <div className="form-field-group">
-              <label>{t('fiscalCodeLabel')}</label>
+            <FormField
+              label={t('fiscalCodeLabel')}
+              status={fiscalCode.trim().length === 16 ? 'saved' : fiscalCode.trim().length > 0 ? 'error' : 'idle'}
+              errorMessage="Il codice fiscale deve contenere esattamente 16 caratteri"
+            >
               <input
                 type="text"
                 maxLength={16}
                 value={fiscalCode}
                 onChange={e => setFiscalCode(e.target.value.toUpperCase())}
+                onBlur={handleFieldBlur}
                 placeholder={t('fiscalCodePlaceholder')}
               />
-            </div>
+            </FormField>
           </div>
 
           <div className="form-grid-2">
-            <div className="form-field-group">
-              <label>
-                {t('birthDate')}
-                {liveAge && (
-                  <span className="live-age-text">
-                    ({liveAge.years > 0 ? `${liveAge.years} anni` : `${liveAge.months} mesi`})
-                  </span>
-                )}
-              </label>
+            <FormField
+              label={`${t('birthDate')} ${liveAge ? `(${liveAge.years > 0 ? `${liveAge.years} anni` : `${liveAge.months} mesi`})` : ''}`}
+              status={birthDate ? 'saved' : 'idle'}
+              errorMessage="Data di nascita obbligatoria"
+            >
               <input
                 required
                 type="date"
                 value={birthDate}
                 onChange={e => setBirthDate(e.target.value)}
+                onBlur={handleFieldBlur}
               />
-            </div>
+            </FormField>
 
             <div className="form-field-group">
               <label>{t('dependentPercentage')}</label>
