@@ -330,6 +330,18 @@ export function ImportConflictModal({
           <button type="button" className="sync-btn-secondary" onClick={onClose}>
             Annulla
           </button>
+          {diff.isExistingPerson && (
+            <button
+              type="button"
+              className="sync-btn-secondary"
+              style={{ color: 'var(--primary)', borderColor: 'var(--primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+              onClick={() => onConfirm(importedPerson)}
+              title="Sovrascrive e allinea integralmente il fascicolo con tutti i dati certificati del file importato"
+            >
+              <RefreshCw size={15} />
+              <span>Sostituisci Tutto con File Certificato</span>
+            </button>
+          )}
           <button type="button" className="sync-btn-confirm" onClick={handleFinalConfirm}>
             <CheckCircle2 size={16} />
             <span>Conferma e Sincronizza</span>

@@ -116,7 +116,7 @@ export function ApplicationForm({
   };
 
   const handleAutoImport = () => {
-    const titles = person.records.filter(r => r.kind === 'title');
+    const titles = person.records.filter(r => r.kind === 'qualification' || r.kind === 'title');
     const services = person.records.filter(r => r.kind === 'service');
 
     const accessTitles = titles.filter(t => 
