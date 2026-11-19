@@ -242,7 +242,7 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
         legalReference: 'Art. 6 D.Lgs. 22/2015',
       });
     }
-  } else if (activeContract) {
+  } else if (activeContract && !isPersonRuolo) {
     // Proiezione NASpI per contratto in corso
     const contractEnd = parseIso(activeContract.endDate);
     if (contractEnd) {
@@ -322,8 +322,9 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
     is24MesiReached,
     percent24Mesi,
     profile24MesiList,
-    naspiDaysRemaining,
-    naspiWindowOpen,
+    naspiDaysRemaining: isPersonRuolo ? null : naspiDaysRemaining,
+    naspiWindowOpen: isPersonRuolo ? false : naspiWindowOpen,
+    isPersonRuolo,
     activeContract,
     lastContractEndDate,
   };

@@ -110,7 +110,14 @@ export function computeCareerMilestones(person: Person): CareerMilestonesSummary
         (s.title + ' ' + (s.notes || '')).toLowerCase().includes('docente');
       if (isDocente) continue;
 
-      const days = calculateDaysBetween(s.start, s.end);
+      let parsed: Record<string, unknown> = {};
+      try {
+        if (s.notes?.startsWith('{')) parsed = JSON.parse(s.notes);
+      } catch {}
+
+      const isRuoloRec = parsed.isRuolo === true || parsed.contractType === 'permanent';
+      const isOngoing = !s.end || isRuoloRec;
+      const days = calculateDaysBetween(s.start, isOngoing ? null : s.end);
       const wasReachedBefore = cumulativeValidDays >= STATUTORY_TARGET_DAYS;
 
       if (s.profile === profCode) {

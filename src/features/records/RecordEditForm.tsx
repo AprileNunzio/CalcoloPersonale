@@ -134,12 +134,13 @@ export function RecordEditForm({
   };
 
   const handleContractTypeChange = (contractType: ServiceContractType) => {
+    const isRuolo = contractType === 'permanent';
     const updated = {
       ...parsedDraftNotes,
       contractType,
-      isRuolo: contractType === 'permanent',
+      isRuolo,
     };
-    setDraft({ ...draft, notes: JSON.stringify(updated) });
+    setDraft({ ...draft, end: isRuolo ? null : draft.end, notes: JSON.stringify(updated) });
   };
 
   const handleRuoloDetailsChange = (ruoloData: Record<string, unknown>) => {
@@ -149,7 +150,7 @@ export function RecordEditForm({
       isRuolo: true,
       contractType: 'permanent' as ServiceContractType,
     };
-    setDraft({ ...draft, notes: JSON.stringify(updated) });
+    setDraft({ ...draft, end: null, notes: JSON.stringify(updated) });
   };
 
   const handleNotesTextChange = (text: string) => {
@@ -358,51 +359,26 @@ export function RecordEditForm({
           </FormField>
 
           {draft.kind !== 'child' && (
-            <FormField
-              label={t('end')}
-              tip={draft.kind === 'service' ? t('tipServiceEnd') : undefined}
-              status={getFieldStatus('end')}
-              errorMessage={draft.end && draft.start && draft.end < draft.start ? "La data di fine non può essere precedente all'inizio" : undefined}
-            >
-              <input
-                type="date"
-                min={draft.start}
-                value={draft.end ?? ''}
-                onChange={event => handleDateChange('end', event.target.value || null)}
-                onBlur={handleFieldBlur}
-              />
-              {draft.end && (
-                <span className="date-italian-preview">
-                  📅 {formatDateItalian(draft.end)}
-                </span>
-              )}
-            </FormField>
+            draft.kind === 'service' && (parsedDraftNotes.isRuolo || currentContractType === 'permanent') ? (
+              <FormField label={t('end')} tip="Tempo Indeterminato / Ruolo (in corso continuo)" status="saved">
+                <div style={{ padding: '9px 12px', background: 'var(--surface-container-highest)', borderRadius: 'var(--shape-md)', border: '1.5px solid var(--primary)', color: 'var(--primary)', fontWeight: 700, fontSize: '0.82rem' }}>
+                  👑 In corso a tempo indeterminato (senza scadenza)
+                </div>
+              </FormField>
+            ) : (
+              <FormField label={t('end')} tip={draft.kind === 'service' ? t('tipServiceEnd') : undefined} status={getFieldStatus('end')} errorMessage={draft.end && draft.start && draft.end < draft.start ? "La data di fine non può essere precedente all'inizio" : undefined}>
+                <input type="date" min={draft.start} value={draft.end ?? ''} onChange={e => handleDateChange('end', e.target.value || null)} onBlur={handleFieldBlur} />
+                {draft.end && <span className="date-italian-preview">📅 {formatDateItalian(draft.end)}</span>}
+              </FormField>
+            )
           )}
 
-          {draft.kind === 'service' && (
+          {draft.kind === 'service' && !parsedDraftNotes.isRuolo && currentContractType !== 'permanent' && (
             <div className="wide" style={{ gridColumn: '1 / -1', marginTop: -6, marginBottom: 4 }}>
               <div className="date-presets-bar">
                 <span style={{ fontSize: 11, color: 'var(--on-surface-variant)', fontWeight: 650 }}>Scorciatoie:</span>
-                <button
-                  type="button"
-                  className="date-preset-chip"
-                  onClick={() => {
-                    const y = draft.start ? draft.start.slice(0, 4) : '2023';
-                    setDraft({ ...draft, start: `${y}-09-01`, end: `${parseInt(y, 10) + 1}-08-31` });
-                  }}
-                >
-                  Anno Completo (01/09 - 31/08)
-                </button>
-                <button
-                  type="button"
-                  className="date-preset-chip"
-                  onClick={() => {
-                    const y = draft.start ? draft.start.slice(0, 4) : '2024';
-                    setDraft({ ...draft, end: `${y}-06-30` });
-                  }}
-                >
-                  Termine Attività (Fino al 30/06)
-                </button>
+                <button type="button" className="date-preset-chip" onClick={() => { const y = draft.start ? draft.start.slice(0, 4) : '2023'; setDraft({ ...draft, start: `${y}-09-01`, end: `${parseInt(y, 10) + 1}-08-31` }); }}>Anno Completo (01/09 - 31/08)</button>
+                <button type="button" className="date-preset-chip" onClick={() => { const y = draft.start ? draft.start.slice(0, 4) : '2024'; setDraft({ ...draft, end: `${y}-06-30` }); }}>Termine Attività (Fino al 30/06)</button>
               </div>
             </div>
           )}

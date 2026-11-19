@@ -112,8 +112,14 @@ export function calculateProfileScores(
         s.profile === 'DOCENTE' || (s.title + ' ' + (s.notes || '')).toLowerCase().includes('docente');
       const mult = isParitaria ? 0.5 : 1.0;
       const isSpecific = !isDocente && s.profile === prof.code;
+      let parsedNotes: Record<string, unknown> = {};
+      try {
+        if (s.notes?.startsWith('{')) parsedNotes = JSON.parse(s.notes);
+      } catch {}
+      const isRuoloRec = parsedNotes.isRuolo === true || parsedNotes.contractType === 'permanent';
+      const isOngoing = !s.end || isRuoloRec;
 
-      const segments = splitServiceBySchoolYears(s.start, s.end, cutoffDate);
+      const segments = splitServiceBySchoolYears(s.start, isOngoing ? null : s.end, cutoffDate);
       for (const seg of segments) {
         if (!syMap.has(seg.schoolYear)) {
           syMap.set(seg.schoolYear, {

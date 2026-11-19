@@ -12,8 +12,8 @@
 
 .directory-picker-input-box input {
   width: 100%;
-  padding-left: 36px;
-  padding-right: 32px;
+  padding-left: 44px !important;
+  padding-right: 36px;
   height: 44px;
   border: 1.5px solid var(--outline-variant);
   border-radius: var(--shape-md);
@@ -32,9 +32,10 @@
 
 .directory-icon {
   position: absolute;
-  left: 12px;
+  left: 14px;
   color: var(--on-surface-variant);
   pointer-events: none;
+  z-index: 2;
 }
 
 .directory-clear-btn {

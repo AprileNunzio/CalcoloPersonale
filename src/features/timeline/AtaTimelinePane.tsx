@@ -69,7 +69,7 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
             <span>24 Mesi ATA: {data.totalStataleDays}/716 gg ({data.percent24Mesi}%)</span>
           </div>
 
-          {data.naspiDaysRemaining !== null && (
+          {!data.isPersonRuolo && data.naspiDaysRemaining !== null && (
             <div
               style={{
                 padding: '6px 12px',
@@ -277,17 +277,25 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
             </div>
           </div>
 
-          <div className="timeline-step-node">
-            <div className={`timeline-step-dot ${data.naspiWindowOpen ? 'active' : 'future'}`}>
-              {data.naspiDaysRemaining !== null && data.naspiDaysRemaining > 0 ? `${data.naspiDaysRemaining}g` : 'INPS'}
+          {data.isPersonRuolo ? (
+            <div className="timeline-step-node">
+              <div className="timeline-step-dot completed">👑</div>
+              <div className="timeline-step-label">Personale di Ruolo</div>
+              <div className="timeline-step-sub">Titolarità a Tempo Indeterminato</div>
             </div>
-            <div className="timeline-step-label">Finestra 68 gg NASpI</div>
-            <div className="timeline-step-sub">
-              {data.naspiDaysRemaining !== null && data.naspiDaysRemaining > 0
-                ? `${data.naspiDaysRemaining} gg alla decadenza`
-                : 'Indennità di Disoccupazione'}
+          ) : (
+            <div className="timeline-step-node">
+              <div className={`timeline-step-dot ${data.naspiWindowOpen ? 'active' : 'future'}`}>
+                {data.naspiDaysRemaining !== null && data.naspiDaysRemaining > 0 ? `${data.naspiDaysRemaining}g` : 'INPS'}
+              </div>
+              <div className="timeline-step-label">Finestra 68 gg NASpI</div>
+              <div className="timeline-step-sub">
+                {data.naspiDaysRemaining !== null && data.naspiDaysRemaining > 0
+                  ? `${data.naspiDaysRemaining} gg alla decadenza`
+                  : 'Indennità di Disoccupazione'}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

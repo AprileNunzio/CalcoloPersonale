@@ -354,3 +354,8 @@
     grid-template-columns: 1fr;
   }
 }
+
+.directory-picker-input-box input {
+  padding-left: 44px !important;
+}
+

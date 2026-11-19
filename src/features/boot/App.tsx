@@ -87,6 +87,15 @@ function Workspace({
   const [year, setYear] = useState(now.getFullYear() - (now.getMonth() < 8 ? 1 : 0));
 
   const person = archive?.people.find(p => p.id === selected);
+  const isPersonRuolo = Boolean(person?.records?.some(r => {
+    try {
+      if (r.kind === 'service' && r.notes?.startsWith('{')) {
+        const p = JSON.parse(r.notes);
+        return p.isRuolo === true || p.contractType === 'permanent';
+      }
+    } catch {}
+    return false;
+  }));
 
   const execute = useCallback(async (work: () => Promise<void>) => {
     setBusy(true);
@@ -382,10 +391,12 @@ function Workspace({
                       {t('remove')}
                     </button>
                   </>
-                ) : section === 'salary' ? (
-                  <SalarySimulatorPane person={person} />
                 ) : section === 'naspi' ? (
-                  <NaspiPage person={person} save={save} busy={busy} />
+                  isPersonRuolo ? (
+                    <Dashboard person={person} data={data} year={year} setYear={setYear} />
+                  ) : (
+                    <NaspiPage person={person} save={save} busy={busy} />
+                  )
                 ) : section === 'schools30' ? (
                   <StrategicSchoolsPane person={person} />
                 ) : section === 'dossier' ? (

@@ -88,7 +88,14 @@ export function computeFirstTierEligibility(
     const isParitaria = (s.title + ' ' + (s.notes || '')).toLowerCase().includes('paritaria');
     if (isParitaria) continue;
 
-    const days = calculateDaysBetween(s.start, s.end);
+    let parsedNotes: Record<string, unknown> = {};
+    try {
+      if (s.notes?.startsWith('{')) parsedNotes = JSON.parse(s.notes);
+    } catch {}
+
+    const isRuoloRec = parsedNotes.isRuolo === true || parsedNotes.contractType === 'permanent';
+    const isOngoing = !s.end || isRuoloRec;
+    const days = calculateDaysBetween(s.start, isOngoing ? null : s.end);
     const isDocente =
       s.profile === 'DOCENTE' ||
       (s.title + ' ' + (s.notes || '')).toLowerCase().includes('docente') ||

@@ -87,29 +87,43 @@ export function SidebarNav({
               {person.firstName} {person.lastName}
             </div>
           )}
-          {[
-            { k: 'overview', icon: LayoutDashboard, lbl: t('overview') },
-            { k: 'identity', icon: FolderHeart, lbl: t('identity') },
-            { k: 'salary', icon: Banknote, lbl: 'Busta Paga & TFR' },
-            { k: 'naspi', icon: Banknote, lbl: 'Simulatore NASpI ATA' },
-            { k: 'schools30', icon: School, lbl: '30 Scuole & Convocazioni' },
-            { k: 'dossier', icon: FileCheck, lbl: 'Scheda Sindacati & Backup' },
-            { k: 'applications', icon: FileText, lbl: t('applications') },
-            { k: 'service', icon: FolderHeart, lbl: t('service') },
-            { k: 'qualification', icon: FolderHeart, lbl: t('qualification') },
-            { k: 'child', icon: Users, lbl: t('child') },
-            { k: 'absences', icon: FolderHeart, lbl: t('absences') },
-          ].map(({ k, icon: Icon, lbl }) => (
-            <button
-              className={`nav ${section === k ? 'active' : ''}`}
-              key={k}
-              title={lbl}
-              onClick={() => onSelectSection(k)}
-            >
-              <Icon size={18} />
-              {!collapsed && <span className="nav-label">{lbl}</span>}
-            </button>
-          ))}
+          {(() => {
+            const isPersonRuolo = Boolean(person.records?.some(r => {
+              try {
+                if (r.kind === 'service' && r.notes?.startsWith('{')) {
+                  const p = JSON.parse(r.notes);
+                  return p.isRuolo === true || p.contractType === 'permanent';
+                }
+              } catch {}
+              return false;
+            }));
+
+            const navItems = [
+              { k: 'overview', icon: LayoutDashboard, lbl: t('overview') },
+              { k: 'identity', icon: FolderHeart, lbl: t('identity') },
+              { k: 'salary', icon: Banknote, lbl: 'Busta Paga & TFR' },
+              ...(!isPersonRuolo ? [{ k: 'naspi', icon: Banknote, lbl: 'Simulatore NASpI ATA' }] : []),
+              { k: 'schools30', icon: School, lbl: '30 Scuole & Convocazioni' },
+              { k: 'dossier', icon: FileCheck, lbl: 'Scheda Sindacati & Backup' },
+              { k: 'applications', icon: FileText, lbl: t('applications') },
+              { k: 'service', icon: FolderHeart, lbl: t('service') },
+              { k: 'qualification', icon: FolderHeart, lbl: t('qualification') },
+              { k: 'child', icon: Users, lbl: t('child') },
+              { k: 'absences', icon: FolderHeart, lbl: t('absences') },
+            ];
+
+            return navItems.map(({ k, icon: Icon, lbl }) => (
+              <button
+                className={`nav ${section === k ? 'active' : ''}`}
+                key={k}
+                title={lbl}
+                onClick={() => onSelectSection(k)}
+              >
+                <Icon size={18} />
+                {!collapsed && <span className="nav-label">{lbl}</span>}
+              </button>
+            ));
+          })()}
         </>
       )}
       <div className="sidebar-bottom">

@@ -50,6 +50,7 @@ export interface TimelineData {
   profile24MesiList: Profile24MesiStatus[];
   naspiDaysRemaining: number | null;
   naspiWindowOpen: boolean;
+  isPersonRuolo: boolean;
   activeContract: ActiveContractInfo | null;
   lastContractEndDate: string | null;
 }

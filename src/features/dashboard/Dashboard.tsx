@@ -137,10 +137,14 @@ export function Dashboard({
                 </div>
                 <div className="dash-stat-content">
                   <span className="dash-stat-num">
-                    {timelineData.is24MesiReached ? '24M Raggiunto' : `${timelineData.daysTo24Mesi} gg a 24M`}
+                    {timelineData.isPersonRuolo
+                      ? 'Di Ruolo'
+                      : timelineData.is24MesiReached
+                      ? '24M Raggiunto'
+                      : `${timelineData.daysTo24Mesi} gg a 24M`}
                   </span>
                   <span className="dash-stat-label">
-                    {timelineData.naspiDaysRemaining !== null && timelineData.naspiDaysRemaining > 0
+                    {!timelineData.isPersonRuolo && timelineData.naspiDaysRemaining !== null && timelineData.naspiDaysRemaining > 0
                       ? `NASpI: ${timelineData.naspiDaysRemaining} gg`
                       : 'Timeline & Scadenze'}
                   </span>
@@ -271,7 +275,7 @@ export function Dashboard({
 
       <div className="step-content-viewport">
         {(activeStep === 'scores' || activeStep === 'all') && (
-          <DashboardScoresPane profileScores={profileScores} />
+          <DashboardScoresPane profileScores={profileScores} person={person} />
         )}
 
         {(activeStep === 'probability' || activeStep === 'all') && person && (
