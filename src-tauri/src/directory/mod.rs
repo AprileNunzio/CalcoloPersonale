@@ -2,8 +2,8 @@ use crate::shared::{Error, Result};
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
-#[derive(Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase", default)]
 pub struct DirectoryEntry {
     pub code: String,
     pub name: String,

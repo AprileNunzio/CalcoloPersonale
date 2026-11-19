@@ -1,4 +1,5 @@
 import type { Person, Entry } from '../../shared/types';
+import type { DirectoryEntry } from '../directory/DirectoryPicker';
 import type {
   PersonExportFile,
   PersonSyncDiff,
@@ -7,6 +8,62 @@ import type {
   RecordFieldChange,
   ResolutionChoice,
 } from './exportImportTypes';
+
+export function normalizeDirectoryEntry(entry: any, defaultKind = 'SCUANAGRAFE'): DirectoryEntry {
+  if (typeof entry === 'string') {
+    return {
+      code: '',
+      name: entry,
+      municipality: entry,
+      province: '',
+      region: '',
+      address: '',
+      postalCode: '',
+      email: '',
+      pec: '',
+      website: '',
+      schoolYear: '',
+      category: defaultKind,
+      details: {},
+    };
+  }
+  return {
+    code: entry?.code || '',
+    name: entry?.name || '',
+    municipality: entry?.municipality || '',
+    province: entry?.province || '',
+    region: entry?.region || '',
+    address: entry?.address || '',
+    postalCode: entry?.postalCode || '',
+    email: entry?.email || '',
+    pec: entry?.pec || '',
+    website: entry?.website || '',
+    schoolYear: entry?.schoolYear || '',
+    category: entry?.category || defaultKind,
+    details: entry?.details || {},
+  };
+}
+
+export function normalizePerson(person: any): Person {
+  if (!person) return person;
+  if (person.municipality) {
+    person.municipality = normalizeDirectoryEntry(person.municipality, 'municipality');
+  } else {
+    person.municipality = null;
+  }
+  if (Array.isArray(person.records)) {
+    for (const r of person.records) {
+      if (r.school) {
+        r.school = normalizeDirectoryEntry(r.school, 'SCUANAGRAFE');
+      } else {
+        r.school = null;
+      }
+    }
+  } else {
+    person.records = [];
+  }
+  return person as Person;
+}
 
 export function parsePersonExportFile(raw: string): { ok: true; person: Person } | { ok: false; error: string } {
   try {
@@ -22,9 +79,7 @@ export function parsePersonExportFile(raw: string): { ok: true; person: Person }
     if (!person || !person.lastName || (!person.fiscalCode && !person.id)) {
       return { ok: false, error: 'Il file selezionato non contiene un profilo persona valido di Calcolo Personale.' };
     }
-    if (!Array.isArray(person.records)) {
-      person.records = [];
-    }
+    person = normalizePerson(person);
     return { ok: true, person };
   } catch (err) {
     return { ok: false, error: 'Errore di lettura del file: sintassi JSON non valida.' };

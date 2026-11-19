@@ -25,6 +25,7 @@ import { AutoSaveContext } from '../autosave/AutoSave';
 import { flush } from '../autosave/store';
 import { call, getRevision } from '../../shared/api';
 import { encryptBackup, decryptBackup } from '../../shared/backupCrypto';
+import { normalizePerson } from '../sync/personDiff';
 import { ReclamoGraduatorieModal } from './ReclamoGraduatorieModal';
 import { NaspiSimulatorModal } from './NaspiSimulatorModal';
 import { CareerTimelineGantt } from '../dashboard/CareerTimelineGantt';
@@ -115,7 +116,7 @@ export function DossierExportPane({ person }: { person: Person }) {
         if (window.confirm(`Confermi il ripristino dell'archivio contenente ${importedArchive.people.length} persone?`)) {
           await flush();
           for (const p of importedArchive.people) {
-            await call('save_person', { person: p, revision: getRevision() });
+            await call('save_person', { person: normalizePerson(p), revision: getRevision() });
           }
           context?.saved(importedArchive);
           setFeedbackMsg(`Archivio ripristinato con successo (${importedArchive.people.length} persone caricate)!`);
