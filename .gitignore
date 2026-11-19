@@ -6,3 +6,6 @@ src-tauri/target/
 .env
 src-tauri/tauri.release.conf.json
 __pycache__/
+*.cpa
+*.cpa.json
+*.export.json
