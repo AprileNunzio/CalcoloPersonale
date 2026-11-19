@@ -102,46 +102,79 @@ export function calculateProfileScores(
     const isIncremental = Boolean(validation?.isIncrementalBase && useValidatedScore && validation?.consolidationDate);
     const cutoffDate = isIncremental && validation?.consolidationDate ? new Date(validation.consolidationDate) : null;
 
-    const syMap = new Map<string, { days: number; specificScore: number; otherScore: number; startYear: number; endYear: number }>();
+    const syMap = new Map<string, {
+      days: number;
+      specificDays: number;
+      otherDays: number;
+      startYear: number;
+      endYear: number;
+    }>();
+
     let totalSpecificDays = 0;
     let totalOtherDays = 0;
 
-    for (const s of services) {
-      const isParitaria = (s.title + ' ' + (s.notes || '')).toLowerCase().includes('paritaria');
-      const isDocente =
-        s.profile === 'DOCENTE' || (s.title + ' ' + (s.notes || '')).toLowerCase().includes('docente');
-      const mult = isParitaria ? 0.5 : 1.0;
-      const isSpecific = !isDocente && s.profile === prof.code;
+    // Normalizziamo i servizi per evitare sovrapposizioni spurie (es. Art. 59 o multipli ruoli)
+    const normalizedServices = services.map(s => {
       let parsedNotes: Record<string, unknown> = {};
       try {
         if (s.notes?.startsWith('{')) parsedNotes = JSON.parse(s.notes);
       } catch {}
       const isRuoloRec = parsedNotes.isRuolo === true || parsedNotes.contractType === 'permanent';
-      const isOngoing = !s.end || isRuoloRec;
+      let effectiveEnd = s.end;
 
-      const segments = splitServiceBySchoolYears(s.start, isOngoing ? null : s.end, cutoffDate);
+      if (!effectiveEnd && isRuoloRec) {
+        // Se c'è un'immissione in ruolo successiva in altro profilo, chiudi il precedente
+        const subsequentRole = services.find(other => {
+          if (other.id === s.id) return false;
+          let oNotes: Record<string, unknown> = {};
+          try {
+            if (other.notes?.startsWith('{')) oNotes = JSON.parse(other.notes);
+          } catch {}
+          return (oNotes.isRuolo === true || oNotes.contractType === 'permanent') && other.start > s.start;
+        });
+
+        if (subsequentRole) {
+          const subDate = new Date(subsequentRole.start);
+          subDate.setDate(subDate.getDate() - 1);
+          effectiveEnd = subDate.toISOString().slice(0, 10);
+        }
+      }
+
+      return {
+        ...s,
+        end: effectiveEnd,
+      };
+    });
+
+    for (const s of normalizedServices) {
+      const isParitaria = (s.title + ' ' + (s.notes || '')).toLowerCase().includes('paritaria');
+      const isDocente =
+        s.profile === 'DOCENTE' || (s.title + ' ' + (s.notes || '')).toLowerCase().includes('docente');
+      const mult = isParitaria ? 0.5 : 1.0;
+      const isSpecific = !isDocente && s.profile === prof.code;
+
+      const segments = splitServiceBySchoolYears(s.start, s.end || null, cutoffDate);
       for (const seg of segments) {
         if (!syMap.has(seg.schoolYear)) {
           syMap.set(seg.schoolYear, {
             days: 0,
-            specificScore: 0,
-            otherScore: 0,
+            specificDays: 0,
+            otherDays: 0,
             startYear: seg.startYear,
             endYear: seg.endYear,
           });
         }
         const item = syMap.get(seg.schoolYear)!;
-        item.days += seg.days;
+        const cappedSegDays = Math.min(366, seg.days);
 
         if (isSpecific) {
-          totalSpecificDays += seg.days;
-          const rate = (prof.code === 'CS' || prof.code === 'OS' ? 0.50 : 0.60) * mult;
-          item.specificScore += calculateMonths(seg.days) * rate;
+          item.specificDays = Math.min(366, item.specificDays + Math.round(cappedSegDays * mult));
+          totalSpecificDays += cappedSegDays;
         } else {
-          totalOtherDays += seg.days;
-          const rate = (prof.code === 'CS' || prof.code === 'OS' ? 0.15 : 0.10) * mult;
-          item.otherScore += calculateMonths(seg.days) * rate;
+          item.otherDays = Math.min(366, item.otherDays + Math.round(cappedSegDays * mult));
+          totalOtherDays += cappedSegDays;
         }
+        item.days = Math.min(366, item.specificDays + item.otherDays);
       }
     }
 
@@ -153,32 +186,41 @@ export function calculateProfileScores(
       (a, b) => b[1].startYear - a[1].startYear
     );
 
+    const specificRate = prof.code === 'CS' || prof.code === 'OS' ? 0.50 : 0.60;
+    const otherRate = prof.code === 'CS' || prof.code === 'OS' ? 0.15 : 0.10;
+    const maxOtherAllowed = prof.code === 'CS' || prof.code === 'OS' ? 1.80 : 1.20;
+
     for (const [sy, data] of sortedSchoolYears) {
-      const months = calculateMonths(data.days);
-      const rawTotal = data.specificScore + data.otherScore;
+      const specificMonths = calculateMonths(data.specificDays);
+      const otherMonths = calculateMonths(data.otherDays);
+      const totalMonths = calculateMonths(data.days);
+
+      let specificScore = Math.min(6.00, Math.round(specificMonths * specificRate * 100) / 100);
+      let otherScore = Math.min(maxOtherAllowed, Math.round(otherMonths * otherRate * 100) / 100);
+
+      const rawTotal = Math.round((specificScore + otherScore) * 100) / 100;
       const isCapped = rawTotal > 6.00;
-      const cappedTotal = isCapped ? 6.00 : rawTotal;
 
       if (isCapped) {
-        const ratio = data.specificScore / (rawTotal || 1);
-        aggregatedSpecific += Math.round(cappedTotal * ratio * 100) / 100;
-        aggregatedOther += Math.round(cappedTotal * (1 - ratio) * 100) / 100;
-      } else {
-        aggregatedSpecific += Math.round(data.specificScore * 100) / 100;
-        aggregatedOther += Math.round(data.otherScore * 100) / 100;
+        otherScore = Math.max(0, Math.round((6.00 - specificScore) * 100) / 100);
       }
+
+      const cappedTotal = isCapped ? 6.00 : rawTotal;
+
+      aggregatedSpecific += specificScore;
+      aggregatedOther += otherScore;
 
       schoolYearBreakdown.push({
         schoolYear: sy,
         startYear: data.startYear,
         endYear: data.endYear,
         days: data.days,
-        months,
-        specificScore: Math.round(data.specificScore * 100) / 100,
-        otherScore: Math.round(data.otherScore * 100) / 100,
-        totalAnnualScore: Math.round(rawTotal * 100) / 100,
+        months: totalMonths,
+        specificScore,
+        otherScore,
+        totalAnnualScore: rawTotal,
         isCapped,
-        cappedScore: Math.round(cappedTotal * 100) / 100,
+        cappedScore: cappedTotal,
       });
     }
 
@@ -192,8 +234,26 @@ export function calculateProfileScores(
       isIncremental ? validation?.consolidationDate : undefined
     );
 
+    let previousTrienniumScore = 0.0;
+    for (const r of person.records || []) {
+      if (r.kind === 'application' || r.kind === 'validation') {
+        try {
+          if (r.notes && r.notes.startsWith('{')) {
+            const p = JSON.parse(r.notes);
+            if (typeof p.punteggioTriennioPrecedente === 'number') {
+              previousTrienniumScore = p.punteggioTriennioPrecedente;
+            } else if (typeof p.precedingTrienniumScore === 'number') {
+              previousTrienniumScore = p.precedingTrienniumScore;
+            } else if (p.previousScores && typeof p.previousScores[prof.code] === 'number') {
+              previousTrienniumScore = p.previousScores[prof.code];
+            }
+          }
+        } catch {}
+      }
+    }
+
     const calculatedTotalScore = Math.round(
-      (baseAccessScore + aggregatedSpecific + aggregatedOther + culturalScore) * 100
+      (baseAccessScore + previousTrienniumScore + aggregatedSpecific + aggregatedOther + culturalScore) * 100
     ) / 100;
 
     let effectiveScore = calculatedTotalScore;
@@ -221,6 +281,7 @@ export function calculateProfileScores(
       code: prof.code,
       label: PROFILE_LABELS[prof.code] || prof.label,
       baseAccessScore,
+      previousTrienniumScore,
       specificServiceScore: Math.round(aggregatedSpecific * 100) / 100,
       otherServiceScore: Math.round(aggregatedOther * 100) / 100,
       culturalScore,

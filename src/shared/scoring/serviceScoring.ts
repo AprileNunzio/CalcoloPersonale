@@ -1,13 +1,16 @@
+function getUtcDayDiff(d1: Date, d2: Date): number {
+  const utc1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate());
+  const utc2 = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate());
+  return Math.round((utc2 - utc1) / (1000 * 60 * 60 * 24)) + 1;
+}
+
 export function parseDays(start: string, end: string | null, referenceDate?: Date): number {
   const dStart = new Date(start);
-  dStart.setHours(0, 0, 0, 0);
+  if (isNaN(dStart.getTime())) return 1;
   const now = referenceDate ? new Date(referenceDate) : new Date();
-  now.setHours(0, 0, 0, 0);
   const dEnd = end ? new Date(end) : now;
-  dEnd.setHours(0, 0, 0, 0);
-  if (isNaN(dStart.getTime()) || isNaN(dEnd.getTime()) || dEnd < dStart) return 1;
-  const diffTime = Math.abs(dEnd.getTime() - dStart.getTime());
-  return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  if (isNaN(dEnd.getTime()) || dEnd < dStart) return 1;
+  return getUtcDayDiff(dStart, dEnd);
 }
 
 export function calculateMonths(days: number): number {
@@ -21,7 +24,6 @@ export function splitServiceBySchoolYears(startStr: string, endStr: string | nul
   const results: { schoolYear: string; startYear: number; endYear: number; days: number }[] = [];
   let start = new Date(startStr);
   const now = new Date();
-  now.setHours(23, 59, 59, 999);
   const end = endStr ? new Date(endStr) : now;
 
   if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
@@ -36,19 +38,21 @@ export function splitServiceBySchoolYears(startStr: string, endStr: string | nul
     }
   }
 
-  let curr = new Date(start);
-  while (curr <= end) {
+  let curr = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const cleanEnd = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+  while (curr <= cleanEnd) {
     const yr = curr.getFullYear();
     const m = curr.getMonth();
     const syStartYear = m >= 8 ? yr : yr - 1;
     const syEndYear = syStartYear + 1;
-    const syEnd = new Date(syEndYear, 7, 31, 23, 59, 59);
+    const syEnd = new Date(syEndYear, 7, 31);
 
-    const segmentEnd = end < syEnd ? end : syEnd;
-    const diff = Math.ceil(Math.abs(segmentEnd.getTime() - curr.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const segmentEnd = cleanEnd < syEnd ? cleanEnd : syEnd;
+    const daysInSegment = Math.max(1, getUtcDayDiff(curr, segmentEnd));
     const syLabel = `${syStartYear}/${syEndYear}`;
 
-    results.push({ schoolYear: syLabel, startYear: syStartYear, endYear: syEndYear, days: Math.max(1, diff) });
+    results.push({ schoolYear: syLabel, startYear: syStartYear, endYear: syEndYear, days: daysInSegment });
     curr = new Date(syEndYear, 8, 1);
   }
 

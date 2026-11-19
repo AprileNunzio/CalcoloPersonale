@@ -113,11 +113,15 @@ export function computeFirstTierEligibility(
     }
   }
 
-  const totalDays = specificDays + otherAtaDays;
-  const isEligible = totalDays >= STATUTORY_TARGET_DAYS;
-  const remainingDays = Math.max(0, STATUTORY_TARGET_DAYS - totalDays);
+  // Ai sensi dell'art. 554 D.Lgs. 297/1994 (Graduatorie ATA 24 Mesi):
+  // Il requisito di 23 mesi e 16 giorni (706 gg) deve essere maturato nello SPECIFICO
+  // profilo professionale per cui si concorre. Servizi in qualifiche inferiori (es. CS per AA o AT)
+  // NON sono computabili per l'accesso ai 24 mesi dell'area Assistenti.
+  const validDaysForProfile = specificDays;
+  const isEligible = validDaysForProfile >= STATUTORY_TARGET_DAYS;
+  const remainingDays = Math.max(0, STATUTORY_TARGET_DAYS - validDaysForProfile);
   const remainingMonths = Math.ceil(remainingDays / 30);
-  const percentCompleted = Math.min(100, Math.round((totalDays / STATUTORY_TARGET_DAYS) * 100));
+  const percentCompleted = Math.min(100, Math.round((validDaysForProfile / STATUTORY_TARGET_DAYS) * 100));
 
   const currentYear = new Date().getFullYear();
   let projectedWindow = '';
@@ -135,7 +139,7 @@ export function computeFirstTierEligibility(
     specificDays,
     otherAtaDays,
     docenteDays,
-    totalDays,
+    totalDays: validDaysForProfile,
     targetDays: STATUTORY_TARGET_DAYS,
     percentCompleted,
     remainingDays,

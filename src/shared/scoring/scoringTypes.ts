@@ -44,6 +44,7 @@ export interface ProfileScore {
   code: string;
   label: string;
   baseAccessScore: number;
+  previousTrienniumScore?: number;
   specificServiceScore: number;
   otherServiceScore: number;
   culturalScore: number;

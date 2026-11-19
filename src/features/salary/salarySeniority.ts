@@ -17,6 +17,56 @@ export interface CareerSeniorityResult {
 }
 
 export function calculateCareerSeniority(records: Entry[], profile = 'CS'): CareerSeniorityResult {
+  // Verifica se esiste un decreto di ricostruzione carriera o anzianità ufficiale nei record
+  for (const r of records || []) {
+    try {
+      if (r.notes && r.notes.startsWith('{')) {
+        const p = JSON.parse(r.notes);
+        if (p.ricostruzioneCarriera && typeof p.ricostruzioneCarriera.years === 'number') {
+          const recYears = p.ricostruzioneCarriera.years;
+          const recMonths = p.ricostruzioneCarriera.months || 0;
+          const recDays = p.ricostruzioneCarriera.days || 0;
+
+          let currentFascia: SalaryFascia = '0-8';
+          let nextFascia: SalaryFascia | null = '9-14';
+          let minYears = 0;
+          let maxYears = 8;
+
+          for (let i = 0; i < FASCIA_LIMITS.length; i++) {
+            const f = FASCIA_LIMITS[i];
+            if (recYears >= f.minYears && recYears <= f.maxYears) {
+              currentFascia = f.fascia;
+              minYears = f.minYears;
+              maxYears = f.maxYears;
+              nextFascia = i < FASCIA_LIMITS.length - 1 ? FASCIA_LIMITS[i + 1].fascia : null;
+              break;
+            }
+          }
+
+          const targetYears = maxYears + 1;
+          const totalCurrentMonths = recYears * 12 + recMonths;
+          const targetMonths = targetYears * 12;
+          const diffMonths = Math.max(0, targetMonths - totalCurrentMonths);
+
+          return {
+            totalServiceDays: recYears * 360 + recMonths * 30 + recDays,
+            recognizedYears: recYears,
+            recognizedMonths: recMonths,
+            recognizedDays: recDays,
+            fullSchoolYearsCount: recYears,
+            currentFascia,
+            nextFascia,
+            yearsRemainingToNext: Math.floor(diffMonths / 12),
+            monthsRemainingToNext: diffMonths % 12,
+            progressPercent: Math.min(100, Math.round(((recYears - minYears) / (maxYears - minYears + 1)) * 100)),
+            monthlyGrossIncreaseOnNext: (CCNL_TABLES[profile]?.['9-14'] ?? 1472.30) - (CCNL_TABLES[profile]?.['0-8'] ?? 1358.50),
+            autoDetectedFromRecords: true,
+          };
+        }
+      }
+    } catch {}
+  }
+
   const serviceRecords = (records || []).filter(r => r.kind === 'service' && r.start);
   if (serviceRecords.length === 0) {
     return {

@@ -300,6 +300,16 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
   const activeProfiles = getActiveProfiles(person);
   const profile24MesiList: Profile24MesiStatus[] = activeProfiles.map(code => {
     const ft = computeFirstTierEligibility(person, code);
+    const isRuoloInThisProfile = services.some(s => {
+      try {
+        if (s.notes?.startsWith('{')) {
+          const p = JSON.parse(s.notes);
+          return (p.isRuolo === true || p.contractType === 'permanent') && s.profile === code;
+        }
+      } catch {}
+      return false;
+    });
+    const isReached = isRuoloInThisProfile || ft.isEligible;
     return {
       profileCode: code,
       profileLabel: PROFILE_LABELS[code] || code,
@@ -308,10 +318,10 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
       docenteDays: ft.docenteDays,
       totalValidDays: ft.totalDays,
       targetDays: ft.targetDays,
-      percent: ft.percentCompleted,
-      isReached: isPersonRuolo || ft.isEligible,
-      daysRemaining: isPersonRuolo ? 0 : ft.remainingDays,
-      projectedWindow: ft.projectedWindow,
+      percent: isRuoloInThisProfile ? 100 : ft.percentCompleted,
+      isReached,
+      daysRemaining: isReached ? 0 : ft.remainingDays,
+      projectedWindow: isRuoloInThisProfile ? 'Confermato di Ruolo a Tempo Indeterminato' : ft.projectedWindow,
     };
   });
 

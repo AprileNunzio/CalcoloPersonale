@@ -36,14 +36,34 @@ export function parseIstanzeOnlineText(text: string): ParsedIstanzeOnlineData {
   const cfMatch = text.match(/[A-Z]{6}\d{2}[A-EHLMPR-T]\d{2}[A-Z]\d{3}[A-Z]/i);
   const fiscalCode = cfMatch ? cfMatch[0].toUpperCase() : undefined;
 
+  const cleanTextForProfiles = text
+    // Rimuovi anzianità burocratica "aa X mm Y gg Z" per evitare falsi positivi
+    .replace(/\baa\s+\d+\s+mm/gi, 'anni mm')
+    // Rimuovi la qualifica tabellare generica del CCNL "Assistenti amministrativi ed equiparati"
+    .replace(/Assistenti amministrativi ed equiparati/gi, '');
+
   const profiles: string[] = [];
-  if (/collaboratore scolastico|\bcs\b/i.test(text)) profiles.push('CS');
-  if (/assistente amministrativo|\baa\b/i.test(text)) profiles.push('AA');
-  if (/assistente tecnico|\bat\b/i.test(text)) profiles.push('AT');
-  if (/operatore scolastico|\bos\b/i.test(text)) profiles.push('OS');
-  if (/cuoco|\bcu\b/i.test(text)) profiles.push('CU');
-  if (/guardarobiere|\bgu\b/i.test(text)) profiles.push('GU');
-  if (/addetto aziende agrarie|\bcr\b/i.test(text)) profiles.push('CR');
+  if (/collaboratore scolastico|\bprofilo[:\s]+cs\b|\bcs\s*-\s*collaboratore|\barea[:\s]+cs\b/i.test(cleanTextForProfiles)) {
+    profiles.push('CS');
+  }
+  if (/assistente tecnico|\bprofilo[:\s]+at\b|\bat\s*-\s*assistente|\barea[:\s]+at\b/i.test(cleanTextForProfiles)) {
+    profiles.push('AT');
+  }
+  if (/assistente amministrativo|\bprofilo[:\s]+aa\b|\baa\s*-\s*assistente|\barea[:\s]+aa\b/i.test(cleanTextForProfiles)) {
+    profiles.push('AA');
+  }
+  if (/operatore scolastico|\bprofilo[:\s]+os\b|\bos\s*-\s*operatore/i.test(cleanTextForProfiles)) {
+    profiles.push('OS');
+  }
+  if (/cuoco|\bprofilo[:\s]+cu\b|\bprofilo[:\s]+co\b/i.test(cleanTextForProfiles)) {
+    profiles.push('CU');
+  }
+  if (/guardarobiere|\bprofilo[:\s]+gu\b|\bprofilo[:\s]+ga\b/i.test(cleanTextForProfiles)) {
+    profiles.push('GU');
+  }
+  if (/addetto aziende agrarie|\bprofilo[:\s]+cr\b/i.test(cleanTextForProfiles)) {
+    profiles.push('CR');
+  }
 
   let accessTitle: ParsedAccessTitle | undefined;
   const scoreMatch =
@@ -95,13 +115,33 @@ export function parseIstanzeOnlineText(text: string): ParsedIstanzeOnlineData {
   }
 
   const services: ParsedServicePeriod[] = [];
-  const dateRangeRegex = /(\d{2}[\/\-.]\d{2}[\/\-.]\d{4})\s*(?:al|a|-|–)\s*(\d{2}[\/\-.]\d{2}[\/\-.]\d{4})/gi;
+  const dateRangeRegex = /(?:Dal\s+)?(\d{2}[\/\-.]\d{2}[\/\-.]\d{4})\s*(?:al|a|-|–)\s*(\d{2}[\/\-.]\d{2}[\/\-.]\d{4})/gi;
   let match: RegExpExecArray | null;
   let counter = 1;
 
   while ((match = dateRangeRegex.exec(text)) !== null) {
     const rawStart = match[1];
     const rawEnd = match[2];
+    const matchIndex = match.index;
+
+    // Isola solo il blocco di testo relativo a questo specifico intervallo (fino al prossimo record o a capo)
+    const afterMatch = text.slice(matchIndex + match[0].length);
+    const nextBoundary = afterMatch.search(/\n\s*(?:Dal\b|\d{1,2}\))/i);
+    const lineSnippet = (nextBoundary !== -1 ? afterMatch.slice(0, nextBoundary) : afterMatch.slice(0, 160)).toLowerCase();
+
+    // Salta assenze, malattie, permessi o scioperi appartenenti a questa voce
+    if (
+      lineSnippet.includes('assenza per') ||
+      lineSnippet.includes('assenza suscettibile') ||
+      lineSnippet.includes('sciopero') ||
+      lineSnippet.includes('permesso per motivi') ||
+      lineSnippet.includes('permesso per lutto') ||
+      lineSnippet.includes('permesso per matrimonio') ||
+      lineSnippet.includes('permesso in qualita') ||
+      lineSnippet.includes('congedo di maternita')
+    ) {
+      continue;
+    }
 
     const toIso = (dStr: string) => {
       const parts = dStr.split(/[\/\-.]/);
@@ -111,12 +151,30 @@ export function parseIstanzeOnlineText(text: string): ParsedIstanzeOnlineData {
       return dStr;
     };
 
+    // Determina il profilo specifico di questo incarico
+    let periodProfile = profiles[0] || 'CS';
+    if (lineSnippet.includes('assistente tecnico') || lineSnippet.includes('elettronica ed elettrotecnica')) {
+      periodProfile = 'AT';
+    } else if (lineSnippet.includes('collaboratore scolastico') || lineSnippet.includes('collaboratori scolastici')) {
+      periodProfile = 'CS';
+    } else if (lineSnippet.includes('assistente amministrativo') && !lineSnippet.includes('ed equiparati')) {
+      periodProfile = 'AA';
+    }
+
+    // Estrai la scuola se presente nel contesto
+    let schoolName = `Servizio Scolastico ${counter}`;
+    const schoolMatch = lineSnippet.match(/sede principale[:\s]+([^-\n]+)/i);
+    if (schoolMatch && schoolMatch[1]) {
+      schoolName = schoolMatch[1].trim();
+      schoolName = schoolName.charAt(0).toUpperCase() + schoolName.slice(1);
+    }
+
     services.push({
-      school: `Servizio Scolastico ${counter}`,
-      profile: profiles[0] || 'CS',
+      school: schoolName,
+      profile: periodProfile,
       start: toIso(rawStart),
       end: toIso(rawEnd),
-      isStatale: !text.toLowerCase().includes('paritaria'),
+      isStatale: !lineSnippet.includes('paritaria'),
     });
     counter++;
   }

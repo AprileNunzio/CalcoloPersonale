@@ -52,7 +52,7 @@ export function computeCareerStatus(person: Person): CareerStatus {
 
     if (isRuoloFlag) {
       hasRuolo = true;
-      if (!activeRuoloRecord) {
+      if (!activeRuoloRecord || s.start > activeRuoloRecord.start) {
         activeRuoloRecord = s;
       }
     }

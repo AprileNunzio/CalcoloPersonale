@@ -53,22 +53,26 @@ export function computeCareerMilestones(person: Person): CareerMilestonesSummary
   let ruoloStartDate: string | undefined = undefined;
   const ruoloServiceIds = new Set<string>();
 
-  // Check for confirmed permanent role
-  for (const s of services) {
-    let parsed: Record<string, unknown> = {};
-    try {
-      if (s.notes?.startsWith('{')) parsed = JSON.parse(s.notes);
-    } catch {}
-    const isRuoloEntry = parsed.isRuolo === true || parsed.contractType === 'permanent';
-    if (isRuoloEntry) {
-      hasRuolo = true;
+  // Check for confirmed permanent role (prendendo il più recente come ruolo attuale)
+  const sortedRoleCandidates = [...services]
+    .filter(s => {
+      let parsed: Record<string, unknown> = {};
+      try {
+        if (s.notes?.startsWith('{')) parsed = JSON.parse(s.notes);
+      } catch {}
+      return parsed.isRuolo === true || parsed.contractType === 'permanent';
+    })
+    .sort((a, b) => (b.start || '').localeCompare(a.start || ''));
+
+  if (sortedRoleCandidates.length > 0) {
+    hasRuolo = true;
+    for (const s of sortedRoleCandidates) {
       ruoloServiceIds.add(s.id);
-      if (!ruoloProfile && s.profile) {
-        ruoloProfile = s.profile;
-        ruoloEntryId = s.id;
-        ruoloStartDate = s.start;
-      }
     }
+    const latestRuolo = sortedRoleCandidates[0];
+    ruoloProfile = latestRuolo.profile || person.profile;
+    ruoloEntryId = latestRuolo.id;
+    ruoloStartDate = latestRuolo.start;
   }
 
   // Sort services chronologically ascending (oldest first) to track cumulative history
@@ -122,10 +126,10 @@ export function computeCareerMilestones(person: Person): CareerMilestonesSummary
 
       if (s.profile === profCode) {
         specificDays += days;
+        cumulativeValidDays += days;
       } else {
         otherAtaDays += days;
       }
-      cumulativeValidDays += days;
 
       if (!wasReachedBefore && cumulativeValidDays >= STATUTORY_TARGET_DAYS) {
         isReached = true;
