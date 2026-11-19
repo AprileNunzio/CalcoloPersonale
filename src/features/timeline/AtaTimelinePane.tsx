@@ -12,6 +12,7 @@ import {
 import type { Person } from '../../shared/types';
 import { computeTimelineDeadlines } from './timelineCalculations';
 import { formatDateItalian } from '../../shared/dateUtils';
+import { ProfileBadge3d } from '../../shared/icons3d';
 import './timeline.css';
 
 interface AtaTimelinePaneProps {
@@ -146,6 +147,89 @@ export function AtaTimelinePane({ person }: AtaTimelinePaneProps) {
           </div>
         ))}
       </div>
+
+      {/* Sezione Dettaglio 24 Mesi per Singolo Profilo (Art. 554 D.Lgs. 297/94) */}
+      {data.profile24MesiList && data.profile24MesiList.length > 0 && (
+        <div style={{ marginTop: 24, marginBottom: 8 }}>
+          <div style={{ marginBottom: 12 }}>
+            <h3 style={{ margin: 0, fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: 8, color: 'var(--on-surface)' }}>
+              <Scale size={18} color="var(--primary)" />
+              <span>Verifica Requisiti 24 Mesi per Profilo (Art. 554 D.Lgs. 297/94)</span>
+            </h3>
+            <p style={{ margin: '4px 0 0 0', fontSize: '0.82rem', color: 'var(--on-surface-variant)' }}>
+              Il requisito di 23 mesi e 16 giorni (706 giorni effettivi statali) per l'accesso alla 1ª Fascia Permanente viene calcolato per ogni singolo profilo, distinguendo il servizio specifico da quello maturato in altri profili ATA.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
+            {data.profile24MesiList.map(item => (
+              <div
+                key={item.profileCode}
+                style={{
+                  background: 'var(--surface-container-high)',
+                  border: `1.5px solid ${item.isReached ? 'var(--secondary)' : 'var(--outline-variant)'}`,
+                  borderRadius: 'var(--shape-md)',
+                  padding: 14,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 8,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <ProfileBadge3d code={item.profileCode} size={28} />
+                    <div>
+                      <strong style={{ fontSize: '0.92rem', color: 'var(--on-surface)' }}>{item.profileCode}</strong>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--on-surface-variant)', marginLeft: 6 }}>{item.profileLabel}</span>
+                    </div>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      padding: '2px 8px',
+                      borderRadius: 12,
+                      background: item.isReached ? 'var(--secondary-container)' : 'var(--surface-container-highest)',
+                      color: item.isReached ? 'var(--secondary)' : 'var(--on-surface-variant)',
+                    }}
+                  >
+                    {item.isReached ? '✓ Raggiunto' : `${item.percent}%`}
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--on-surface-variant)', marginTop: 4 }}>
+                  <span>Specifico ({item.profileCode}): <strong>{item.specificDays} gg</strong></span>
+                  {item.otherAtaDays > 0 && <span>Altri ATA: <strong>{item.otherAtaDays} gg</strong></span>}
+                </div>
+
+                <div style={{ background: 'var(--surface-container)', height: 6, borderRadius: 3, overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      background: item.isReached ? 'var(--secondary)' : 'var(--primary)',
+                      width: `${item.percent}%`,
+                      height: '100%',
+                      borderRadius: 3,
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', marginTop: 2 }}>
+                  <span style={{ fontWeight: 600, color: 'var(--on-surface)' }}>
+                    Validi: {item.totalValidDays} / {item.targetDays} gg
+                  </span>
+                  <span style={{ color: item.isReached ? 'var(--secondary)' : 'var(--tertiary)', fontWeight: 700 }}>
+                    {item.isReached ? 'Idoneo 1ª Fascia' : `Mancano ${item.daysRemaining} gg`}
+                  </span>
+                </div>
+
+                <div style={{ fontSize: '0.74rem', color: 'var(--primary)', fontWeight: 600 }}>
+                  📅 {item.projectedWindow}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Visual Step-by-Step Milestones Track */}
       <div className="timeline-track-section">

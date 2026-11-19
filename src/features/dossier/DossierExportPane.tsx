@@ -28,6 +28,7 @@ import { encryptBackup, decryptBackup } from '../../shared/backupCrypto';
 import { ReclamoGraduatorieModal } from './ReclamoGraduatorieModal';
 import { NaspiSimulatorModal } from './NaspiSimulatorModal';
 import { CareerTimelineGantt } from '../dashboard/CareerTimelineGantt';
+import { ProfileBadge3d } from '../../shared/icons3d';
 import './dossier.css';
 
 export function DossierExportPane({ person }: { person: Person }) {
@@ -43,9 +44,11 @@ export function DossierExportPane({ person }: { person: Person }) {
 
   const profileScores = calculateProfileScores(person);
   const primaryScore = profileScores[0] || null;
-  const targetProfile = person.profile || 'CS';
-
-  const firstTier = computeFirstTierEligibility(person, targetProfile);
+  const targetProfile = person.profile || (profileScores[0]?.code ?? 'CS');
+  const firstTierList = profileScores.map(ps => ({
+    ...computeFirstTierEligibility(person, ps.code),
+    label: ps.label,
+  }));
   const familyOverview = computeComprehensiveFamilyOverview(person, allPeople);
 
   const todayStr = new Date().toLocaleDateString('it-IT', {
@@ -315,25 +318,64 @@ export function DossierExportPane({ person }: { person: Person }) {
         {/* 3. SITUAZIONE 1ª FASCIA (24 MESI ATA) */}
         <div className="dossier-section">
           <div className="dossier-section-title">3. Verifica Requisiti Graduatoria 24 Mesi ATA (Art. 554 D.Lgs. 297/94)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, background: 'var(--surface-container-high)', padding: 12, borderRadius: 8, border: '1px solid var(--outline-variant)' }}>
-            <div>
-              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>Giorni Validi Maturati</span>
-              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--on-surface)' }}>{firstTier.totalDays} / 706 gg</div>
-            </div>
-            <div>
-              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>Stato Idoneità 24M</span>
-              <div style={{ fontSize: 16, fontWeight: 700, color: firstTier.isEligible ? 'var(--secondary)' : 'var(--tertiary)' }}>
-                {firstTier.isEligible ? 'RAGGIUNTO (Idoneo)' : `Mancano ${firstTier.remainingDays} gg`}
-              </div>
-            </div>
-            <div>
-              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>Servizio Docente Escluso</span>
-              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--on-surface-variant)' }}>{firstTier.docenteDays} gg</div>
-            </div>
-            <div>
-              <span style={{ fontSize: 10, color: 'var(--on-surface-variant)', textTransform: 'uppercase' }}>Finestra Utile Stimata</span>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)', marginTop: 3 }}>{firstTier.projectedWindow}</div>
-            </div>
+          <p style={{ margin: '0 0 10px 0', fontSize: 11, color: 'var(--on-surface-variant)' }}>
+            Requisito di accesso alla 1ª Fascia Permanente: 23 mesi e 16 giorni (706 giorni effettivi) di servizio statale. Di seguito il prospetto analitico distinto per ciascun profilo inserito (servizio specifico, servizio cumulato in altri profili ATA e servizio docente escluso ex lege):
+          </p>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+              <thead>
+                <tr style={{ background: 'var(--surface-container-high)', borderBottom: '1px solid var(--outline-variant)' }}>
+                  <th style={{ textAlign: 'left', padding: '6px 8px' }}>Profilo ATA</th>
+                  <th style={{ textAlign: 'right', padding: '6px 8px' }}>Specifico</th>
+                  <th style={{ textAlign: 'right', padding: '6px 8px' }}>Altri ATA</th>
+                  <th style={{ textAlign: 'right', padding: '6px 8px' }}>Docente (Escl.)</th>
+                  <th style={{ textAlign: 'right', padding: '6px 8px' }}>Validi / 706 gg</th>
+                  <th style={{ textAlign: 'center', padding: '6px 8px' }}>% Comp.</th>
+                  <th style={{ textAlign: 'center', padding: '6px 8px' }}>Stato 24 Mesi</th>
+                  <th style={{ textAlign: 'right', padding: '6px 8px' }}>Finestra Utile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {firstTierList.map(ft => (
+                  <tr key={ft.profileCode} style={{ borderBottom: '1px solid var(--outline-variant)' }}>
+                    <td style={{ padding: '8px', fontWeight: 650 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <ProfileBadge3d code={ft.profileCode} size={20} />
+                        <span>{ft.profileCode}</span>
+                        <small style={{ color: 'var(--on-surface-variant)', fontWeight: 400 }}>· {ft.label.split('(')[0]}</small>
+                      </div>
+                    </td>
+                    <td style={{ textAlign: 'right', padding: '8px', fontWeight: 600 }}>{ft.specificDays} gg</td>
+                    <td style={{ textAlign: 'right', padding: '8px', color: 'var(--on-surface-variant)' }}>{ft.otherAtaDays} gg</td>
+                    <td style={{ textAlign: 'right', padding: '8px', color: 'var(--on-surface-variant)' }}>{ft.docenteDays} gg</td>
+                    <td style={{ textAlign: 'right', padding: '8px', fontWeight: 700, color: 'var(--on-surface)' }}>{ft.totalDays} / 706 gg</td>
+                    <td style={{ textAlign: 'center', padding: '8px' }}>
+                      <span style={{ fontWeight: 700, color: ft.isEligible ? 'var(--secondary)' : 'var(--primary)' }}>
+                        {ft.percentCompleted}%
+                      </span>
+                    </td>
+                    <td style={{ textAlign: 'center', padding: '8px' }}>
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          padding: '2px 8px',
+                          borderRadius: 10,
+                          fontSize: 10,
+                          fontWeight: 700,
+                          background: ft.isEligible ? 'var(--secondary-container)' : 'var(--surface-container-highest)',
+                          color: ft.isEligible ? 'var(--secondary)' : 'var(--tertiary)',
+                        }}
+                      >
+                        {ft.isEligible ? '✓ RAGGIUNTO' : `Mancano ${ft.remainingDays} gg`}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: 'right', padding: '8px', fontSize: 11, color: 'var(--primary)', fontWeight: 600 }}>
+                      {ft.projectedWindow}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 

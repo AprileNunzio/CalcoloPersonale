@@ -27,12 +27,27 @@ export interface ActiveContractInfo {
   progressPercent: number;
 }
 
+export interface Profile24MesiStatus {
+  profileCode: string;
+  profileLabel: string;
+  specificDays: number;
+  otherAtaDays: number;
+  docenteDays: number;
+  totalValidDays: number;
+  targetDays: number;
+  percent: number;
+  isReached: boolean;
+  daysRemaining: number;
+  projectedWindow: string;
+}
+
 export interface TimelineData {
   deadlines: TimelineDeadline[];
   totalStataleDays: number;
   daysTo24Mesi: number;
   is24MesiReached: boolean;
   percent24Mesi: number;
+  profile24MesiList: Profile24MesiStatus[];
   naspiDaysRemaining: number | null;
   naspiWindowOpen: boolean;
   activeContract: ActiveContractInfo | null;

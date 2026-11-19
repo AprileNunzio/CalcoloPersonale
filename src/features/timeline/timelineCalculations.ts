@@ -1,5 +1,8 @@
 import type { Person, Entry } from '../../shared/types';
-import type { TimelineData, TimelineDeadline, ActiveContractInfo } from './timelineTypes';
+import type { TimelineData, TimelineDeadline, ActiveContractInfo, Profile24MesiStatus } from './timelineTypes';
+import { getActiveProfiles } from '../../shared/scoring';
+import { PROFILE_LABELS } from '../../shared/personUtils';
+import { computeFirstTierEligibility } from '../../shared/careerPrediction';
 
 function parseIso(dStr: string | null | undefined): Date | null {
   if (!dStr) return null;
@@ -294,12 +297,31 @@ export function computeTimelineDeadlines(person: Person, todayInput?: Date): Tim
     });
   }
 
+  const activeProfiles = getActiveProfiles(person);
+  const profile24MesiList: Profile24MesiStatus[] = activeProfiles.map(code => {
+    const ft = computeFirstTierEligibility(person, code);
+    return {
+      profileCode: code,
+      profileLabel: PROFILE_LABELS[code] || code,
+      specificDays: ft.specificDays,
+      otherAtaDays: ft.otherAtaDays,
+      docenteDays: ft.docenteDays,
+      totalValidDays: ft.totalDays,
+      targetDays: ft.targetDays,
+      percent: ft.percentCompleted,
+      isReached: isPersonRuolo || ft.isEligible,
+      daysRemaining: isPersonRuolo ? 0 : ft.remainingDays,
+      projectedWindow: ft.projectedWindow,
+    };
+  });
+
   return {
     deadlines,
     totalStataleDays,
     daysTo24Mesi,
     is24MesiReached,
     percent24Mesi,
+    profile24MesiList,
     naspiDaysRemaining,
     naspiWindowOpen,
     activeContract,

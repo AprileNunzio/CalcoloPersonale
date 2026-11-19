@@ -32,7 +32,7 @@ export function Applications({
 
   const applications = (person.records || []).filter(r => r.kind === 'application');
 
-  const handleSave = async (record: Entry) => {
+  const handleSave = async (record: Entry, closeOnSave = true) => {
     setPending(true);
     setError('');
     try {
@@ -54,8 +54,12 @@ export function Applications({
           : [recordToSave, ...person.records];
         save({ ...person, records: nextRecords });
       }
-      setCreating(false);
-      setEditing(null);
+      if (closeOnSave) {
+        setCreating(false);
+        setEditing(null);
+      } else {
+        setEditing(recordToSave);
+      }
     } catch (err) {
       setError(typeof err === 'string' ? err : 'error');
     } finally {

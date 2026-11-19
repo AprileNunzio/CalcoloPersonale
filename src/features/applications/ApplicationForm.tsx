@@ -17,7 +17,7 @@ export function ApplicationForm({
 }: {
   person: Person;
   entry?: Entry;
-  onSave: (record: Entry) => void;
+  onSave: (record: Entry, closeOnSave?: boolean) => void;
   onCancel: () => void;
   busy: boolean;
 }) {
@@ -83,7 +83,7 @@ export function ApplicationForm({
         profile: formData.profiles[0] || null,
         school: formData.headSchool || null,
       };
-      onSave(updatedRecord);
+      onSave(updatedRecord, false);
     }
   };
 
@@ -163,7 +163,7 @@ export function ApplicationForm({
       profile: formData.profiles[0] || null,
       school: formData.headSchool || null,
     };
-    onSave(updatedRecord);
+    onSave(updatedRecord, true);
   };
 
   return (
@@ -221,7 +221,9 @@ export function ApplicationForm({
         </FormField>
 
         <div className="wide-field profiles-selector-field">
-          <label className="field-label-text">{t('profilesChosen')}</label>
+          <label className="field-label-text">
+            {t('profilesChosen')}: <strong>{formData.profiles.join(', ')}</strong> ({formData.profiles.length} selezionat{formData.profiles.length === 1 ? 'o' : 'i'})
+          </label>
           <div className="profile-chips-group">
             {ATA_PROFILES.map(prof => {
               const selected = formData.profiles.includes(prof.code);
@@ -230,18 +232,21 @@ export function ApplicationForm({
                   type="button"
                   key={prof.code}
                   className={`profile-chip-btn ${selected ? 'active' : ''}`}
-                  onClick={() => {
-                    toggleProfile(prof.code);
-                    setTimeout(handleFieldBlur, 50);
-                  }}
+                  onClick={() => toggleProfile(prof.code)}
+                  aria-pressed={selected}
+                  title={`Clicca per ${selected ? 'rimuovere' : 'aggiungere'} il profilo ${prof.code}`}
                 >
                   <ProfileBadge3d code={prof.code} size={28} />
                   <span>{prof.code}</span>
                   <small>{prof.label.split('(')[0].trim()}</small>
+                  {selected && <span className="profile-chip-check">✓</span>}
                 </button>
               );
             })}
           </div>
+          <p className="field-tip" style={{ marginTop: 6, fontSize: 11, color: 'var(--on-surface-variant)' }}>
+            💡 Clicca su ciascun profilo ATA per includerlo o escluderlo dalla domanda (puoi selezionare più profili contemporaneamente, es. CS + AA + AT).
+          </p>
         </div>
 
         <FormField

@@ -253,6 +253,12 @@
   opacity: 0.85;
 }
 
+.profile-chip-check {
+  font-weight: 900;
+  color: var(--primary);
+  margin-left: 2px;
+}
+
 .chosen-schools-section {
   display: flex;
   flex-direction: column;
