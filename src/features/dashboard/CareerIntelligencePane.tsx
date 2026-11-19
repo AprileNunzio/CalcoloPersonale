@@ -1,18 +1,23 @@
-import { Target, TrendingUp, CheckCircle2, Clock, Calendar, Sparkles, AlertTriangle } from 'lucide-react';
+import { Target, TrendingUp, CheckCircle2, Clock, Calendar, Sparkles, AlertTriangle, Award, Crown } from 'lucide-react';
 import { ProfileCareerIntelligence } from '../../shared/careerPrediction';
 import { ProfileScore } from '../../shared/scoring';
 import { ProfileBadge3d } from '../../shared/icons3d';
+import { Person } from '../../shared/types';
+import { computeCareerMilestones } from '../../shared/careerMilestones';
 import { useT } from '../../shared/i18n';
 import './careerPrediction.css';
 
 export function CareerIntelligencePane({
   careerIntelligence,
   profileScores,
+  person,
 }: {
   careerIntelligence: ProfileCareerIntelligence[];
   profileScores: ProfileScore[];
+  person?: Person;
 }) {
   const t = useT();
+  const milestonesSummary = person ? computeCareerMilestones(person) : null;
 
   if (careerIntelligence.length === 0) {
     return (
@@ -113,6 +118,36 @@ export function CareerIntelligencePane({
                     <Calendar size={12} />
                     <span>{firstTier.projectedWindow}</span>
                   </div>
+
+                  {milestonesSummary && (() => {
+                    const mInfo = milestonesSummary.milestones24M.find(m => m.profileCode === item.profileCode);
+                    if (!mInfo) return null;
+                    return (
+                      <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        {mInfo.isReached && mInfo.reachedSchoolYear && (
+                          <div style={{ background: 'var(--secondary-container)', color: 'var(--on-secondary-container)', border: '1px solid var(--secondary)', borderRadius: 'var(--shape-md)', padding: '5px 8px', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Award size={13} style={{ flexShrink: 0 }} />
+                            <span>
+                              {mInfo.milestoneIndex > 1 ? `${mInfo.milestoneIndex}° Traguardo: ` : 'Traguardo 1ª Fascia: '}
+                              Raggiunto nell'{mInfo.reachedSchoolYear} ({mInfo.reachedCalendarYear})
+                            </span>
+                          </div>
+                        )}
+                        {milestonesSummary.hasRuolo && milestonesSummary.ruoloProfile === item.profileCode && (
+                          <div style={{ background: 'var(--primary-container)', color: 'var(--on-primary-container)', border: '1px solid var(--primary)', borderRadius: 'var(--shape-md)', padding: '5px 8px', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Crown size={13} style={{ flexShrink: 0 }} />
+                            <span>Titolare di Ruolo a Tempo Indeterminato</span>
+                          </div>
+                        )}
+                        {milestonesSummary.hasRuolo && milestonesSummary.ruoloProfile !== item.profileCode && (
+                          <div style={{ background: 'var(--surface-container-highest)', color: 'var(--on-surface)', border: '1px solid var(--outline-variant)', borderRadius: 'var(--shape-md)', padding: '5px 8px', fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Sparkles size={13} style={{ flexShrink: 0, color: 'var(--secondary)' }} />
+                            <span>Supplenze possibili ex Art. 59/70 CCNL (Ruolo: {milestonesSummary.ruoloProfile})</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 <div className="call-odds-block">

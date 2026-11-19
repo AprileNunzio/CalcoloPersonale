@@ -28,6 +28,8 @@ interface ServiceDetailFieldsProps {
   weeklyHours: number;
   contractType: ServiceContractType;
   notes: string;
+  isPermanentInOtherProfile?: boolean;
+  ruoloProfile?: string;
   onChangeSector: (s: ServiceSector) => void;
   onChangeWeeklyHours: (hours: number) => void;
   onChangeContractType: (ct: ServiceContractType) => void;
@@ -42,6 +44,8 @@ export function ServiceDetailFields({
   weeklyHours,
   contractType,
   notes,
+  isPermanentInOtherProfile,
+  ruoloProfile,
   onChangeSector,
   onChangeWeeklyHours,
   onChangeContractType,
@@ -76,6 +80,11 @@ export function ServiceDetailFields({
             <option value="annual">Annuale fino al termine dell'anno scolastico (31 agosto - 12 mesi)</option>
             <option value="short">Supplenza breve o temporanea</option>
             <option value="permanent">Ruolo / Tempo Indeterminato</option>
+            {isPermanentInOtherProfile && (
+              <option value="art59">
+                Supplenza ex Art. 59/70 CCNL (Titolare Ruolo in {ruoloProfile || 'Altro Profilo'})
+              </option>
+            )}
           </select>
         </FormField>
 

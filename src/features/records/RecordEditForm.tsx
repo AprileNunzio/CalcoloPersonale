@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Briefcase, Award, HeartPulse, X, Check, Edit3, Calendar, AlertOctagon } from 'lucide-react';
+import { Briefcase, Award, HeartPulse, X, Check, Edit3, Calendar, AlertOctagon, ArrowLeft } from 'lucide-react';
 import { Entry, Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
 import { formatDateItalian } from '../../shared/dateUtils';
@@ -33,7 +33,8 @@ export interface RecordEditFormProps {
   setFamilySource: (s: 'manual' | 'archive') => void;
   selectedLinkedId: string;
   onPickArchivePerson: (chosen: Person | null) => void;
-  onSubmit: (entry: Entry) => void;
+  onSubmit: (entry: Entry, closeForm?: boolean) => void;
+  onClose?: () => void;
 }
 
 function parseNotes(notes: string): {
@@ -62,11 +63,18 @@ export function RecordEditForm({
   selectedLinkedId,
   onPickArchivePerson,
   onSubmit,
+  onClose,
 }: RecordEditFormProps) {
   const t = useT();
   const [submitted, setSubmitted] = useState(false);
   const [showManualSchoolModal, setShowManualSchoolModal] = useState(false);
   const parsedDraftNotes = parseNotes(draft.notes);
+  const confirmedRuolo = person.records?.find(
+    r => r.kind === 'service' && (r.notes?.includes('"contractType":"permanent"') || r.notes?.includes('"isRuolo":true'))
+  );
+  const isArt59Candidate = Boolean(
+    confirmedRuolo && draft.profile && confirmedRuolo.profile && draft.profile !== confirmedRuolo.profile
+  );
   const isEditing = Boolean(draft.id && person.records.some(r => r.id === draft.id));
 
   const aranAlerts = useMemo(() => {
@@ -90,7 +98,7 @@ export function RecordEditForm({
           ...draft,
           id: draft.id && draft.id.trim().length > 0 ? draft.id.trim() : crypto.randomUUID(),
         };
-        onSubmit(finalDraft);
+        onSubmit(finalDraft, false);
       }
     }
   };
@@ -178,7 +186,7 @@ export function RecordEditForm({
           ...draft,
           id: draft.id && draft.id.trim().length > 0 ? draft.id.trim() : crypto.randomUUID(),
         };
-        onSubmit(finalDraft);
+        onSubmit(finalDraft, true);
       }}
     >
       <fieldset className="application-boundary" disabled={pending || busy}>
@@ -208,7 +216,7 @@ export function RecordEditForm({
               type="button"
               className="form-close-x-btn"
               title="Chiudi modulo"
-              onClick={() => setDraft(null)}
+              onClick={() => onClose ? onClose() : setDraft(null)}
             >
               <X size={18} />
             </button>
@@ -380,8 +388,7 @@ export function RecordEditForm({
                   className="date-preset-chip"
                   onClick={() => {
                     const y = draft.start ? draft.start.slice(0, 4) : '2023';
-                    const ny = String(parseInt(y, 10) + 1);
-                    setDraft({ ...draft, start: `${y}-09-01`, end: `${ny}-08-31` });
+                    setDraft({ ...draft, start: `${y}-09-01`, end: `${parseInt(y, 10) + 1}-08-31` });
                   }}
                 >
                   Anno Completo (01/09 - 31/08)
@@ -410,6 +417,8 @@ export function RecordEditForm({
                 weeklyHours={currentWeeklyHours}
                 contractType={currentContractType}
                 notes={draft.notes}
+                isPermanentInOtherProfile={isArt59Candidate}
+                ruoloProfile={confirmedRuolo?.profile || undefined}
                 onChangeSector={handleSectorChange}
                 onChangeWeeklyHours={handleWeeklyHoursChange}
                 onChangeContractType={handleContractTypeChange}
@@ -448,11 +457,11 @@ export function RecordEditForm({
           <button
             type="button"
             className="secondary"
-            onClick={() => setDraft(null)}
+            onClick={() => onClose ? onClose() : setDraft(null)}
           >
             {t('closeForm')}
           </button>
-          <button type="submit">{t('save')}</button>
+          <button type="submit">{t('save')} e Torna</button>
         </div>
       </fieldset>
 

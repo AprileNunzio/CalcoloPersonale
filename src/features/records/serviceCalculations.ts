@@ -9,7 +9,8 @@ export type ServiceContractType =
   | 'annual' // Annuale 31 agosto (12 mesi)
   | 'term' // Termine attività 30 giugno (10 mesi)
   | 'short' // Supplenza breve e saltuaria
-  | 'permanent'; // Ruolo / Tempo Indeterminato
+  | 'permanent' // Ruolo / Tempo Indeterminato
+  | 'art59'; // Supplenza ex Art. 59/70 CCNL (Titolare Ruolo in altro profilo)
 
 export interface ServiceDurationDetails {
   totalDays: number;

@@ -269,3 +269,18 @@
   color: var(--on-surface-variant);
   font-size: var(--font-body-medium);
 }
+
+.records-editor-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.records-editor-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 4px;
+}
+

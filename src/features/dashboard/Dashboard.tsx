@@ -290,6 +290,7 @@ export function Dashboard({
           <CareerIntelligencePane
             careerIntelligence={careerIntelligence}
             profileScores={profileScores}
+            person={person}
           />
         )}
 

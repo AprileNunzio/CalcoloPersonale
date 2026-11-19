@@ -18,26 +18,18 @@ import { RuoloMobilityType, AssegnazioneProvvisoriaReason } from './ruoloTypes';
 import { ServiceLegalCalcBox } from './ServiceLegalCalcBox';
 import './RecordItemCard.css';
 
-const absenceKinds = [
-  'sickness',
-  'specialist',
-  'parental',
-  'holiday',
-  'festivity',
-  'bereavement',
-  'personal',
-  'law104',
-  'blood',
-  'study',
-  'marriage',
-  'other',
-];
+const absenceKinds = ['sickness', 'specialist', 'parental', 'holiday', 'festivity', 'bereavement', 'personal', 'law104', 'blood', 'study', 'marriage', 'other'];
 
 interface RecordItemCardProps {
   record: Entry;
   busy: boolean;
   pending: boolean;
   isDrafting: boolean;
+  isRuoloMilestone?: boolean;
+  is24MMilestone?: boolean;
+  milestone24MText?: string;
+  isArt59?: boolean;
+  ruoloProfile?: string;
   onEdit: (record: Entry) => void;
   onRemove: (record: Entry) => void;
 }
@@ -84,6 +76,11 @@ export function RecordItemCard({
   busy,
   pending,
   isDrafting,
+  isRuoloMilestone,
+  is24MMilestone,
+  milestone24MText,
+  isArt59,
+  ruoloProfile,
   onEdit,
   onRemove,
 }: RecordItemCardProps) {
@@ -128,9 +125,26 @@ export function RecordItemCard({
     contractClass = `is-absence is-${record.kind}`;
   }
 
+  const profileCardClass = isService ? `profile-card-${record.profile || 'CS'}` : '';
+  const milestoneClass = `${isRuoloMilestone ? 'is-milestone-ruolo' : ''} ${is24MMilestone ? 'is-milestone-24m' : ''}`;
+
   return (
-    <article className={`record-card-modern ${contractClass}`}>
+    <article className={`record-card-modern ${contractClass} ${profileCardClass} ${milestoneClass}`.trim()}>
       <div style={{ flex: 1, minWidth: 0 }}>
+        {isRuoloMilestone && (
+          <div className="card-milestone-banner ruolo">
+            <Crown size={14} />
+            <span>🏆 CONQUISTA DEL RUOLO (TEMPO INDETERMINATO · {record.profile || 'ATA'})</span>
+          </div>
+        )}
+
+        {is24MMilestone && (
+          <div className="card-milestone-banner ventiquattro-mesi">
+            <Award size={14} />
+            <span>⭐ {milestone24MText || 'TRAGUARDO 24 MESI ATA (Art. 554 D.Lgs. 297/94)'}</span>
+          </div>
+        )}
+
         <div className="card-top-badges">
           {/* Badge Tipo Record */}
           {!isService && (
@@ -147,62 +161,27 @@ export function RecordItemCard({
           )}
 
           {/* Badge per Titoli & Attestati */}
-          {isQualification &&
-            (parsed.isAccessTitle ||
-              record.title.toLowerCase().includes('accesso') ||
-              record.title.toLowerCase().includes('maturit') ||
-              record.title.toLowerCase().includes('diploma di scuola')) && (
-              <span className="status-chip statale-ata">
-                <GraduationCap size={11} /> Titolo di Accesso
-              </span>
-            )}
-
-          {isQualification && isCiad && (
-            <span className="status-chip annual">
-              <ShieldCheck size={11} /> CIAD Conforme (Accredia)
-            </span>
+          {isQualification && (parsed.isAccessTitle || record.title.toLowerCase().includes('accesso') || record.title.toLowerCase().includes('maturit') || record.title.toLowerCase().includes('diploma di scuola')) && (
+            <span className="status-chip statale-ata"><GraduationCap size={11} /> Titolo di Accesso</span>
           )}
-
-          {isQualification &&
-            (parsed.kind === 'digital' ||
-              record.title.toLowerCase().includes('informatica') ||
-              record.title.toLowerCase().includes('eipass') ||
-              record.title.toLowerCase().includes('icdl')) &&
-            !isCiad && (
-              <span className="status-chip term">
-                <Laptop size={11} /> Certif. Informatica
-              </span>
-            )}
-
-          {isQualification &&
-            (parsed.kind === 'typing' || record.title.toLowerCase().includes('dattilografia')) && (
-              <span className="status-chip short">
-                <Keyboard size={11} /> Dattilografia (AA)
-              </span>
-            )}
-
-          {isQualification &&
-            (parsed.kind === 'degree' || record.title.toLowerCase().includes('laurea')) && (
-              <span className="status-chip ruolo">
-                <BookOpen size={11} /> Laurea
-              </span>
-            )}
-
-          {isQualification &&
-            (parsed.kind === 'oss' ||
-              record.title.toLowerCase().includes('oss') ||
-              record.title.toLowerCase().includes('osa')) && (
-              <span className="status-chip statale-ata">
-                <HeartPulse size={11} /> Qualifica OSS / OSA
-              </span>
-            )}
-
-          {isQualification &&
-            (parsed.kind === 'language' || record.title.toLowerCase().includes('qcer')) && (
-              <span className="status-chip term">
-                <Languages size={11} /> QCER {parsed.level || 'B2'}
-              </span>
-            )}
+          {isQualification && isCiad && (
+            <span className="status-chip annual"><ShieldCheck size={11} /> CIAD Conforme (Accredia)</span>
+          )}
+          {isQualification && (parsed.kind === 'digital' || record.title.toLowerCase().includes('informatica') || record.title.toLowerCase().includes('eipass') || record.title.toLowerCase().includes('icdl')) && !isCiad && (
+            <span className="status-chip term"><Laptop size={11} /> Certif. Informatica</span>
+          )}
+          {isQualification && (parsed.kind === 'typing' || record.title.toLowerCase().includes('dattilografia')) && (
+            <span className="status-chip short"><Keyboard size={11} /> Dattilografia (AA)</span>
+          )}
+          {isQualification && (parsed.kind === 'degree' || record.title.toLowerCase().includes('laurea')) && (
+            <span className="status-chip ruolo"><BookOpen size={11} /> Laurea</span>
+          )}
+          {isQualification && (parsed.kind === 'oss' || record.title.toLowerCase().includes('oss') || record.title.toLowerCase().includes('osa')) && (
+            <span className="status-chip statale-ata"><HeartPulse size={11} /> Qualifica OSS / OSA</span>
+          )}
+          {isQualification && (parsed.kind === 'language' || record.title.toLowerCase().includes('qcer')) && (
+            <span className="status-chip term"><Languages size={11} /> QCER {parsed.level || 'B2'}</span>
+          )}
 
           {isQualification && typeof record.amount === 'number' && record.amount > 0 && (
             <span className="status-chip statale-ata" style={{ fontWeight: 800 }}>
@@ -219,23 +198,14 @@ export function RecordItemCard({
                 : `${parseDays(record.start, record.end)} gg`}
             </span>
           )}
-
           {isAbsence && record.kind === 'sickness' && (
-            <span className="status-chip short">
-              100% Retribuzione · Trattenuta Brunetta
-            </span>
+            <span className="status-chip short">100% Retribuzione · Trattenuta Brunetta</span>
           )}
-
           {isAbsence && (record.kind === 'holiday' || record.kind === 'festivity') && (
-            <span className="status-chip annual">
-              100% Retribuito · Non decurtato
-            </span>
+            <span className="status-chip annual">100% Retribuito · Non decurtato</span>
           )}
-
           {isAbsence && record.kind === 'law104' && (
-            <span className="status-chip statale-ata">
-              100% Retribuito e coperto
-            </span>
+            <span className="status-chip statale-ata">100% Retribuito e coperto</span>
           )}
 
           {/* Badge Ruolo o Tipo Contratto per Servizi */}
@@ -245,7 +215,13 @@ export function RecordItemCard({
             </span>
           )}
 
-          {isService && !isRuolo && parsed.contractType && (
+          {isService && (isArt59 || parsed.contractType === 'art59') && (
+            <span className="status-chip art59" title="Supplenza conferita ex Art. 59 CCNL 2007 / Art. 70 CCNL 2024">
+              <Repeat size={11} /> Supplenza ex Art. 59/70 CCNL {ruoloProfile ? `(Titolare ${ruoloProfile})` : ''}
+            </span>
+          )}
+
+          {isService && !isRuolo && parsed.contractType && parsed.contractType !== 'art59' && (
             <span className={`status-chip ${parsed.contractType}`}>
               <Clock size={11} />
               {parsed.contractType === 'annual'
@@ -258,7 +234,7 @@ export function RecordItemCard({
 
           {/* Profilo ATA */}
           {isService && record.profile && (
-            <span className="status-chip profile">
+            <span className={`status-chip profile profile-badge-${record.profile}`}>
               <Briefcase size={11} />
               {record.profile} · {PROFILE_LABELS[record.profile] || record.profile}
             </span>

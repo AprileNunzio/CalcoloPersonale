@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Plus, Briefcase, FileText } from 'lucide-react';
+import { Plus, Briefcase, FileText, ArrowLeft } from 'lucide-react';
 import { Archive, Entry, Person } from '../../shared/types';
 import { call, getRevision } from '../../shared/api';
 import { useT } from '../../shared/i18n';
@@ -10,6 +10,7 @@ import { RecordItemCard } from './RecordItemCard';
 import { RecordEditForm } from './RecordEditForm';
 import { QualificationSummaryPanel } from '../qualifications/QualificationSummaryPanel';
 import { AbsenceComportoPanel } from '../absences/AbsenceComportoPanel';
+import { computeCareerMilestones } from '../../shared/careerMilestones';
 import './recordDetails.css';
 
 const absenceKinds = ['sickness', 'specialist', 'parental', 'holiday', 'festivity', 'bereavement', 'personal', 'law104', 'blood', 'study', 'marriage', 'other'];
@@ -35,6 +36,8 @@ export function Records({
   const [selectedLinkedId, setSelectedLinkedId] = useState('');
   const [showImportModal, setShowImportModal] = useState(false);
 
+  const careerMilestones = computeCareerMilestones(person);
+
   const isEditingExisting = Boolean(draft?.id && person.records.some(r => r.id === draft.id));
   const hasDraftContent = draft !== null && Boolean(
     isEditingExisting || draft.title?.trim() || draft.school || draft.start
@@ -52,7 +55,7 @@ export function Records({
     });
   const otherPeople = (context.archive.people || []).filter(p => p.id !== person.id);
 
-  async function persist(entry: Entry, remove = false) {
+  async function persist(entry: Entry, remove = false, closeForm = true) {
     setPending(true);
     setError('');
     try {
@@ -70,9 +73,11 @@ export function Records({
         revision: getRevision(),
       });
       context.saved(archive);
-      if (!remove || draft?.id === entry.id) {
+      if (closeForm || (remove && draft?.id === entry.id)) {
         setDraft(null);
         setIsExplicitlyAdding(false);
+      } else {
+        setDraft(entryToSave);
       }
     } catch (reason) {
       setError(typeof reason === 'string' ? reason : 'error');
@@ -102,6 +107,49 @@ export function Records({
       });
     }
   };
+
+  if (isFormOpen && draft) {
+    return (
+      <section className="records records-editor-page">
+        <div className="records-editor-topbar">
+          <button
+            type="button"
+            className="records-btn-secondary"
+            onClick={() => {
+              setDraft(null);
+              setIsExplicitlyAdding(false);
+            }}
+          >
+            <ArrowLeft size={16} />
+            <span>Torna all'elenco {t(section)}</span>
+          </button>
+        </div>
+
+        <RecordEditForm
+          draft={draft}
+          setDraft={d => {
+            setDraft(d);
+            if (!d) setIsExplicitlyAdding(false);
+          }}
+          person={person}
+          section={section}
+          kinds={kinds}
+          pending={pending}
+          busy={busy}
+          otherPeople={otherPeople}
+          familySource={familySource}
+          setFamilySource={setFamilySource}
+          selectedLinkedId={selectedLinkedId}
+          onPickArchivePerson={handlePickArchivePerson}
+          onSubmit={(entry, closeForm = true) => void persist(entry, false, closeForm)}
+          onClose={() => {
+            setDraft(null);
+            setIsExplicitlyAdding(false);
+          }}
+        />
+      </section>
+    );
+  }
 
   return (
     <section className="records">
@@ -165,27 +213,6 @@ export function Records({
         </p>
       )}
 
-      {isFormOpen && draft && (
-        <RecordEditForm
-          draft={draft}
-          setDraft={d => {
-            setDraft(d);
-            if (!d) setIsExplicitlyAdding(false);
-          }}
-          person={person}
-          section={section}
-          kinds={kinds}
-          pending={pending}
-          busy={busy}
-          otherPeople={otherPeople}
-          familySource={familySource}
-          setFamilySource={setFamilySource}
-          selectedLinkedId={selectedLinkedId}
-          onPickArchivePerson={handlePickArchivePerson}
-          onSubmit={entry => void persist(entry)}
-        />
-      )}
-
       {section === 'qualification' && <QualificationSummaryPanel person={person} />}
       {section === 'absences' && <AbsenceComportoPanel person={person} />}
 
@@ -195,22 +222,41 @@ export function Records({
             <p className="muted" style={{ margin: 0 }}>{t('noRecords')}</p>
           </div>
         ) : (
-          entries.map(record => (
-            <RecordItemCard
-              key={record.id}
-              record={record}
-              busy={busy}
-              pending={pending}
-              isDrafting={draft !== null}
-              onEdit={rec => {
-                setFamilySource('manual');
-                setDraft(rec);
-              }}
-              onRemove={rec => {
-                if (window.confirm(t('deleteRecord'))) void persist(rec, true);
-              }}
-            />
-          ))
+          entries.map(record => {
+            const isRuoloMilestone = careerMilestones.ruoloServiceIds.has(record.id);
+            const is24MMilestone = careerMilestones.milestoneServiceIds.has(record.id);
+            const m24 = careerMilestones.milestones24M.find(m => m.serviceEntryId === record.id);
+            const milestone24MText = m24 ? m24.summaryLabel : undefined;
+            const isArt59 = Boolean(
+              record.kind === 'service' &&
+              careerMilestones.hasRuolo &&
+              careerMilestones.ruoloProfile &&
+              record.profile &&
+              record.profile !== careerMilestones.ruoloProfile
+            );
+
+            return (
+              <RecordItemCard
+                key={record.id}
+                record={record}
+                busy={busy}
+                pending={pending}
+                isDrafting={draft !== null}
+                isRuoloMilestone={isRuoloMilestone}
+                is24MMilestone={is24MMilestone}
+                milestone24MText={milestone24MText}
+                isArt59={isArt59}
+                ruoloProfile={careerMilestones.ruoloProfile}
+                onEdit={rec => {
+                  setFamilySource('manual');
+                  setDraft(rec);
+                }}
+                onRemove={rec => {
+                  if (window.confirm(t('deleteRecord'))) void persist(rec, true, true);
+                }}
+              />
+            );
+          })
         )}
       </div>
 

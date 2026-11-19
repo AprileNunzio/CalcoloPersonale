@@ -413,3 +413,78 @@
   margin-top: 6px;
   line-height: 1.45;
 }
+
+/* Profile-specific card visual differentiation */
+.record-card-modern.profile-card-CS {
+  border-left: 5px solid var(--primary);
+}
+
+.record-card-modern.profile-card-AA {
+  border-left: 5px solid var(--secondary);
+}
+
+.record-card-modern.profile-card-AT {
+  border-left: 5px solid var(--tertiary);
+}
+
+.record-card-modern.profile-card-OS {
+  border-left: 5px solid var(--secondary);
+}
+
+.record-card-modern.profile-card-CU {
+  border-left: 5px solid var(--tertiary);
+}
+
+.record-card-modern.profile-card-CR {
+  border-left: 5px solid var(--primary);
+}
+
+.record-card-modern.profile-card-DOCENTE {
+  border-left: 5px solid var(--outline);
+}
+
+/* Milestone highlight cards */
+.record-card-modern.is-milestone-ruolo {
+  background: var(--surface-container-high);
+  border-color: var(--primary);
+  box-shadow: 0 4px 18px var(--shadow-ambient);
+}
+
+.record-card-modern.is-milestone-24m {
+  background: var(--surface-container-high);
+  border-color: var(--secondary);
+  box-shadow: 0 4px 18px var(--shadow-ambient);
+}
+
+.card-milestone-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--shape-md);
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
+}
+
+.card-milestone-banner.ruolo {
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: 0 2px 8px var(--shadow-ambient);
+}
+
+.card-milestone-banner.ventiquattro-mesi {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border: 1.5px solid var(--secondary);
+  box-shadow: 0 2px 8px var(--shadow-ambient);
+}
+
+.status-chip.art59 {
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  border: 1px solid var(--tertiary);
+  font-weight: 700;
+}
+
