@@ -113,22 +113,31 @@ export function computeFirstTierEligibility(
     }
   }
 
-  // Ai sensi dell'art. 554 D.Lgs. 297/1994 (Graduatorie ATA 24 Mesi):
-  // Il requisito di 23 mesi e 16 giorni (706 gg) deve essere maturato nello SPECIFICO
-  // profilo professionale per cui si concorre. Servizi in qualifiche inferiori (es. CS per AA o AT)
-  // NON sono computabili per l'accesso ai 24 mesi dell'area Assistenti.
-  const validDaysForProfile = specificDays;
+  // Ai sensi dell'art. 554 D.Lgs. 297/1994 e O.M. 24 Mesi ATA:
+  // Il requisito di 23 mesi e 16 giorni (706 gg effettivi) di servizio statale è soddisfatto
+  // cumulando tutto il servizio prestato nell'area statale ATA (servizio specifico + altri profili ATA).
+  const validDaysForProfile = specificDays + otherAtaDays;
   const isEligible = validDaysForProfile >= STATUTORY_TARGET_DAYS;
   const remainingDays = Math.max(0, STATUTORY_TARGET_DAYS - validDaysForProfile);
   const remainingMonths = Math.ceil(remainingDays / 30);
   const percentCompleted = Math.min(100, Math.round((validDaysForProfile / STATUTORY_TARGET_DAYS) * 100));
 
-  const currentYear = new Date().getFullYear();
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  // Il bando 24 Mesi si svolge annualmente in Primavera (aprile/maggio).
+  // Se siamo già oltre la primavera (da giugno in poi), il prossimo bando utile è l'anno successivo.
+  const isPastSpring = now.getMonth() >= 5;
+  const nextCallYear = isPastSpring ? currentYear + 1 : currentYear;
+
   let projectedWindow = '';
   if (isEligible) {
-    projectedWindow = `Bando 24 Mesi Primavera ${currentYear + 1}`;
+    if (specificDays > 0) {
+      projectedWindow = `Bando 24 Mesi Primavera ${nextCallYear}`;
+    } else {
+      projectedWindow = `Primavera ${nextCallYear} (con titolo accesso / 3ª fascia)`;
+    }
   } else if (remainingDays <= 180) {
-    projectedWindow = `Primavera ${currentYear + 1} (con contratto in corso)`;
+    projectedWindow = `Primavera ${nextCallYear} (con contratto in corso)`;
   } else {
     const yearsNeeded = Math.ceil(remainingDays / 270);
     projectedWindow = `Primavera ${currentYear + yearsNeeded}`;

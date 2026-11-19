@@ -399,6 +399,8 @@ function Workspace({
                       {t('remove')}
                     </button>
                   </>
+                ) : section === 'salary' ? (
+                  <SalarySimulatorPane person={person} />
                 ) : section === 'naspi' ? (
                   isPersonRuolo ? (
                     <Dashboard person={person} data={data} year={year} setYear={setYear} />

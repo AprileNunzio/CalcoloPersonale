@@ -8,6 +8,31 @@ export function normalizeGrade(val: number): number {
 }
 
 export function extractAccessQualification(records: Entry[], profileCode: string): Entry | undefined {
+  // Check if an official application (Domanda ATA) specifies the access qualification
+  const appRecord = (records || []).find(r => r.kind === 'application');
+  if (appRecord && appRecord.notes?.startsWith('{')) {
+    try {
+      const appData = JSON.parse(appRecord.notes);
+      if (appData.accessTitlesByProfile && appData.accessTitlesByProfile[profileCode]) {
+        const found = records.find(r => r.id === appData.accessTitlesByProfile[profileCode]);
+        if (found) return found;
+      }
+      if (appData.accessQualificationId) {
+        const found = records.find(r => r.id === appData.accessQualificationId);
+        if (found) return found;
+      }
+      if (typeof appData.declaredAccess === 'string' && appData.declaredAccess.trim().length > 0) {
+        const declaredLower = appData.declaredAccess.toLowerCase();
+        const found = records.find(
+          r => r.kind === 'qualification' && declaredLower.includes(r.title.toLowerCase().trim()),
+        );
+        if (found) return found;
+      }
+    } catch {
+      // ignore JSON parse error
+    }
+  }
+
   const quals = (records || []).filter(
     r => r.kind === 'qualification' && (r.profile === profileCode || !r.profile),
   );
@@ -50,7 +75,25 @@ export function extractAccessQualification(records: Entry[], profileCode: string
 
 export function computeAccessScore(records: Entry[], profileCode: string): number {
   const qual = extractAccessQualification(records, profileCode);
-  if (!qual) return 0.0;
+  if (!qual) {
+    const appRecord = (records || []).find(r => r.kind === 'application');
+    if (appRecord && appRecord.notes?.startsWith('{')) {
+      try {
+        const appData = JSON.parse(appRecord.notes);
+        if (typeof appData.declaredAccess === 'string') {
+          const match = appData.declaredAccess.match(/(\d{1,3}(?:[.,]\d+)?)\s*\/\s*(\d{2,3})/);
+          if (match) {
+            const achieved = parseFloat(match[1].replace(',', '.'));
+            const base = parseFloat(match[2]);
+            if (achieved > 0 && base > 0 && achieved <= base) {
+              return Math.round(((achieved / base) * 10) * 100) / 100;
+            }
+          }
+        }
+      } catch {}
+    }
+    return 0.0;
+  }
 
   if (qual.notes) {
     try {

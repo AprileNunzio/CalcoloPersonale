@@ -302,6 +302,7 @@ export function DossierExportPane({ person }: { person: Person }) {
                   <td style={{ textAlign: 'right' }}>{ps.baseAccessScore.toFixed(2)} pt</td>
                   <td style={{ textAlign: 'right' }}>{ps.specificServiceScore.toFixed(2)} pt</td>
                   <td style={{ textAlign: 'right' }}>{ps.otherServiceScore.toFixed(2)} pt</td>
+                  <td style={{ textAlign: 'right' }}>{ps.culturalScore.toFixed(2)} pt</td>
                   <td style={{ textAlign: 'right', color: 'var(--secondary)', fontSize: 13, fontWeight: 700 }}>
                     {ps.effectiveScore.toFixed(2)} pt
                     {ps.useValidatedScore && (

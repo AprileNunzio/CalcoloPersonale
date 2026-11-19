@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Plus, Briefcase, FileText, ArrowLeft } from 'lucide-react';
+import { Plus, Briefcase, FileText, ArrowLeft, Clock, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Archive, Entry, Person } from '../../shared/types';
 import { call, getRevision } from '../../shared/api';
 import { useT } from '../../shared/i18n';
@@ -12,6 +12,44 @@ import { QualificationSummaryPanel } from '../qualifications/QualificationSummar
 import { AbsenceComportoPanel } from '../absences/AbsenceComportoPanel';
 import { computeCareerMilestones } from '../../shared/careerMilestones';
 import './recordDetails.css';
+
+function computeServiceGap(current: Entry, previous: Entry): {
+  days: number;
+  type: 'gap' | 'overlap' | 'continuous';
+  label: string;
+} | null {
+  if (!current.start || !previous.end) return null;
+  const dStart = new Date(current.start);
+  const dPrevEnd = new Date(previous.end);
+  if (isNaN(dStart.getTime()) || isNaN(dPrevEnd.getTime())) return null;
+
+  // Giorni di calendario tra l'inizio del contratto più recente e la fine di quello precedente
+  const diffDays = Math.round((dStart.getTime() - dPrevEnd.getTime()) / (1000 * 60 * 60 * 24));
+  const daysWithoutWork = diffDays - 1;
+
+  if (daysWithoutWork === 0) {
+    return {
+      days: 0,
+      type: 'continuous',
+      label: 'Nessuna interruzione (servizio continuativo)',
+    };
+  }
+
+  if (daysWithoutWork > 0) {
+    return {
+      days: daysWithoutWork,
+      type: 'gap',
+      label: `${daysWithoutWork} ${daysWithoutWork === 1 ? 'giorno' : 'giorni'} senza lavoro`,
+    };
+  }
+
+  const overlapDays = Math.abs(daysWithoutWork);
+  return {
+    days: overlapDays,
+    type: 'overlap',
+    label: `Attenzione: sovrapposizione di ${overlapDays} ${overlapDays === 1 ? 'giorno' : 'giorni'} fra i contratti`,
+  };
+}
 
 const absenceKinds = ['sickness', 'specialist', 'parental', 'holiday', 'festivity', 'bereavement', 'personal', 'law104', 'blood', 'study', 'marriage', 'other'];
 
@@ -222,7 +260,7 @@ export function Records({
             <p className="muted" style={{ margin: 0 }}>{t('noRecords')}</p>
           </div>
         ) : (
-          entries.map(record => {
+          entries.map((record, index) => {
             const isRuoloMilestone = careerMilestones.ruoloServiceIds.has(record.id);
             const is24MMilestone = careerMilestones.milestoneServiceIds.has(record.id);
             const m24 = careerMilestones.milestones24M.find(m => m.serviceEntryId === record.id);
@@ -235,26 +273,50 @@ export function Records({
               record.profile !== careerMilestones.ruoloProfile
             );
 
+            const gap = section === 'service' && index < entries.length - 1
+              ? computeServiceGap(record, entries[index + 1])
+              : null;
+
             return (
-              <RecordItemCard
-                key={record.id}
-                record={record}
-                busy={busy}
-                pending={pending}
-                isDrafting={draft !== null}
-                isRuoloMilestone={isRuoloMilestone}
-                is24MMilestone={is24MMilestone}
-                milestone24MText={milestone24MText}
-                isArt59={isArt59}
-                ruoloProfile={careerMilestones.ruoloProfile}
-                onEdit={rec => {
-                  setFamilySource('manual');
-                  setDraft(rec);
-                }}
-                onRemove={rec => {
-                  if (window.confirm(t('deleteRecord'))) void persist(rec, true, true);
-                }}
-              />
+              <div key={record.id} className="record-flow-group">
+                <RecordItemCard
+                  record={record}
+                  busy={busy}
+                  pending={pending}
+                  isDrafting={draft !== null}
+                  isRuoloMilestone={isRuoloMilestone}
+                  is24MMilestone={is24MMilestone}
+                  milestone24MText={milestone24MText}
+                  isArt59={isArt59}
+                  ruoloProfile={careerMilestones.ruoloProfile}
+                  onEdit={rec => {
+                    setFamilySource('manual');
+                    setDraft(rec);
+                  }}
+                  onRemove={rec => {
+                    if (window.confirm(t('deleteRecord'))) void persist(rec, true, true);
+                  }}
+                />
+                {gap && (
+                  <div className={`service-gap-connector ${gap.type}`}>
+                    <div className="gap-line" />
+                    <div
+                      className="gap-pill"
+                      title={gap.type === 'overlap' ? 'Possibile errore: le date dei due contratti si sovrappongono' : undefined}
+                    >
+                      {gap.type === 'overlap' ? (
+                        <AlertTriangle size={13} className="gap-icon" />
+                      ) : gap.type === 'gap' ? (
+                        <Clock size={13} className="gap-icon" />
+                      ) : (
+                        <CheckCircle2 size={13} className="gap-icon" />
+                      )}
+                      <span>{gap.label}</span>
+                    </div>
+                    <div className="gap-line" />
+                  </div>
+                )}
+              </div>
             );
           })
         )}

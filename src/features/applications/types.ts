@@ -13,6 +13,10 @@ export interface ApplicationData {
   declaredCultural: string;
   declaredServices: string;
   notes: string;
+  accessQualificationId?: string;
+  accessTitlesByProfile?: Record<string, string>;
+  culturalTitleIds?: string[];
+  serviceIds?: string[];
 }
 
 export const TRIENNIUMS = [

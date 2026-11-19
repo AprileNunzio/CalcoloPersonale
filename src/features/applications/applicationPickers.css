@@ -1,0 +1,256 @@
+.app-selection-section {
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-lg);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app-selection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-picker-action-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+}
+
+.app-picker-link-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.76rem;
+  font-weight: 650;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--shape-xs);
+  text-decoration: underline;
+}
+
+.app-picker-link-btn:hover {
+  filter: brightness(1.2);
+}
+
+.app-picker-sep {
+  color: var(--outline-variant);
+}
+
+.app-access-picker-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 10px 14px;
+}
+
+.app-picker-row-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.app-picker-row-control select {
+  padding: 8px 12px;
+  border-radius: var(--shape-md);
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+  font-size: 0.85rem;
+}
+
+.app-profile-access-assignment {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--outline-variant);
+}
+
+.app-profile-access-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 8px;
+}
+
+.app-profile-access-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-container-high);
+  padding: 6px 10px;
+  border-radius: var(--shape-sm);
+  border: 1px solid var(--outline-variant);
+}
+
+.app-profile-access-item select {
+  flex: 1;
+  font-size: 0.78rem;
+  padding: 4px 8px;
+}
+
+.app-prof-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  min-width: 52px;
+}
+
+.app-items-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px;
+}
+
+.app-picker-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.app-picker-pill:hover {
+  border-color: var(--primary);
+  background: var(--surface-container-high);
+}
+
+.app-picker-pill.selected {
+  border-color: var(--secondary);
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+
+.app-picker-pill input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.app-picker-pill-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.app-picker-pill-content strong {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.app-pill-pts {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--shape-full);
+  background: var(--surface-container-highest);
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+.app-services-picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.app-service-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: var(--shape-md);
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.app-service-picker-row:hover {
+  border-color: var(--primary);
+  background: var(--surface-container-high);
+}
+
+.app-service-picker-row.selected {
+  border-color: var(--tertiary);
+  background: var(--surface-container-high);
+}
+
+.app-service-picker-row input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.app-service-picker-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.app-service-picker-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-service-picker-top strong {
+  font-size: 0.82rem;
+  color: var(--on-surface);
+}
+
+.app-service-prof-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--shape-full);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.app-service-picker-info small {
+  font-size: 0.72rem;
+  color: var(--on-surface-variant);
+}
+
+.app-picker-empty-note {
+  font-size: 0.78rem;
+  color: var(--on-surface-variant);
+  font-style: italic;
+  margin: 0;
+}

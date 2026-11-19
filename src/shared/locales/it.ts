@@ -196,6 +196,7 @@ const coreIt = {
   fascia1Long: '1ª Fascia (24 Mesi Permanente)',
   fascia3Long: '3ª Fascia (Graduatorie d’Istituto)',
   candidateScore: 'Punteggio candidato',
+  salary: 'Busta Paga NoiPA & TFR',
   realCandidateScore: 'Punteggio reale candidato',
   scoreConvalidated: '✓ Convalidato',
   scoreCalculated: 'Calcolato',

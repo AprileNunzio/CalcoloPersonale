@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Sparkles } from 'lucide-react';
 import { Entry, Person } from '../../shared/types';
 import { useT } from '../../shared/i18n';
@@ -7,6 +7,8 @@ import { ATA_PROFILES } from '../../shared/personUtils';
 import { ProfileBadge3d } from '../../shared/icons3d';
 import { ApplicationData, TRIENNIUMS } from './types';
 import { DirectoryPicker, DirectoryEntry } from '../directory/DirectoryPicker';
+import { extractAccessQualification } from '../../shared/scoring/accessScoring';
+import { ApplicationListPickers } from './ApplicationListPickers';
 
 export function ApplicationForm({
   person,
@@ -22,6 +24,41 @@ export function ApplicationForm({
   busy: boolean;
 }) {
   const t = useT();
+
+  const qualifications = useMemo(
+    () => (person.records || []).filter(r => r.kind === 'qualification' || r.kind === 'title'),
+    [person.records]
+  );
+  const services = useMemo(
+    () => (person.records || []).filter(r => r.kind === 'service'),
+    [person.records]
+  );
+
+  const formatAccessString = (qual?: Entry | null) => {
+    if (!qual) return '';
+    const pointsStr = qual.amount ? ` - Punteggio/Voto: ${qual.amount} pt` : '';
+    const dateStr = qual.start ? ` (${qual.start})` : '';
+    return `${qual.title}${pointsStr}${dateStr}`;
+  };
+
+  const formatCulturalString = (selectedIds: string[]) => {
+    return qualifications
+      .filter(q => selectedIds.includes(q.id))
+      .map(q => `${q.title}${q.amount ? ` (${q.amount} pt)` : ''}`)
+      .join('; ');
+  };
+
+  const formatServicesString = (selectedIds: string[]) => {
+    return services
+      .filter(s => selectedIds.includes(s.id))
+      .map(s => {
+        const prof = s.profile ? ` [${s.profile}]` : '';
+        const dates = s.start ? ` (${s.start}${s.end ? ` → ${s.end}` : ''})` : '';
+        const school = s.school ? ` c/o ${s.school.name}` : '';
+        return `${s.title}${prof}${dates}${school}`;
+      })
+      .join('\n');
+  };
 
   let initialData: ApplicationData = {
     triennium: TRIENNIUMS[0],
@@ -48,6 +85,35 @@ export function ApplicationForm({
       }
     } catch {
       initialData.notes = entry.notes;
+    }
+  }
+
+  // Pre-link from records if empty
+  if (!initialData.accessQualificationId && qualifications.length > 0) {
+    const detected = extractAccessQualification(person.records || [], initialData.profiles[0]) || qualifications[0];
+    if (detected) {
+      initialData.accessQualificationId = detected.id;
+      if (!initialData.declaredAccess) {
+        initialData.declaredAccess = formatAccessString(detected);
+      }
+    }
+  }
+
+  if (!initialData.culturalTitleIds && qualifications.length > 0) {
+    const cultIds = qualifications
+      .filter(q => q.id !== initialData.accessQualificationId)
+      .map(q => q.id);
+    initialData.culturalTitleIds = cultIds;
+    if (!initialData.declaredCultural && cultIds.length > 0) {
+      initialData.declaredCultural = formatCulturalString(cultIds);
+    }
+  }
+
+  if (!initialData.serviceIds && services.length > 0) {
+    const sIds = services.map(s => s.id);
+    initialData.serviceIds = sIds;
+    if (!initialData.declaredServices && sIds.length > 0) {
+      initialData.declaredServices = formatServicesString(sIds);
     }
   }
 
@@ -116,36 +182,19 @@ export function ApplicationForm({
   };
 
   const handleAutoImport = () => {
-    const titles = person.records.filter(r => r.kind === 'qualification' || r.kind === 'title');
-    const services = person.records.filter(r => r.kind === 'service');
-
-    const accessTitles = titles.filter(t => 
-      t.notes?.toLowerCase().includes('accesso') || 
-      t.title.toLowerCase().includes('diploma') || 
-      t.title.toLowerCase().includes('laurea')
-    );
-    const culturalTitles = titles.filter(t => !accessTitles.includes(t));
-
-    const accessStr = accessTitles.length > 0
-      ? accessTitles.map(t => `${t.title}${t.start ? ` (${t.start})` : ''}`).join('; ')
-      : (titles[0] ? `${titles[0].title}${titles[0].start ? ` (${titles[0].start})` : ''}` : '');
-
-    const culturalStr = (accessTitles.length > 0 ? culturalTitles : titles.slice(1))
-      .map(t => `${t.title}${t.notes ? ` - ${t.notes}` : ''}`)
-      .join('; ');
-
-    const serviceStr = services.map(s => {
-      const prof = s.profile ? ` [${s.profile}]` : '';
-      const dates = s.start ? ` (${s.start}${s.end ? ` → ${s.end}` : ''})` : '';
-      const school = s.school ? ` c/o ${s.school.name}` : '';
-      return `${s.title}${prof}${dates}${school}`;
-    }).join('\n');
+    const autoAccessQual = extractAccessQualification(person.records || [], formData.profiles[0]) || qualifications[0];
+    const autoAccessId = autoAccessQual?.id;
+    const autoCulturalIds = qualifications.filter(q => q.id !== autoAccessId).map(q => q.id);
+    const autoServiceIds = services.map(s => s.id);
 
     setFormData(prev => ({
       ...prev,
-      declaredAccess: prev.declaredAccess || accessStr,
-      declaredCultural: prev.declaredCultural || culturalStr,
-      declaredServices: prev.declaredServices || serviceStr,
+      accessQualificationId: autoAccessId,
+      declaredAccess: formatAccessString(autoAccessQual),
+      culturalTitleIds: autoCulturalIds,
+      declaredCultural: formatCulturalString(autoCulturalIds),
+      serviceIds: autoServiceIds,
+      declaredServices: formatServicesString(autoServiceIds),
     }));
   };
 
@@ -361,38 +410,15 @@ export function ApplicationForm({
           )}
         </div>
 
-        <div className="wide-field">
-          <FormField label={t('declaredAccessTitles')}>
-            <input
-              type="text"
-              value={formData.declaredAccess}
-              onChange={e => setFormData({ ...formData, declaredAccess: e.target.value })}
-              placeholder="es. Diploma di Maturità votazione 84/100 conseguito nel 2012"
-            />
-          </FormField>
-        </div>
-
-        <div className="wide-field">
-          <FormField label={t('declaredCulturalTitles')}>
-            <input
-              type="text"
-              value={formData.declaredCultural}
-              onChange={e => setFormData({ ...formData, declaredCultural: e.target.value })}
-              placeholder="es. Certificazione Internazionale di Alfabetizzazione Digitale (CIAD), Dattilografia"
-            />
-          </FormField>
-        </div>
-
-        <div className="wide-field">
-          <FormField label={t('declaredServices')}>
-            <textarea
-              rows={3}
-              value={formData.declaredServices}
-              onChange={e => setFormData({ ...formData, declaredServices: e.target.value })}
-              placeholder="es. Servizio A.S. 2021/2022 come CS (8 mesi) e 2022/2023 come AA (6 mesi)"
-            />
-          </FormField>
-        </div>
+        <ApplicationListPickers
+          formData={formData}
+          setFormData={setFormData}
+          qualifications={qualifications}
+          services={services}
+          formatAccessString={formatAccessString}
+          formatCulturalString={formatCulturalString}
+          formatServicesString={formatServicesString}
+        />
       </div>
 
       <div className="actions">

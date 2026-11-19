@@ -284,3 +284,60 @@
   margin-bottom: 4px;
 }
 
+.record-flow-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.service-gap-connector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+  padding: 0 16px;
+}
+
+.service-gap-connector .gap-line {
+  flex: 1;
+  height: 1px;
+  background: var(--outline-variant);
+  opacity: 0.6;
+}
+
+.service-gap-connector .gap-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: var(--shape-full);
+  font-size: 0.74rem;
+  font-weight: 600;
+  border: 1px solid var(--outline-variant);
+  box-shadow: 0 1px 3px var(--shadow-ambient);
+}
+
+.service-gap-connector.gap .gap-pill {
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  border-color: var(--outline-variant);
+}
+
+.service-gap-connector.overlap .gap-pill {
+  background: var(--error-container);
+  color: var(--on-error-container);
+  border-color: var(--error);
+  font-weight: 700;
+}
+
+.service-gap-connector.continuous .gap-pill {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border-color: var(--secondary);
+}
+
+.service-gap-connector .gap-icon {
+  flex-shrink: 0;
+}
+
+
