@@ -1,25 +1,8 @@
+import React, { useState } from 'react';
 import {
-  Briefcase,
-  Link2,
-  Pencil,
-  Trash2,
-  Clock,
-  Crown,
-  Repeat,
-  Navigation,
-  Award,
-  CheckCircle2,
-  Calendar,
-  School,
-  GraduationCap,
-  Laptop,
-  Keyboard,
-  BookOpen,
-  HeartPulse,
-  Stethoscope,
-  Palmtree,
-  Languages,
-  ShieldCheck,
+  Briefcase, Link2, Pencil, Trash2, Clock, Crown, Repeat, Navigation,
+  Award, CheckCircle2, Calendar, School, GraduationCap, Laptop, Keyboard,
+  BookOpen, HeartPulse, Stethoscope, Palmtree, Languages, ShieldCheck, Scale,
 } from 'lucide-react';
 import { Entry } from '../../shared/types';
 import { useT } from '../../shared/i18n';
@@ -32,6 +15,7 @@ import {
   evaluateDetailedService,
 } from './serviceCalculations';
 import { RuoloMobilityType, AssegnazioneProvvisoriaReason } from './ruoloTypes';
+import { ServiceLegalCalcBox } from './ServiceLegalCalcBox';
 import './RecordItemCard.css';
 
 const absenceKinds = [
@@ -104,6 +88,7 @@ export function RecordItemCard({
   onRemove,
 }: RecordItemCardProps) {
   const t = useT();
+  const [showLegalCalc, setShowLegalCalc] = useState(false);
   const parsed = parseNotes(record.notes);
   const isLinked = !!parsed.linkedPersonId;
   const isService = record.kind === 'service';
@@ -153,15 +138,9 @@ export function RecordItemCard({
               {isQualification ? (
                 <Award size={11} />
               ) : isAbsence ? (
-                record.kind === 'sickness' ? (
-                  <HeartPulse size={11} />
-                ) : record.kind === 'holiday' || record.kind === 'festivity' ? (
-                  <Palmtree size={11} />
-                ) : record.kind === 'specialist' ? (
-                  <Stethoscope size={11} />
-                ) : (
-                  <Clock size={11} />
-                )
+                record.kind === 'sickness' ? <HeartPulse size={11} /> :
+                record.kind === 'holiday' || record.kind === 'festivity' ? <Palmtree size={11} /> :
+                record.kind === 'specialist' ? <Stethoscope size={11} /> : <Clock size={11} />
               ) : null}
               {t(record.kind)}
             </span>
@@ -381,7 +360,22 @@ export function RecordItemCard({
             </span>
             {evaluation && (
               <span style={{ color: 'var(--on-surface-variant)' }}>
-                · {evaluation.days} giorni ({evaluation.months} mesi di anzianità)
+                · <strong>{evaluation.durationDetails.totalDays} giorni effettivi</strong> ({evaluation.durationDetails.calendarYears > 0 ? `${evaluation.durationDetails.calendarYears}a ` : ''}{evaluation.durationDetails.calendarMonths}m {evaluation.durationDetails.calendarDays}gg) · <strong>{evaluation.months} {evaluation.months === 1 ? 'mese' : 'mesi'} di punteggio ATA</strong>
+                {evaluation.durationDetails.isRoundedUp && (
+                  <span className="score-rounded-badge" title="Frazione residua > 15 giorni valutata come mese intero (D.M. 89/2024)">
+                    (&gt;15gg ✓)
+                  </span>
+                )}
+                <button
+                  type="button"
+                  className="btn-legal-info"
+                  onClick={() => setShowLegalCalc(prev => !prev)}
+                  title="Vedi spiegazione normativa del calcolo giorni e mesi (D.M. 89/2024)"
+                  style={{ marginLeft: 6 }}
+                >
+                  <Scale size={11} />
+                  <span>{showLegalCalc ? 'Chiudi' : 'Come si calcola?'}</span>
+                </button>
               </span>
             )}
           </div>
@@ -395,6 +389,16 @@ export function RecordItemCard({
               {record.school.province})
             </span>
           </div>
+        )}
+
+        {isService && evaluation && showLegalCalc && (
+          <ServiceLegalCalcBox
+            details={evaluation.durationDetails}
+            profile={record.profile || 'CS'}
+            scoreSpecificPerMonth={evaluation.scoreSpecificPerMonth}
+            totalSpecificScore={evaluation.totalSpecificScore}
+            onClose={() => setShowLegalCalc(false)}
+          />
         )}
 
         {/* Box speciale per dettagli Ruolo, Trasferimenti, Assegnazioni Provvisorie */}

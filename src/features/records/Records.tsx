@@ -42,7 +42,14 @@ export function Records({
   const isFormOpen = isExplicitlyAdding || hasDraftContent;
 
   const kinds = section === 'absences' ? absenceKinds : [section];
-  const entries = person.records.filter(record => kinds.includes(record.kind));
+  const entries = person.records
+    .filter(record => kinds.includes(record.kind))
+    .sort((a, b) => {
+      const dateA = a.start || '';
+      const dateB = b.start || '';
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      return (b.end || '').localeCompare(a.end || '');
+    });
   const otherPeople = (context.archive.people || []).filter(p => p.id !== person.id);
 
   async function persist(entry: Entry, remove = false) {

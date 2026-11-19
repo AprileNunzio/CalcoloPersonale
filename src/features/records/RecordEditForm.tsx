@@ -8,9 +8,9 @@ import { FormField, FieldStatus } from '../../shared/FormField';
 import { ATA_PROFILES } from '../../shared/personUtils';
 import { AbsenceInfoCard } from './AbsenceInfoCard';
 import { ServiceDetailFields } from './ServiceDetailFields';
-import { ServiceSector, ServiceContractType } from './serviceCalculations';
-import { FamilyMemberPicker } from './FamilyMemberPicker';
+import { ServiceSector, ServiceContractType, detectContractTypeFromDates } from './serviceCalculations';
 import { detectContractType } from '../../shared/entitlements';
+import { FamilyMemberPicker } from './FamilyMemberPicker';
 import { QualificationPresetSelector } from './QualificationPresetSelector';
 import { ManualSchoolModal } from './ManualSchoolModal';
 import { ServiceSchoolSelector } from './ServiceSchoolSelector';
@@ -36,7 +36,14 @@ export interface RecordEditFormProps {
   onSubmit: (entry: Entry) => void;
 }
 
-function parseNotes(notes: string): { text: string; sector?: ServiceSector; contractType?: ServiceContractType; weeklyHours?: number; linkedPersonId?: string } {
+function parseNotes(notes: string): {
+  text: string;
+  sector?: ServiceSector;
+  contractType?: ServiceContractType;
+  weeklyHours?: number;
+  linkedPersonId?: string;
+  isRuolo?: boolean;
+} {
   try { if (notes.startsWith('{')) return JSON.parse(notes); } catch { return { text: notes }; }
   return { text: notes };
 }
@@ -89,26 +96,23 @@ export function RecordEditForm({
   };
 
   const getFieldStatus = (field: 'title' | 'start' | 'end' | 'notes' | 'profile' | 'amount'): FieldStatus => {
-    if (field === 'title') {
-      if (draft.title.trim().length > 0) return 'saved';
-      return submitted ? 'error' : 'idle';
-    }
-    if (field === 'start') {
-      if (draft.start) return 'saved';
-      return submitted ? 'error' : 'idle';
-    }
-    if (field === 'end') {
-      if (!draft.end) return 'idle';
-      return draft.end >= draft.start ? 'saved' : 'error';
-    }
-    if (field === 'amount') {
-      if (typeof draft.amount === 'number' && !isNaN(draft.amount)) return 'saved';
-      return 'idle';
-    }
-    if (field === 'profile') {
-      return draft.profile ? 'saved' : 'idle';
-    }
+    if (field === 'title') return draft.title.trim().length > 0 ? 'saved' : submitted ? 'error' : 'idle';
+    if (field === 'start') return draft.start ? 'saved' : submitted ? 'error' : 'idle';
+    if (field === 'end') return !draft.end ? 'idle' : draft.end >= draft.start ? 'saved' : 'error';
+    if (field === 'amount') return typeof draft.amount === 'number' && !isNaN(draft.amount) ? 'saved' : 'idle';
+    if (field === 'profile') return draft.profile ? 'saved' : 'idle';
     return 'idle';
+  };
+
+  const handleDateChange = (field: 'start' | 'end', val: string | null) => {
+    const nextStart = field === 'start' ? (val || '') : draft.start;
+    const nextEnd = field === 'end' ? val : draft.end;
+    let nextNotes = draft.notes;
+    if (draft.kind === 'service' && !parsedDraftNotes.isRuolo && parsedDraftNotes.contractType !== 'permanent') {
+      const autoType = detectContractTypeFromDates(nextStart, nextEnd, false);
+      nextNotes = JSON.stringify({ ...parsedDraftNotes, contractType: autoType });
+    }
+    setDraft({ ...draft, [field]: val, notes: nextNotes });
   };
 
   const handleSectorChange = (sector: ServiceSector) => {
@@ -237,11 +241,7 @@ export function RecordEditForm({
                 value={draft.kind}
                 onChange={event => setDraft({ ...draft, kind: event.target.value })}
               >
-                {kinds.map(kind => (
-                  <option key={kind} value={kind}>
-                    {t(kind)}
-                  </option>
-                ))}
+                {kinds.map(k => <option key={k} value={k}>{t(k)}</option>)}
               </select>
             </FormField>
           )}
@@ -265,11 +265,7 @@ export function RecordEditForm({
                   });
                 }}
               >
-                {ATA_PROFILES.map(p => (
-                  <option key={p.code} value={p.code}>
-                    {p.label}
-                  </option>
-                ))}
+                {ATA_PROFILES.map(p => <option key={p.code} value={p.code}>{p.label}</option>)}
                 <option value="DOCENTE">Personale Docente (Insegnante)</option>
               </select>
             </FormField>
@@ -343,7 +339,7 @@ export function RecordEditForm({
               required
               type="date"
               value={draft.start}
-              onChange={event => setDraft({ ...draft, start: event.target.value })}
+              onChange={event => handleDateChange('start', event.target.value)}
               onBlur={handleFieldBlur}
             />
             {draft.start && (
@@ -364,9 +360,7 @@ export function RecordEditForm({
                 type="date"
                 min={draft.start}
                 value={draft.end ?? ''}
-                onChange={event =>
-                  setDraft({ ...draft, end: event.target.value || null })
-                }
+                onChange={event => handleDateChange('end', event.target.value || null)}
                 onBlur={handleFieldBlur}
               />
               {draft.end && (

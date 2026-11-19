@@ -11,9 +11,21 @@ export type ServiceContractType =
   | 'short' // Supplenza breve e saltuaria
   | 'permanent'; // Ruolo / Tempo Indeterminato
 
+export interface ServiceDurationDetails {
+  totalDays: number;
+  calendarYears: number;
+  calendarMonths: number;
+  calendarDays: number;
+  base30FullMonths: number;
+  base30RemainderDays: number;
+  scoreMonths: number;
+  isRoundedUp: boolean;
+}
+
 export interface ServiceDetailCalculation {
   days: number;
   months: number;
+  durationDetails: ServiceDurationDetails;
   weeklyHours: number;
   fullTimeHours: number;
   hourRatioPercent: number; // e.g. 100 for 36h, 50 for 18h
@@ -39,6 +51,80 @@ export function calculateDaysBetween(start: string, end: string | null, referenc
   if (isNaN(d1.getTime()) || isNaN(d2.getTime()) || d2 < d1) return 1;
   const diff = Math.abs(d2.getTime() - d1.getTime());
   return Math.round(diff / (1000 * 60 * 60 * 24)) + 1;
+}
+
+export function calculateExactCalendarDuration(
+  start: string,
+  end: string | null,
+  referenceDate?: Date
+): { years: number; months: number; days: number } {
+  const d1 = new Date(start);
+  d1.setHours(0, 0, 0, 0);
+  const now = referenceDate ? new Date(referenceDate) : new Date();
+  now.setHours(0, 0, 0, 0);
+  const d2 = end ? new Date(end) : now;
+  d2.setHours(0, 0, 0, 0);
+  if (isNaN(d1.getTime()) || isNaN(d2.getTime()) || d2 < d1) {
+    return { years: 0, months: 0, days: 1 };
+  }
+
+  const endInclusive = new Date(d2);
+  endInclusive.setDate(endInclusive.getDate() + 1);
+
+  let years = endInclusive.getFullYear() - d1.getFullYear();
+  let months = endInclusive.getMonth() - d1.getMonth();
+  let days = endInclusive.getDate() - d1.getDate();
+
+  if (days < 0) {
+    months -= 1;
+    const prevMonth = new Date(endInclusive.getFullYear(), endInclusive.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+  return {
+    years: Math.max(0, years),
+    months: Math.max(0, months),
+    days: Math.max(0, days),
+  };
+}
+
+export function calculateServiceDurationDetails(
+  start: string,
+  end: string | null,
+  referenceDate?: Date
+): ServiceDurationDetails {
+  const totalDays = calculateDaysBetween(start, end, referenceDate);
+  const calendar = calculateExactCalendarDuration(start, end, referenceDate);
+  const base30FullMonths = Math.floor(totalDays / 30);
+  const base30RemainderDays = totalDays % 30;
+  const isRoundedUp = base30RemainderDays > 15;
+  const scoreMonths = base30FullMonths + (isRoundedUp ? 1 : 0);
+
+  return {
+    totalDays,
+    calendarYears: calendar.years,
+    calendarMonths: calendar.months,
+    calendarDays: calendar.days,
+    base30FullMonths,
+    base30RemainderDays,
+    scoreMonths,
+    isRoundedUp,
+  };
+}
+
+export function detectContractTypeFromDates(
+  start: string,
+  end: string | null,
+  isRuolo?: boolean
+): ServiceContractType {
+  if (isRuolo) return 'permanent';
+  if (!end) return 'short';
+  if (end.endsWith('08-31')) return 'annual';
+  if (end.endsWith('06-30')) return 'term';
+  return 'short';
 }
 
 export function calculateEquivalentMonths(days: number): number {
@@ -67,8 +153,9 @@ export function evaluateDetailedService(
   weeklyHours?: number,
   contractType?: ServiceContractType
 ): ServiceDetailCalculation {
-  const days = calculateDaysBetween(start, end);
-  const months = calculateEquivalentMonths(days);
+  const durationDetails = calculateServiceDurationDetails(start, end);
+  const days = durationDetails.totalDays;
+  const months = durationDetails.scoreMonths;
 
   const fullTimeHours = targetProfileCode === 'DOCENTE' ? 18 : 36;
   const actualHours = weeklyHours && weeklyHours > 0 ? weeklyHours : fullTimeHours;
@@ -78,9 +165,7 @@ export function evaluateDetailedService(
   // Contract type auto-detection if not specified
   let detectedType: ServiceContractType = contractType || 'term';
   if (!contractType && end) {
-    if (end.endsWith('08-31') || days >= 350) detectedType = 'annual';
-    else if (end.endsWith('06-30') || (days >= 270 && days < 350)) detectedType = 'term';
-    else detectedType = 'short';
+    detectedType = detectContractTypeFromDates(start, end);
   }
 
   let validFor24Months = false;
@@ -125,6 +210,7 @@ export function evaluateDetailedService(
   return {
     days,
     months,
+    durationDetails,
     weeklyHours: actualHours,
     fullTimeHours,
     hourRatioPercent,

@@ -29,32 +29,52 @@ export * from './serviceScoring';
 export * from './validationScoring';
 
 export function getActiveProfiles(person: Person): string[] {
-  const activeSet = new Set<string>();
   const records = person.records || [];
 
-  for (const r of records) {
-    if (r.kind === 'application') {
+  // Filter for real ATA applications, ignoring 30-school selections or validation records
+  const applications = records
+    .filter(
+      r =>
+        r.kind === 'application' &&
+        !r.title?.toLowerCase().includes('30 scuole') &&
+        !r.title?.toLowerCase().includes('scelta 30')
+    )
+    .sort((a, b) => (b.start || '').localeCompare(a.start || ''));
+
+  // Look for the latest application that specifies profiles
+  for (const app of applications) {
+    if (app.notes) {
       try {
-        if (r.notes && r.notes.startsWith('{')) {
-          const data = JSON.parse(r.notes);
-          if (Array.isArray(data.profiles)) {
-            data.profiles.forEach((p: string) => activeSet.add(p));
+        const data = typeof app.notes === 'string' ? JSON.parse(app.notes.trim()) : app.notes;
+        if (Array.isArray(data.profiles) && data.profiles.length > 0) {
+          const validProfiles = data.profiles.filter(
+            (p: string) => typeof p === 'string' && p.trim() in PROFILE_LABELS
+          );
+          if (validProfiles.length > 0) {
+            return validProfiles;
           }
         }
       } catch {
-        if (r.profile) activeSet.add(r.profile);
+        // Continue checking fallback
       }
-      if (r.profile) activeSet.add(r.profile);
-    } else if (r.kind === 'service' && r.profile) {
-      if (r.profile !== 'DOCENTE') activeSet.add(r.profile);
+    }
+    if (app.profile && app.profile in PROFILE_LABELS) {
+      return [app.profile];
     }
   }
 
-  if (activeSet.size === 0 && person.profile && person.profile in PROFILE_LABELS) {
-    activeSet.add(person.profile);
+  // Fallback if no explicit application with profiles is found
+  const fallbackSet = new Set<string>();
+  for (const r of records) {
+    if (r.kind === 'service' && r.profile && r.profile !== 'DOCENTE' && r.profile in PROFILE_LABELS) {
+      fallbackSet.add(r.profile);
+    }
+  }
+  if (person.profile && person.profile in PROFILE_LABELS) {
+    fallbackSet.add(person.profile);
   }
 
-  return Array.from(activeSet);
+  return fallbackSet.size > 0 ? Array.from(fallbackSet) : ['CS'];
 }
 
 export function calculateProfileScores(
@@ -67,7 +87,9 @@ export function calculateProfileScores(
     return [];
   }
   const profilesToEvaluate = onlyActive
-    ? ATA_PROFILES.filter(p => activeCodes.includes(p.code))
+    ? activeCodes
+        .map(code => ATA_PROFILES.find(p => p.code === code))
+        .filter((p): p is (typeof ATA_PROFILES)[number] => p !== undefined)
     : ATA_PROFILES;
 
   const validationsMap = extractScoreValidations(person);
