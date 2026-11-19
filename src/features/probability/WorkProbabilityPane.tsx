@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useId } from 'react';
+import { useState, useEffect, useCallback, useMemo, useId } from 'react';
 import {
   TrendingUp,
   Award,
@@ -14,6 +14,9 @@ import { call } from '../../shared/api';
 import { useT } from '../../shared/i18n';
 import { Person } from '../../shared/types';
 import { ATA_PROFILES } from '../../shared/personUtils';
+import { calculateProfileScores } from '../../shared/scoring';
+import { computeCareerStatus } from '../../shared/careerStatus';
+import { extractProvince } from '../../shared/careerPrediction';
 import { DirectoryEntry } from '../directory/DirectoryPicker';
 import { ApplicationData } from '../applications/types';
 import { ProbabilityAnalysisResult, ProbabilityRequest } from './types';
@@ -30,11 +33,46 @@ export function WorkProbabilityPane({
   const fasciaSelectId = useId();
   const profileSelectId = useId();
   const scoreInputId = useId();
-  const [fascia, setFascia] = useState<number>(3);
+
+  const careerStatus = useMemo(() => computeCareerStatus(person), [person]);
+  const profileScores = useMemo(() => calculateProfileScores(person, false), [person]);
+
+  const [fascia, setFascia] = useState<number>(() => {
+    return careerStatus.isPrimaFascia ? 1 : 3;
+  });
+
   const [activeProfile, setActiveProfile] = useState<string>(() => {
     return selectedApplication?.profiles[0] || person.profile || 'CS';
   });
-  const [customScore, setCustomScore] = useState<number>(10.5);
+
+  // Keep activeProfile synced if application or person changes
+  useEffect(() => {
+    if (selectedApplication?.profiles[0]) {
+      setActiveProfile(selectedApplication.profiles[0]);
+    } else if (person.profile) {
+      setActiveProfile(person.profile);
+    }
+  }, [selectedApplication, person.profile]);
+
+  // Current real score computed from person's records (titles & services, or convalida)
+  const currentProfileScore = useMemo(() => {
+    return profileScores.find(s => s.code === activeProfile);
+  }, [profileScores, activeProfile]);
+
+  const realScore = currentProfileScore
+    ? (currentProfileScore.effectiveScore ?? currentProfileScore.totalScore ?? 0)
+    : 0;
+
+  // Optional manual simulation mode (default false -> uses real score)
+  const [isSimulating, setIsSimulating] = useState<boolean>(false);
+  const [simulatedScore, setSimulatedScore] = useState<number>(realScore);
+
+  useEffect(() => {
+    setSimulatedScore(realScore);
+  }, [realScore]);
+
+  const effectiveAnalysisScore = isSimulating ? simulatedScore : realScore;
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<ProbabilityAnalysisResult | null>(null);
@@ -57,15 +95,17 @@ export function WorkProbabilityPane({
     return [];
   }, [selectedApplication, person.records]);
 
+  const currentProvince = selectedApplication?.province || extractProvince(person) || 'FI';
+
   const runAnalysis = useCallback(async () => {
     setLoading(true);
     const chosen = extractChosenSchools();
     const codes = chosen.map(s => s.code);
     const req: ProbabilityRequest = {
-      province: selectedApplication?.province || 'FI',
+      province: currentProvince,
       profile: activeProfile,
       fascia,
-      score: customScore,
+      score: effectiveAnalysisScore,
       chosenSchoolCodes: codes,
     };
 
@@ -110,7 +150,7 @@ export function WorkProbabilityPane({
     } finally {
       setLoading(false);
     }
-  }, [extractChosenSchools, selectedApplication, activeProfile, fascia, customScore, person.records]);
+  }, [extractChosenSchools, currentProvince, activeProfile, fascia, effectiveAnalysisScore, person.records]);
 
   useEffect(() => {
     void runAnalysis();
@@ -131,7 +171,13 @@ export function WorkProbabilityPane({
           </div>
           <div>
             <h3>{t('workProbability')}</h3>
-            <p className="prob-subtitle">{t('workProbabilitySubtitle')} · <strong>FIRENZE (FI)</strong></p>
+            <p className="prob-subtitle">
+              {t('workProbabilitySubtitle')} · <strong>{currentProvince}</strong>
+              {' · '}Punteggio: <strong>{effectiveAnalysisScore.toFixed(2)} pt</strong>
+              {!isSimulating && (
+                <span className="prob-real-tag"> (Reale {currentProfileScore?.useValidatedScore ? 'Convalidato' : 'Calcolato'})</span>
+              )}
+            </p>
           </div>
         </div>
 
@@ -143,8 +189,12 @@ export function WorkProbabilityPane({
               value={fascia}
               onChange={e => setFascia(Number(e.target.value))}
             >
-              <option value={1}>{t('fascia1Long')}</option>
-              <option value={3}>{t('fascia3Long')}</option>
+              <option value={1}>
+                {t('fascia1Long')}{careerStatus.isPrimaFascia ? ' (Tua fascia)' : ''}
+              </option>
+              <option value={3}>
+                {t('fascia3Long')}{!careerStatus.isPrimaFascia ? ' (Tua fascia)' : ''}
+              </option>
             </select>
           </div>
 
@@ -153,27 +203,76 @@ export function WorkProbabilityPane({
             <select
               id={profileSelectId}
               value={activeProfile}
-              onChange={e => setActiveProfile(e.target.value)}
+              onChange={e => {
+                setActiveProfile(e.target.value);
+                setIsSimulating(false);
+              }}
             >
-              {ATA_PROFILES.map(p => (
-                <option key={p.code} value={p.code}>
-                  {p.code} - {p.label.split('(')[0].trim()}
-                </option>
-              ))}
+              {ATA_PROFILES.map(p => {
+                const pScore = profileScores.find(s => s.code === p.code);
+                const scoreVal = pScore ? (pScore.effectiveScore ?? pScore.totalScore ?? 0) : 0;
+                return (
+                  <option key={p.code} value={p.code}>
+                    {p.code} - {p.label.split('(')[0].trim()} ({scoreVal.toFixed(2)} pt)
+                  </option>
+                );
+              })}
             </select>
           </div>
 
-          <div className="prob-control-group">
-            <label htmlFor={scoreInputId}>{t('candidateScore')}</label>
-            <input
-              id={scoreInputId}
-              type="number"
-              step="0.05"
-              min="0"
-              max="150"
-              value={customScore}
-              onChange={e => setCustomScore(Number(e.target.value))}
-            />
+          <div className="prob-control-group prob-score-control-group">
+            <div className="prob-score-label-row">
+              <label htmlFor={isSimulating ? scoreInputId : undefined}>
+                {isSimulating ? 'Punteggio simulato' : `${t('candidateScore')} (Reale)`}
+              </label>
+              <button
+                type="button"
+                className="prob-sim-toggle"
+                onClick={() => {
+                  if (isSimulating) {
+                    setIsSimulating(false);
+                    setSimulatedScore(realScore);
+                  } else {
+                    setSimulatedScore(realScore);
+                    setIsSimulating(true);
+                  }
+                }}
+                title={isSimulating ? 'Torna al punteggio reale calcolato dal fascicolo' : 'Simula un punteggio diverso'}
+              >
+                {isSimulating ? t('restoreRealScore') : t('simulateCustomScore')}
+              </button>
+            </div>
+
+            {isSimulating ? (
+              <div className="prob-sim-input-wrapper">
+                <input
+                  id={scoreInputId}
+                  type="number"
+                  step="0.05"
+                  min="0"
+                  max="150"
+                  value={simulatedScore}
+                  onChange={e => setSimulatedScore(Number(e.target.value))}
+                />
+              </div>
+            ) : (
+              <div className="prob-real-score-box">
+                <div className="prob-real-score-val">
+                  <Award size={16} className="prob-score-icon" />
+                  <strong>{realScore.toFixed(2)} pt</strong>
+                </div>
+                <span
+                  className={`prob-score-badge ${currentProfileScore?.useValidatedScore ? 'convalidated' : 'calculated'}`}
+                  title={
+                    currentProfileScore?.useValidatedScore
+                      ? 'Punteggio convalidato ufficialmente dalla scuola'
+                      : 'Punteggio reale calcolato dai titoli e servizi registrati nel fascicolo'
+                  }
+                >
+                  {currentProfileScore?.useValidatedScore ? t('scoreConvalidated') : t('scoreCalculated')}
+                </span>
+              </div>
+            )}
           </div>
 
           <button
@@ -182,9 +281,27 @@ export function WorkProbabilityPane({
             disabled={loading}
             onClick={() => void runAnalysis()}
           >
-            {t('runProbabilityAnalysis')}
+            {loading ? 'Calcolo…' : t('runProbabilityAnalysis')}
           </button>
         </div>
+
+        {isSimulating && (
+          <div className="prob-simulation-notice">
+            <span>
+              Stai simulando un punteggio manuale di <strong>{simulatedScore.toFixed(2)} pt</strong>. Il punteggio reale del candidato è <strong>{realScore.toFixed(2)} pt</strong>.
+            </span>
+            <button
+              type="button"
+              className="prob-sim-restore-btn"
+              onClick={() => {
+                setIsSimulating(false);
+                setSimulatedScore(realScore);
+              }}
+            >
+              {t('restoreRealScore')}
+            </button>
+          </div>
+        )}
       </div>
 
       {result && (

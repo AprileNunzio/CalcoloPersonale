@@ -106,9 +106,129 @@
   filter: brightness(1.1);
 }
 
+.prob-score-control-group {
+  min-width: 190px;
+}
+
+.prob-score-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.prob-sim-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.68rem;
+  color: var(--primary);
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.prob-sim-toggle:hover {
+  filter: brightness(1.2);
+}
+
+.prob-real-score-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--shape-md);
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-highest);
+  min-height: 36px;
+  box-sizing: border-box;
+}
+
+.prob-real-score-val {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--on-surface);
+  font-size: 0.88rem;
+}
+
+.prob-score-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.prob-score-badge {
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--shape-full);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.prob-score-badge.convalidated {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  border: 1px solid var(--outline-variant);
+}
+
+.prob-score-badge.calculated {
+  background: var(--surface-container);
+  color: var(--on-surface-variant);
+  border: 1px solid var(--outline-variant);
+}
+
+.prob-sim-input-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.prob-sim-input-wrapper input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.prob-real-tag {
+  color: var(--tertiary);
+  font-weight: 600;
+}
+
+.prob-simulation-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px;
+  border-radius: var(--shape-md);
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  font-size: 0.78rem;
+  border: 1px solid var(--outline-variant);
+}
+
+.prob-sim-restore-btn {
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: var(--shape-sm);
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.prob-sim-restore-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
 @media (max-width: 768px) {
   .prob-controls-bar {
     flex-direction: column;
     align-items: stretch;
   }
 }
+

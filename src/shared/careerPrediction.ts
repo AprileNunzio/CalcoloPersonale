@@ -40,7 +40,7 @@ function calculateDaysBetween(start: string, end: string | null): number {
   return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
 }
 
-function extractProvince(person: Person): string | null {
+export function extractProvince(person: Person): string | null {
   const records = person.records || [];
   for (const r of records) {
     if (r.kind === 'application' && r.notes) {
@@ -181,7 +181,7 @@ export function computeCallOdds(
     }
   }
 
-  const score = scoreItem.totalScore;
+  const score = scoreItem.effectiveScore ?? scoreItem.totalScore;
   let band: 'high' | 'medium' | 'low';
   let percentEstimate = 50;
   let estimatedCallTypeKey = 'callAnnualOrLong';

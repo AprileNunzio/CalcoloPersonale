@@ -33,7 +33,7 @@ export function CareerIntelligencePane({
       <div className="career-intelligence-grid">
         {careerIntelligence.map(item => {
           const scoreItem = profileScores.find(s => s.code === item.profileCode);
-          const score = scoreItem?.totalScore ?? 0;
+          const score = scoreItem ? (scoreItem.effectiveScore ?? scoreItem.totalScore) : 0;
           const { firstTier, callOdds } = item;
 
           return (
