@@ -172,6 +172,14 @@ function Workspace({
     };
   }, [archive, lock]);
 
+  useEffect(() => {
+    if (!notice) return;
+    const timer = setTimeout(() => {
+      setNotice('');
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, [notice]);
+
   const save = (p: Person) =>
     void execute(async () => {
       await flush();
@@ -211,7 +219,7 @@ function Workspace({
         </div>
       )}
       {notice && (
-        <div role="status" className="notice">
+        <div role="status" className="notice" onClick={() => setNotice('')} style={{ cursor: 'pointer' }} title="Clicca per chiudere">
           {t(notice)}
         </div>
       )}
